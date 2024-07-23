@@ -20,7 +20,7 @@ export class AuthService {
 
 
         const validation = await bcrypt.compare(password, user.password);
-        if (!validation) { // Hier solltest du ein sicheres Passwort-Hashing verwenden
+        if (!validation) {
             throw new ForbiddenException('Invalid credentials');
         }
 
