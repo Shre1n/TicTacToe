@@ -1,9 +1,6 @@
 import {
-    BadRequestException,
     ForbiddenException,
     Injectable,
-    NotFoundException,
-    UnauthorizedException
 } from '@nestjs/common';
 import {UsersService} from "../users/users.service";
 import * as bcrypt from 'bcryptjs';
@@ -17,12 +14,12 @@ export class AuthService {
 
     async login(username: string, password: string){
         const user = await this.usersService.findOne(username);
-        const validation = await bcrypt.compare(password, user.password);
-
         if (!user) {
             throw new ForbiddenException('Invalid credentials');
         }
 
+
+        const validation = await bcrypt.compare(password, user.password);
         if (!validation) { // Hier solltest du ein sicheres Passwort-Hashing verwenden
             throw new ForbiddenException('Invalid credentials');
         }
