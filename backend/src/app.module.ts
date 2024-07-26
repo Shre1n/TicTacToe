@@ -9,6 +9,8 @@ import {AuthModule} from "./auth/auth.module";
 import {UsersModule} from "./users/users.module";
 import {Repository} from "typeorm";
 import * as bcrypt from 'bcryptjs';
+import {AdminService} from "./users/admin/admin.service";
+import {RolesGuard} from "./guards/roles/roles.guard";
 
 @Module({
     imports: [
@@ -25,7 +27,8 @@ import * as bcrypt from 'bcryptjs';
         AuthModule,
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [AppService, RolesGuard],
+    exports: [AdminService]
 })
 export class AppModule implements OnModuleInit{
     // Generate an Admin User if no Admin exists
