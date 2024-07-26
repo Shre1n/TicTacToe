@@ -8,11 +8,11 @@ export class Game {
     @ApiProperty({ description: 'The unique identifier for the game', example: 1 })
     id: number;
 
-    @ManyToOne(() => User, user => user.gamesAsPlayer1)
+    @ManyToOne(() => User)
     @ApiProperty({ description: 'The user playing as player 1', type: () => User })
     spieler1: User;
 
-    @ManyToOne(() => User, user => user.gamesAsPlayer2)
+    @ManyToOne(() => User)
     @ApiProperty({ description: 'The user playing as player 2', type: () => User })
     spieler2: User;
 

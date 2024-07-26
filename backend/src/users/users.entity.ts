@@ -1,7 +1,17 @@
-import {Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, CreateDateColumn, OneToMany} from 'typeorm';
+import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    OneToOne,
+    JoinColumn,
+    CreateDateColumn,
+    OneToMany,
+    BeforeInsert, BeforeUpdate
+} from 'typeorm';
 import { ProfilePicture } from '../profilePicture/profilePicture.entity';
 import { Game } from '../games/games.entity';
 import {ApiProperty} from "@nestjs/swagger";
+import * as bcrypt from 'bcryptjs';
 
 @Entity()
 export class User {
@@ -33,5 +43,14 @@ export class User {
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     @ApiProperty({ description: 'The date and time when the user was created' })
     createdAt: Date;
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    async hashPassword() {
+        if (this.password) {
+            const salt = await bcrypt.genSalt();
+            this.password = await bcrypt.hash(this.password, salt);
+        }
+    }
 
 }
