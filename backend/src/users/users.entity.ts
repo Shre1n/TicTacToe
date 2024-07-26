@@ -34,12 +34,4 @@ export class User {
     @ApiProperty({ description: 'The date and time when the user was created' })
     createdAt: Date;
 
-    @OneToMany(() => Game, game => game.spieler1)
-    @ApiProperty({ type: () => [Game], description: 'Games where the user is player 1' })
-    gamesAsPlayer1: Game[];
-
-    @OneToMany(() => Game, game => game.spieler2)
-    @ApiProperty({ type: () => [Game], description: 'Games where the user is player 2' })
-    gamesAsPlayer2: Game[];
-
 }
