@@ -1,6 +1,4 @@
 import { Module, OnModuleInit } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/users.entity';
 import { join } from 'path';
@@ -9,10 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { DataSource } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-import { AdminService } from './users/admin/admin.service';
 import { RolesGuard } from './guards/roles/roles.guard';
 import { ProfilePicture } from './profilePicture/profilePicture.entity';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -35,14 +31,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     UsersModule,
     AuthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, RolesGuard, AdminService],
+  controllers: [],
+  providers: [RolesGuard],
 })
 export class AppModule implements OnModuleInit {
   // Generate an Admin User if no Admin exists
-  constructor(
-    private dataSource: DataSource,
-  ) {}
+  constructor(private dataSource: DataSource) {}
   async onModuleInit() {
     const userRepository = this.dataSource.getRepository(User);
     const adminUser = await userRepository.findOne({
@@ -51,10 +45,7 @@ export class AppModule implements OnModuleInit {
 
     if (!adminUser) {
       const salt = await bcrypt.genSalt();
-      const hashedPassword = await bcrypt.hash(
-        'adminPass',
-        salt,
-      );
+      const hashedPassword = await bcrypt.hash('adminPass', salt);
 
       const admin = userRepository.create({
         username: 'admin',
