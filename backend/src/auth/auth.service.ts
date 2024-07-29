@@ -1,35 +1,40 @@
 import {
-    ForbiddenException,
-    Injectable,
+  ForbiddenException,
+  HttpStatus,
+  Injectable,
+  Req,
 } from '@nestjs/common';
-import {UsersService} from "../users/users.service";
+import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcryptjs';
-
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
+  constructor(private usersService: UsersService) {}
 
-    constructor(private usersService: UsersService) {
+  async login(username: string, password: string) {
+    const user = await this.usersService.findOne(username);
+    if (!user) {
+      throw new ForbiddenException('Invalid credentials');
     }
+    bcrypt.compare(password, user.password, (err, isMatch) => {
+      if (err) {
+        throw new ForbiddenException('Invalid credentials');
+      }
+      if (isMatch) {
+        console.log('User authenticated');
+      }
+    });
 
-    async login(username: string, password: string){
-        const user = await this.usersService.findOne(username);
-        if (!user) {
-            throw new ForbiddenException('Invalid credentials');
-        }
+    return user;
+  }
 
-
-        const validation = await bcrypt.compare(password, user.password);
-        if (!validation) {
-            throw new ForbiddenException('Invalid credentials');
-        }
-
-        return user;
-    }
-
-
-    async register(username: string, password: string) {
-        return this.usersService.create(username, password);
-    }
-
+  async logout(@Req() request: Request) {
+    request.session.destroy(() => {
+      return {
+        message: 'Logout successful',
+        statusCode: HttpStatus.OK,
+      };
+    });
+  }
 }
