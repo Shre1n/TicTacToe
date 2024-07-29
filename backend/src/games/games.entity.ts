@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   CreateDateColumn,
+  Check,
 } from 'typeorm';
 import { User } from '../users/users.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -22,33 +23,33 @@ export class Game {
     description: 'The user playing as player 1',
     type: () => User,
   })
-  spieler1: User;
+  player1: User;
 
   @ManyToOne(() => User)
   @ApiProperty({
     description: 'The user playing as player 2',
     type: () => User,
   })
-  spieler2: User;
+  player2: User;
 
   @Column({ type: 'integer', default: 0 })
   @ApiProperty({
     description: 'The state of the game board for player 1',
     example: 0,
   })
-  spielFeldS1: number;
+  player1Board: number;
 
   @Column({ type: 'integer', default: 0 })
   @ApiProperty({
     description: 'The state of the game board for player 2',
     example: 0,
   })
-  spielFeldS2: number;
+  player2Board: number;
 
   @Column({ type: 'time', default: () => 'CURRENT_TIME' })
   @ApiProperty({
-    description: 'The time when the game was created',
-    example: '15:30:00',
+    description: 'The Gaming Time',
+    example: '1:00:00',
   })
   gameTime: Date;
 
@@ -61,21 +62,20 @@ export class Game {
     description: 'Whether the game is currently playing or not',
     example: false,
   })
-  isPlaying: boolean;
+  isFinished: boolean;
 
   @Column({
-    type: 'enum',
-    enum: ['p1', 'p2', 'draw'],
+    type: 'varchar',
     default: 'draw',
   })
+  @Check(`winningState IN ('p1', 'p2', 'draw')`)
   @ApiProperty({
     description: 'The winning state of the game',
-    enum: ['p1', 'p2', 'draw'],
     example: 'draw',
   })
   winningState: 'p1' | 'p2' | 'draw';
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   @ApiProperty({ description: 'The date and time when the game was created' })
   createdAt: Date;
 }
