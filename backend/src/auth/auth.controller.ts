@@ -1,17 +1,26 @@
-import { Body, Controller, Post, Session, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Post,
+  Req,
+  Session,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterUserDto } from './dto/register-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../users/users.entity';
 import { RolesGuard } from '../guards/roles/roles.guard';
 import { SessionData } from 'express-session';
+import { Request } from 'express';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('login')
+  @Post()
   @ApiResponse({ status: 201, type: User })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   async login(
@@ -28,13 +37,9 @@ export class AuthController {
     return user;
   }
 
-  @Post('register')
-  @ApiResponse({ status: 201, type: User })
-  async register(@Body() registerDTO: RegisterUserDto) {
-    return this.authService.register(
-      registerDTO.username,
-      registerDTO.password,
-    );
+  @Delete()
+  logout(@Req() request: Request) {
+    return this.authService.logout(request);
   }
 
   @Post('admin-only')

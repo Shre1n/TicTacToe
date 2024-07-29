@@ -22,7 +22,6 @@ async function bootstrap() {
     .setTitle('TicTacToe API')
     .setDescription('The TicTacToe API description')
     .setVersion('1.0')
-    .addTag('tictactoe')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

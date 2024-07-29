@@ -3,12 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/users.entity';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { DataSource } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { RolesGuard } from './guards/roles/roles.guard';
 import { ProfilePicture } from './profilePicture/profilePicture.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [

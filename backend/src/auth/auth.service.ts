@@ -1,10 +1,12 @@
 import {
-  BadRequestException,
   ForbiddenException,
+  HttpStatus,
   Injectable,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcryptjs';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -27,9 +29,12 @@ export class AuthService {
     return user;
   }
 
-  async register(username: string, password: string) {
-    return this.usersService.create(username, password).catch(() => {
-      throw new BadRequestException('Username already exists');
+  async logout(@Req() request: Request) {
+    request.session.destroy(() => {
+      return {
+        message: 'Logout successful',
+        statusCode: HttpStatus.OK,
+      };
     });
   }
 }
