@@ -1,5 +1,5 @@
 import {
-    ForbiddenException,
+    ForbiddenException, HttpException, HttpStatus,
     Injectable,
 } from '@nestjs/common';
 import {UsersService} from "../users/users.service";
@@ -17,8 +17,6 @@ export class AuthService {
         if (!user) {
             throw new ForbiddenException('Invalid credentials');
         }
-
-
         const validation = await bcrypt.compare(password, user.password);
         if (!validation) {
             throw new ForbiddenException('Invalid credentials');
@@ -29,7 +27,11 @@ export class AuthService {
 
 
     async register(username: string, password: string) {
-        return this.usersService.create(username, password);
+        return this.usersService.create(username, password).catch(() => {
+            throw new HttpException({
+                message: 'Username already exists',
+            }, HttpStatus.BAD_REQUEST);
+        });
     }
 
 }
