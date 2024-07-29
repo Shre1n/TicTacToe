@@ -12,6 +12,7 @@ import * as bcrypt from 'bcryptjs';
 import {AdminService} from "./users/admin/admin.service";
 import {RolesGuard} from "./guards/roles/roles.guard";
 import {ProfilePicture} from "./profilePicture/profilePicture.entity";
+import {UsersService} from "./users/users.service";
 
 @Module({
     imports: [

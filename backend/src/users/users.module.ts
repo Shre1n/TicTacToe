@@ -4,10 +4,11 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {User} from "./users.entity";
 import { AdminService } from './admin/admin.service';
 import {ProfilePicture} from "../profilePicture/profilePicture.entity";
+import {AuthController} from "../auth/auth.controller";
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, ProfilePicture])],
   providers: [UsersService, AdminService],
-  exports: [UsersService]
+  exports: [UsersService, AdminService]
 })
 export class UsersModule {}
