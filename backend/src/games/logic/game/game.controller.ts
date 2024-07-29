@@ -1,9 +1,9 @@
 import { Body, Controller, Param, Post, Put, Session } from '@nestjs/common';
 import { GameService } from './game.service';
-import { User } from '../../../users/users.entity';
 import { ApiTags } from '@nestjs/swagger';
 import { SessionData } from 'express-session';
-import { GameDto } from '../../dto/game.dto';
+import { PlayerDto } from '../../dto/player.dto';
+import { PositionDto } from '../../dto/position.dto';
 
 @ApiTags('game')
 @Controller('game')
@@ -11,7 +11,7 @@ export class GameController {
   constructor(private readonly gameService: GameService) {}
 
   @Post()
-  async startGame(@Session() session: SessionData, @Body() players: GameDto) {
+  async startGame(@Session() session: SessionData, @Body() players: PlayerDto) {
     const game = await this.gameService.createGame(
       players.player1,
       players.player2,
@@ -23,7 +23,7 @@ export class GameController {
   @Put()
   async makeMove(
     @Session() session: SessionData,
-    @Body() moveData: { position: number },
+    @Body() moveData: PositionDto,
   ) {
     return this.gameService.makeAMove(
       session.activeGameId,
