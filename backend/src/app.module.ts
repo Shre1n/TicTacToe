@@ -32,9 +32,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         'browser',
       ),
     }),
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
     UsersModule,
     AuthModule,
   ],
@@ -45,7 +42,6 @@ export class AppModule implements OnModuleInit {
   // Generate an Admin User if no Admin exists
   constructor(
     private dataSource: DataSource,
-    private configService: ConfigService,
   ) {}
   async onModuleInit() {
     const userRepository = this.dataSource.getRepository(User);
@@ -56,7 +52,7 @@ export class AppModule implements OnModuleInit {
     if (!adminUser) {
       const salt = await bcrypt.genSalt();
       const hashedPassword = await bcrypt.hash(
-        this.configService.get('DEFAULT_ADMIN_PASSWORD'),
+        'adminPass',
         salt,
       );
 
