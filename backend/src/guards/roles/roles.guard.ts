@@ -1,28 +1,14 @@
-import {CanActivate, ExecutionContext, ForbiddenException, Injectable} from '@nestjs/common';
-import { Observable } from 'rxjs';
-import {Reflector} from "@nestjs/core";
-import {AdminService} from "../../users/admin/admin.service";
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { SessionData } from 'express-session';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
+  constructor() {}
 
-  constructor(
-      private reflector: Reflector,
-      private adminService: AdminService,
-  ) {}
-
-  async canActivate(
-      context: ExecutionContext,
-  ): Promise<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const user = request.user;
+    const session: SessionData = request.session;
 
-    // const isAdmin = await this.adminService.isAdmin(user.username);
-
-    // if (isAdmin) {
-    //   return true;
-    // }
-
-    throw new ForbiddenException('You do not have permission to access this resource');
+    return session.user?.isAdmin;
   }
 }
