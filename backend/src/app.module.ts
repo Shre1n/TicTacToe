@@ -7,17 +7,18 @@ import { join } from 'path';
 import {ServeStaticModule} from "@nestjs/serve-static";
 import {AuthModule} from "./auth/auth.module";
 import {UsersModule} from "./users/users.module";
-import {Repository} from "typeorm";
+import {DataSource, Repository} from "typeorm";
 import * as bcrypt from 'bcryptjs';
 import {AdminService} from "./users/admin/admin.service";
 import {RolesGuard} from "./guards/roles/roles.guard";
+import {ProfilePicture} from "./profilePicture/profilePicture.entity";
 
 @Module({
     imports: [
         TypeOrmModule.forRoot({
             type: 'sqlite',
             database: './tic_tac_toe.sqlite',
-            entities: [User],
+            entities: [User,ProfilePicture],
             synchronize: true,
         }),
         ServeStaticModule.forRoot({
@@ -27,27 +28,27 @@ import {RolesGuard} from "./guards/roles/roles.guard";
         AuthModule,
     ],
     controllers: [AppController],
-    providers: [AppService, RolesGuard],
-    exports: [AdminService]
+    providers: [AppService, RolesGuard, AdminService],
 })
 export class AppModule implements OnModuleInit{
     // Generate an Admin User if no Admin exists
-    private dataSource: Repository<User>;
+    constructor(private dataSource: DataSource) {}
     async onModuleInit() {
-        const adminUser = await this.dataSource.findOne({ where: { username: 'admin' } })
+        const userRepository = this.dataSource.getRepository(User);
+        const adminUser = await userRepository.findOne({ where: { username: 'admin' } })
 
         if (!adminUser) {
             const salt = await bcrypt.genSalt();
-            const hashedPassword = await bcrypt.hash(adminUser.password, salt);
+            const hashedPassword = await bcrypt.hash('adminPass', salt);
 
-            const admin = this.dataSource.create({
+            const admin = userRepository.create({
                 username: 'admin',
                 password: hashedPassword,
                 isAdmin: true,
-                elo: Number.POSITIVE_INFINITY,
+                elo: 80000,
                 createdAt: new Date(),
             });
-            await this.dataSource.save(admin);
+            await userRepository.save(admin);
             console.log("Admin created", admin);
         } else {
             console.log("Admin already exists!")

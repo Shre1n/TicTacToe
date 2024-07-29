@@ -17,11 +17,11 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    const isAdmin = await this.adminService.isAdmin(user.username);
+    // const isAdmin = await this.adminService.isAdmin(user.username);
 
-    if (isAdmin) {
-      return true;
-    }
+    // if (isAdmin) {
+    //   return true;
+    // }
 
     throw new ForbiddenException('You do not have permission to access this resource');
   }

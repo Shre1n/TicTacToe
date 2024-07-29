@@ -28,7 +28,7 @@ export class User {
     password: string;
 
     @OneToOne(() => ProfilePicture, { nullable: true })
-    @JoinColumn({ name: 'profilePicture' })
+    @JoinColumn({ name: 'profilePictureId' })
     @ApiProperty({ description: 'The profile picture of the user', type: () => ProfilePicture, nullable: true })
     profilePicture: ProfilePicture;
 
@@ -40,7 +40,7 @@ export class User {
     @ApiProperty({ description: 'Whether the user is an admin or not', example: false })
     isAdmin: boolean;
 
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
     @ApiProperty({ description: 'The date and time when the user was created' })
     createdAt: Date;
 
