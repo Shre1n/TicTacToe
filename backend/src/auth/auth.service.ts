@@ -17,10 +17,16 @@ export class AuthService {
         if (!user) {
             throw new ForbiddenException('Invalid credentials');
         }
-        const validation = await bcrypt.compare(password, user.password);
-        if (!validation) {
-            throw new ForbiddenException('Invalid credentials');
-        }
+        bcrypt.compare(password, user.password,(err, isMatch) => {
+            if (err) {
+                throw new HttpException({
+                    message: 'Password is incorrect!',
+                }, HttpStatus.BAD_REQUEST);
+            }
+            if (isMatch){
+                console.log('User authenticated');
+            }
+        });
 
         return user;
     }
