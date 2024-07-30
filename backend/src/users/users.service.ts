@@ -5,7 +5,7 @@ import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
-  private usersRepository: Repository<User>;
+  private readonly usersRepository: Repository<User>;
 
   constructor(private dataSource: DataSource) {
     this.usersRepository = this.dataSource.getRepository(User);

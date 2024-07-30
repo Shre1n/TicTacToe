@@ -25,7 +25,7 @@ export class AuthController {
     private authService: AuthService,
     private dataSource: DataSource,
   ) {
-    this.gameRepository = dataSource.getRepository(Game);
+    this.gameRepository = this.dataSource.getRepository(Game);
   }
 
   @Post()

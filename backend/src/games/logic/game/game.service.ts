@@ -5,8 +5,8 @@ import { User } from '../../../users/users.entity';
 
 @Injectable()
 export class GameService {
-  private userRepository: Repository<User>;
-  private gameRepository: Repository<Game>;
+  private readonly userRepository: Repository<User>;
+  private readonly gameRepository: Repository<Game>;
 
   private winMasks = [
     0b111000000, // Row 1
@@ -20,8 +20,8 @@ export class GameService {
   ];
 
   constructor(private dataSource: DataSource) {
-    this.gameRepository = dataSource.getRepository(Game);
-    this.userRepository = dataSource.getRepository(User);
+    this.gameRepository = this.dataSource.getRepository(Game);
+    this.userRepository = this.dataSource.getRepository(User);
   }
 
   async createGame(player1Id: number, player2Id: number) {
