@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, Put, Session } from '@nestjs/common';
+import { Body, Controller, Post, Put, Session } from '@nestjs/common';
 import { GameService } from './game.service';
 import { ApiTags } from '@nestjs/swagger';
 import { SessionData } from 'express-session';
