@@ -40,6 +40,7 @@ export class UsersService {
 
   async getCurrentUserInformation(user: User) {
     const dto = UserDto.from(user);
+    dto.state = UserState.Ready;
     // const activeGame = await this.gameRepository.findOne({
     //   where: [
     //     // TODO: Check logic after merging with game branch
