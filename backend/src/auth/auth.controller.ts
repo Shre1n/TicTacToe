@@ -9,20 +9,33 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from '../users/users.entity';
+import {
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { RolesGuard } from '../guards/roles/roles.guard';
 import { SessionData } from 'express-session';
 import { Request } from 'express';
+import { UsersService } from '../users/users.service';
+import { UserDto } from '../users/dto/user.dto';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UsersService,
+  ) {}
 
   @Post()
-  @ApiResponse({ status: 201, type: User })
-  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiOperation({
+    summary: 'Logs user into the system',
+    description: 'Creates a user session and returns the authenticated user',
+  })
+  @ApiCreatedResponse({ description: 'Successful operation', type: UserDto })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
   async login(
     @Session() session: SessionData,
     @Body() LoginUserDto: LoginUserDto,
@@ -34,7 +47,7 @@ export class AuthController {
     session.user = user;
     session.isLoggedIn = true;
 
-    return user;
+    return this.userService.getCurrentUserInformation(user);
   }
 
   @Delete()
