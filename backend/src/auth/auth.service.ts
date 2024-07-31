@@ -1,12 +1,7 @@
-import {
-  ForbiddenException,
-  HttpStatus,
-  Injectable,
-  Req,
-} from '@nestjs/common';
+import { ForbiddenException, HttpStatus, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcryptjs';
-import { Request } from 'express';
+import { SessionData } from 'express-session';
 
 @Injectable()
 export class AuthService {
@@ -29,8 +24,8 @@ export class AuthService {
     return user;
   }
 
-  async logout(@Req() request: Request) {
-    request.session.destroy(() => {
+  async logout(session: SessionData) {
+    session.destroy(() => {
       return {
         message: 'Logout successful',
         statusCode: HttpStatus.OK,

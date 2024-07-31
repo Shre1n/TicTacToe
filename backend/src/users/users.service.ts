@@ -40,16 +40,16 @@ export class UsersService {
 
   async getCurrentUserInformation(user: User) {
     const dto = UserDto.from(user);
-    const activeGame = await this.gameRepository.findOne({
-      where: [
-        // TODO: Check logic after merging with game branch
-        { spieler1: user, isPlaying: true },
-        { spieler2: user, isPlaying: true },
-      ],
-    });
-    if (activeGame) {
-      dto.state = UserState.Playing;
-    }
+    // const activeGame = await this.gameRepository.findOne({
+    //   where: [
+    //     // TODO: Check logic after merging with game branch
+    //     { spieler1: user, isPlaying: true },
+    //     { spieler2: user, isPlaying: true },
+    //   ],
+    // });
+    // if (activeGame) {
+    //   dto.state = UserState.Playing;
+    // }
     return dto;
   }
 
@@ -78,14 +78,15 @@ export class UsersService {
   }
 
   async getUserProfile(user: User) {
-    const games = await this.gameRepository.findBy([
-      // TODO: Check logic after merging with game branch
-      { spieler1: user, isPlaying: false },
-      { spieler2: user, isPlaying: false },
-    ]);
+    // const games = await this.gameRepository.findBy([
+    //   // TODO: Check logic after merging with game branch
+    //   { spieler1: user, isPlaying: false },
+    //   { spieler2: user, isPlaying: false },
+    // ]);
+    //
+    // const stats = await this.getUserStats(games, user);
+    // const matches = await this.getMatchHistory(games, user);
 
-    const stats = await this.getUserStats(games, user);
-    const matches = await this.getMatchHistory(games, user);
-    return ProfileDto.from(user, stats, matches);
+    return ProfileDto.from(user, null, null /*stats, matches*/);
   }
 }

@@ -31,7 +31,7 @@ async function bootstrap() {
 bootstrap();
 
 declare module 'express-session' {
-  interface SessionData {
+  interface SessionData extends session.Session {
     isLoggedIn: boolean;
     user: User;
   }

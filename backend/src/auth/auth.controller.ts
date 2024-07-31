@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Post,
-  Req,
   Session,
   UseGuards,
 } from '@nestjs/common';
@@ -17,7 +16,6 @@ import {
 } from '@nestjs/swagger';
 import { RolesGuard } from '../guards/roles/roles.guard';
 import { SessionData } from 'express-session';
-import { Request } from 'express';
 import { UsersService } from '../users/users.service';
 import { UserDto } from '../users/dto/user.dto';
 
@@ -51,8 +49,8 @@ export class AuthController {
   }
 
   @Delete()
-  logout(@Req() request: Request) {
-    return this.authService.logout(request);
+  async logout(@Session() session: SessionData) {
+    await this.authService.logout(session);
   }
 
   @Post('admin-only')
