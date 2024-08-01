@@ -81,7 +81,6 @@ export class UsersController {
   })
   @ApiOkResponse({ description: 'Successful operation', type: UserDto })
   async getUserInfo(@Session() session: SessionData): Promise<UserDto> {
-    console.log(session.user);
     return this.usersService.getCurrentUserInformation(session.user);
   }
 

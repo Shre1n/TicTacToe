@@ -24,7 +24,6 @@ export class UserDto {
 
   public static from(user: User): UserDto {
     const { username, elo, profilePicture } = user;
-    console.log(profilePicture);
     return { username, elo, profilePictureId: profilePicture?.id };
   }
 }

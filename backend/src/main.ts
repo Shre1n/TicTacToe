@@ -18,6 +18,8 @@ async function bootstrap() {
     }),
   );
 
+  app.setGlobalPrefix('api');
+
   const config = new DocumentBuilder()
     .setTitle('TicTacToe API')
     .setDescription('The TicTacToe API description')
