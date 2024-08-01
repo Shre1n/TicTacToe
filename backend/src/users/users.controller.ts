@@ -36,7 +36,7 @@ import { IsLoggedInGuard } from '../guards/is-logged-in/is-logged-in.guard';
 import { ProfileDto } from './dto/profile.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { FileUploadDTO } from '../profilePicture/dto/fileUpload.dto';
+import { FileUploadDto } from '../profilePicture/dto/fileUploadDto';
 import { ProfilePictureService } from '../profilePicture/profilePicture.service';
 
 @ApiTags('user')
@@ -139,13 +139,13 @@ export class UsersController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Avatar',
-    type: FileUploadDTO,
+    type: FileUploadDto,
   })
   @ApiCreatedResponse({ description: 'Successful operation', type: UserDto })
   @ApiUnprocessableEntityResponse({ description: 'Invalid File' })
   async setAvatar(
     @Session() session: SessionData,
-    @Body() data: FileUploadDTO,
+    @Body() data: FileUploadDto,
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({ fileType: 'jpg|jpeg|png|webp' })
