@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ProfilePicture } from '../../profilePicture/profilePicture.entity';
 import { UserStatsDto } from './user-stats.dto';
 import { MatchDto } from '../../games/dto/match.dto';
 import { User } from '../users.entity';
@@ -9,11 +8,10 @@ export class ProfileDto {
   username: string;
 
   @ApiProperty({
-    description: 'The profile picture of the user',
-    type: () => ProfilePicture,
+    description: 'The profile picture id of the user',
     nullable: true,
   })
-  profilePicture: ProfilePicture;
+  profilePictureId: number;
 
   @ApiProperty({ description: 'The Elo rating of the user', example: 1500 })
   elo: number;
@@ -33,6 +31,6 @@ export class ProfileDto {
     matchHistory: MatchDto[],
   ): ProfileDto {
     const { username, elo, profilePicture } = user;
-    return { username, elo, profilePicture, stats, matchHistory };
+    return { username, elo, profilePictureId: profilePicture?.id, stats, matchHistory };
   }
 }

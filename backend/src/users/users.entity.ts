@@ -5,11 +5,8 @@ import {
   OneToOne,
   JoinColumn,
   CreateDateColumn,
-  BeforeInsert,
-  BeforeUpdate,
 } from 'typeorm';
 import { ProfilePicture } from '../profilePicture/profilePicture.entity';
-import * as bcrypt from 'bcryptjs';
 
 @Entity()
 export class User {
@@ -34,13 +31,4 @@ export class User {
 
   @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  async hashPassword() {
-    if (this.password) {
-      const salt = await bcrypt.genSalt();
-      this.password = await bcrypt.hash(this.password, salt);
-    }
-  }
 }

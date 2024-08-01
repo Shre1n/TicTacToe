@@ -9,6 +9,7 @@ import * as bcrypt from 'bcryptjs';
 import { RolesGuard } from './guards/roles/roles.guard';
 import { ProfilePicture } from './profilePicture/profilePicture.entity';
 import { AuthModule } from './auth/auth.module';
+import { ProfilePictureService } from './profilePicture/profilePicture.service';
 
 @Module({
   imports: [
@@ -32,7 +33,7 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
   ],
   controllers: [],
-  providers: [RolesGuard],
+  providers: [RolesGuard, ProfilePictureService],
 })
 export class AppModule implements OnModuleInit {
   // Generate an Admin User if no Admin exists

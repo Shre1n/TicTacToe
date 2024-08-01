@@ -9,17 +9,10 @@ export class AuthService {
 
   async login(username: string, password: string) {
     const user = await this.usersService.findOne(username);
-    if (!user) {
-      throw new ForbiddenException('Invalid credentials');
-    }
-    bcrypt.compare(password, user.password, (err, isMatch) => {
-      if (err) {
-        throw new ForbiddenException('Invalid credentials');
-      }
-      if (isMatch) {
-        console.log('User authenticated');
-      }
-    });
+    if (!user) throw new ForbiddenException('Invalid credentials');
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw new ForbiddenException('Invalid credentials');
 
     return user;
   }

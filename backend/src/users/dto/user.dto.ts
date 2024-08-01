@@ -1,4 +1,3 @@
-import { ProfilePicture } from '../../profilePicture/profilePicture.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../users.entity';
 
@@ -7,11 +6,10 @@ export class UserDto {
   username: string;
 
   @ApiProperty({
-    description: 'The profile picture of the user',
-    type: () => ProfilePicture,
+    description: 'The profile picture id of the user',
     nullable: true,
   })
-  profilePicture: ProfilePicture;
+  profilePictureId: number;
 
   @ApiProperty({ description: 'The Elo rating of the user', example: 1500 })
   elo: number;
@@ -26,7 +24,8 @@ export class UserDto {
 
   public static from(user: User): UserDto {
     const { username, elo, profilePicture } = user;
-    return { username, elo, profilePicture };
+    console.log(profilePicture);
+    return { username, elo, profilePictureId: profilePicture?.id };
   }
 }
 

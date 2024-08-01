@@ -17,9 +17,11 @@ export class ProfilePicture {
   })
   title: string;
 
-  @Column({ type: 'blob' })
+  @Column({
+    type: 'blob',
+  })
   @ApiProperty({
     description: 'The content of the profile picture as binary data',
   })
-  content: Blob;
+  content: Buffer;
 }
