@@ -11,6 +11,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
@@ -49,6 +50,11 @@ export class AuthController {
   }
 
   @Delete()
+  @ApiOperation({
+    summary: 'Logs user out of the system',
+    description: 'Deletes a user session',
+  })
+  @ApiOkResponse({ description: 'Successful operation' })
   async logout(@Session() session: SessionData) {
     await this.authService.logout(session);
   }
