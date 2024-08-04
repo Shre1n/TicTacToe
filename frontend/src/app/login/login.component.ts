@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import {Component, ElementRef, Input, InputSignal, ViewChild} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {LoginService} from "../services/login.service";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, NgForm} from "@angular/forms";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -17,23 +18,27 @@ export class LoginComponent {
   username: string = '';
   password: string = '';
 
-  constructor(private loginService: LoginService) {}
+  constructor(private loginService: LoginService, private router: Router) {}
 
 
   onSubmit() {
-    this.loginService.login(this.username, this.password).subscribe({
-      next: response => {
-        alert('Login erfolgreich!');
-        console.log(response);
-      },
-      error: error => {
-        alert('Fehler beim Login.');
-        console.error(error);
-      },
-      complete: () => {
-        console.info('Login-Prozess abgeschlossen.');
-      }
-    });
+      this.loginService.login(this.username, this.password).subscribe({
+        next: response => {
+          alert('Login erfolgreich!');
+          //todo show user the success
+          console.log(response);
+        },
+        error: () => {
+          alert('No Login!')
+        },
+        complete: () => {
+          console.info('Login-Prozess abgeschlossen.');
+        }
+      });
+  }
+
+  register(){
+    this.router.navigate(['/register']);
   }
 
 
