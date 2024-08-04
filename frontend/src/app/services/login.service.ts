@@ -13,7 +13,6 @@ export class LoginService {
 
   login(username: string, password: string) {
     const user = { username, password };
-    console.log(user)
     return this.http.post(this.apiUrl, user);
   }
 
