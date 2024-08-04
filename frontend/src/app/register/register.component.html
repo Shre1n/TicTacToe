@@ -32,8 +32,22 @@
         (keydown.enter)="onSubmit()"
         required>
     </div>
+    <div class="input-group">
+      <label for="password">Passwort wiederholen:</label>
+      <input
+        type="password"
+        id="password_confirmation"
+        name="password"
+        [(ngModel)]="password_confirmation"
+        (keydown.enter)="onSubmit()"
+        required>
+    </div>
     <div class="button-group">
       <button type="submit" class="btn">Registrieren</button>
+    </div>
+
+    <div class="justify-content-end">
+      <p>{{error}}</p>
     </div>
 
   </form>
