@@ -90,7 +90,6 @@ export class UsersService {
   async getUserProfile(user: User) {
     const games = await this.gameRepository.find({
       where: [
-        // TODO: Check logic after merging with game branch + relations
         { player1: user, isFinished: true },
         { player2: user, isFinished: true },
       ],
