@@ -5,7 +5,7 @@ import { SessionData } from 'express-session';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   async login(username: string, password: string) {
     const user = await this.usersService.findOne(username);

@@ -19,14 +19,20 @@ import { RolesGuard } from '../guards/roles/roles.guard';
 import { SessionData } from 'express-session';
 import { UsersService } from '../users/users.service';
 import { UserDto } from '../users/dto/user.dto';
+import { DataSource, Repository } from 'typeorm';
+import { Game } from '../games/games.entity';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
+  private readonly gameRepository: Repository<Game>;
   constructor(
     private authService: AuthService,
+    private dataSource: DataSource,
     private userService: UsersService,
-  ) {}
+  ) {
+    this.gameRepository = this.dataSource.getRepository(Game);
+  }
 
   @Post()
   @ApiOperation({
@@ -45,6 +51,14 @@ export class AuthController {
     );
     session.user = user;
     session.isLoggedIn = true;
+
+    const game = await this.gameRepository.findOne({
+      where: [
+        { player1: user, isFinished: false },
+        { player2: user, isFinished: false },
+      ],
+    });
+    session.activeGameId = game ? game.id : -1;
 
     return this.userService.getCurrentUserInformation(user);
   }

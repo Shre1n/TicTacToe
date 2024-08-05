@@ -10,13 +10,15 @@ import { RolesGuard } from './guards/roles/roles.guard';
 import { ProfilePicture } from './profilePicture/profilePicture.entity';
 import { AuthModule } from './auth/auth.module';
 import { ProfilePictureService } from './profilePicture/profilePicture.service';
+import { GameModule } from './games/logic/game/game.module';
+import { Game } from './games/games.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: './tic_tac_toe.sqlite',
-      entities: [User, ProfilePicture],
+      entities: [User, ProfilePicture, Game],
       synchronize: true,
     }),
     ServeStaticModule.forRoot({
@@ -31,6 +33,7 @@ import { ProfilePictureService } from './profilePicture/profilePicture.service';
     }),
     UsersModule,
     AuthModule,
+    GameModule,
   ],
   controllers: [],
   providers: [RolesGuard, ProfilePictureService],

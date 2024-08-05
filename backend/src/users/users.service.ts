@@ -14,6 +14,7 @@ import { UserDto, UserState } from './dto/user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { RegisterUserDto } from '../auth/dto/register-user.dto';
 import { ProfilePicture } from '../profilePicture/profilePicture.entity';
+import { SessionData } from 'express-session';
 
 @Injectable()
 export class UsersService {
@@ -50,19 +51,18 @@ export class UsersService {
     });
   }
 
-  async getCurrentUserInformation(user: User) {
-    const dto = UserDto.from(user);
+  async getCurrentUserInformation(session: SessionData) {
+    const dto = UserDto.from(session.user);
     dto.state = UserState.Ready;
-    // const activeGame = await this.gameRepository.findOne({
-    //   where: [
-    //     // TODO: Check logic after merging with game branch + relations
-    //     { spieler1: user, isPlaying: true },
-    //     { spieler2: user, isPlaying: true },
-    //   ],
-    // });
-    // if (activeGame) {
-    //   dto.state = UserState.Playing;
-    // }
+    if (session.activeGameId != -1) {
+      const activeGame = await this.gameRepository.findOneBy({
+        id: session.activeGameId,
+      });
+      if (activeGame?.isFinished === false) {
+        dto.state = UserState.Playing;
+      }
+    }
+    // TODO: Matchmaking State
     return dto;
   }
 
@@ -70,8 +70,8 @@ export class UsersService {
     const stats = new UserStatsDto();
     stats.wins = games.filter(
       (g) =>
-        (g.spieler1 === user && g.winningState == 'p1') ||
-        (g.spieler2 === user && g.winningState == 'p1'),
+        (g.player1 === user && g.winningState == 'p1') ||
+        (g.player2 === user && g.winningState == 'p2'),
     ).length;
 
     stats.draws = games.filter((g) => g.winningState == 'draw').length;
@@ -83,24 +83,24 @@ export class UsersService {
 
   async getMatchHistory(games: Game[], user: User) {
     return games.map((g) =>
-      MatchDto.from(
-        UserDto.from(g.spieler1 == user ? g.spieler2 : g.spieler1),
-        g,
-      ),
+      MatchDto.from(UserDto.from(g.player1 == user ? g.player2 : g.player1), g),
     );
   }
 
   async getUserProfile(user: User) {
-    // const games = await this.gameRepository.findBy([
-    //   // TODO: Check logic after merging with game branch + relations
-    //   { spieler1: user, isPlaying: false },
-    //   { spieler2: user, isPlaying: false },
-    // ]);
-    //
-    // const stats = await this.getUserStats(games, user);
-    // const matches = await this.getMatchHistory(games, user);
+    const games = await this.gameRepository.find({
+      where: [
+        // TODO: Check logic after merging with game branch + relations
+        { player1: user, isFinished: true },
+        { player2: user, isFinished: true },
+      ],
+      relations: { player1: true, player2: true },
+    });
 
-    return ProfileDto.from(user, null, null /*stats, matches*/);
+    const stats = await this.getUserStats(games, user);
+    const matches = await this.getMatchHistory(games, user);
+
+    return ProfileDto.from(user, stats, matches);
   }
 
   async updatePassword(updatePasswordDto: UpdatePasswordDto, user: User) {
