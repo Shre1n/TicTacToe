@@ -1,23 +1,40 @@
 import { Component } from '@angular/core';
+import {AdminService} from "../services/admin.service";
+import {Router} from "@angular/router";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [],
+  imports: [
+    FormsModule
+  ],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
 })
 export class AdminDashboardComponent {
 
+  constructor(private adminService: AdminService, private router: Router) {
+  }
+
+  searchText: string = '';
+
   showQueue: boolean = false;
   showGames: boolean = false;
-  matchMakingQueue: string[] = ['Player1', 'Player2']
-  runningGames: {id:number, player1:string, player2:string}[]= [
-    {id: 1, player1: 'Player1', player2: 'Player2'},
-  ];
+  matchMakingQueue: string[] = []
+  runningGames: {id:number, player1:string, player2:string}[]= [];
 
-  toggleSidebar(){
-    document.getElementById('wrapper')?.classList.toggle('toggled');
+  ngOnInit() {
+    this.getMatchMakingQueue();
+    this.getRunningGames();
+  }
+
+  toggleLeftSidebar() {
+    document.getElementById('wrapper')?.classList.toggle('toggled-left');
+  }
+
+  toggleRightSidebar() {
+    document.getElementById('wrapper')?.classList.toggle('toggled-right');
   }
 
   toggleQueue(){
@@ -32,6 +49,23 @@ export class AdminDashboardComponent {
 
   viewGame(gameId: number) {
     alert('Viewing game with ID: ' + gameId);
+  }
+
+  getMatchMakingQueue() {
+    this.adminService.getMatchMakingQueue().subscribe((queue: string[]) => {
+      this.matchMakingQueue = queue;
+    });
+  }
+
+  getRunningGames() {
+    this.adminService.getRunningGames().subscribe((games: { id: number, player1: string, player2: string }[]) => {
+      this.runningGames = games;
+    });
+  }
+
+  onSearch() {
+    console.log('Search text:', this.searchText);
+    // Implement the search logic here
   }
 
 
