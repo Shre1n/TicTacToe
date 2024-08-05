@@ -14,11 +14,10 @@ export class UpdatePasswordDto {
     minNumbers: 1,
     minSymbols: 1,
   })
-  @ApiProperty({ description: 'New Password. MinLength: 6. Has to have at least one lower, one upper, one number and one symbol.', example: 'Pw12345!' })
+  @ApiProperty({
+    description:
+      'New Password. MinLength: 6. Has to have at least one lower, one upper, one number and one symbol.',
+    example: 'Pw12345!',
+  })
   new_password: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @ApiProperty({ description: 'Repeat New Password', example: 'Pw12345!' })
-  new_password_confirmation: string;
 }

@@ -27,9 +27,6 @@ export class UsersService {
   }
 
   async create(registerDto: RegisterUserDto) {
-    if (registerDto.password !== registerDto.password_confirmation)
-      throw new BadRequestException('Passwords do not match');
-
     const dbCheck = await this.usersRepository.findOne({
       where: { username: registerDto.username },
     });
@@ -108,12 +105,6 @@ export class UsersService {
       user.password,
     );
     if (!verify) throw new ForbiddenException('Invalid credentials');
-
-    if (
-      updatePasswordDto.new_password !==
-      updatePasswordDto.new_password_confirmation
-    )
-      throw new BadRequestException('Passwords do not match');
 
     const hashed_password = await bcrypt.hash(
       updatePasswordDto.new_password,

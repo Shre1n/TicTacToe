@@ -55,8 +55,7 @@ export class UsersController {
   })
   @ApiCreatedResponse({ description: 'Successful operation', type: UserDto })
   @ApiBadRequestResponse({
-    description:
-      'Username already exists, passwords do not match or input validation failed',
+    description: 'Username already exists or input validation failed',
   })
   async register(
     @Session() session: SessionData,
@@ -104,7 +103,7 @@ export class UsersController {
   })
   @ApiOkResponse({ description: 'Successful operation' })
   @ApiBadRequestResponse({
-    description: 'Invalid Input or Passwords do not match',
+    description: 'Invalid Input',
   })
   @ApiForbiddenResponse({ description: 'Forbidden' })
   async updatePassword(

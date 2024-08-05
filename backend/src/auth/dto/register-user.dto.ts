@@ -29,9 +29,4 @@ export class RegisterUserDto {
     example: 'Pw12345!',
   })
   password: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @ApiProperty({ description: 'repeat new password', example: 'Pw12345!' })
-  password_confirmation: string;
 }
