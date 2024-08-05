@@ -26,8 +26,8 @@ export class MatchDto {
     const { gameTime, createdAt, winningState } = game;
     let outcome = GameResult.Self;
     if (
-      (winningState === 'p1' && game.spieler1.username === opponent.username) ||
-      (winningState === 'p2' && game.spieler2.username === opponent.username)
+      (winningState === 'p1' && game.player1.username === opponent.username) ||
+      (winningState === 'p2' && game.player2.username === opponent.username)
     )
       outcome = GameResult.Opponent;
     else if (winningState === 'draw') outcome = GameResult.Draw;

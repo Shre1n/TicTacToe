@@ -81,7 +81,7 @@ export class UsersController {
   })
   @ApiOkResponse({ description: 'Successful operation', type: UserDto })
   async getUserInfo(@Session() session: SessionData): Promise<UserDto> {
-    return this.usersService.getCurrentUserInformation(session.user);
+    return this.usersService.getCurrentUserInformation(session);
   }
 
   @UseGuards(IsLoggedInGuard)
@@ -163,6 +163,6 @@ export class UsersController {
       session.user,
       newProfilePicture,
     );
-    return await this.usersService.getCurrentUserInformation(session.user);
+    return await this.usersService.getCurrentUserInformation(session);
   }
 }

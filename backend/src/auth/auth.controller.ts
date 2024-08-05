@@ -60,7 +60,7 @@ export class AuthController {
     });
     session.activeGameId = game ? game.id : -1;
 
-    return this.userService.getCurrentUserInformation(user);
+    return this.userService.getCurrentUserInformation(session);
   }
 
   @Delete()
