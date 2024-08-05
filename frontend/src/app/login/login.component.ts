@@ -24,7 +24,7 @@ export class LoginComponent {
   onSubmit() {
       this.loginService.login(this.username, this.password).subscribe({
         next: response => {
-          alert('Login erfolgreich!');
+          this.router.navigate(['play-now'])
           //todo show user the success
           console.log(response);
         },
