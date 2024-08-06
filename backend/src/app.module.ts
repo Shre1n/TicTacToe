@@ -9,9 +9,9 @@ import * as bcrypt from 'bcryptjs';
 import { RolesGuard } from './guards/roles/roles.guard';
 import { ProfilePicture } from './profilePicture/profilePicture.entity';
 import { AuthModule } from './auth/auth.module';
-import { GameController } from './games/logic/game/game.controller';
 import { GameModule } from './games/logic/game/game.module';
 import { Game } from './games/games.entity';
+import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -34,6 +34,7 @@ import { Game } from './games/games.entity';
     UsersModule,
     AuthModule,
     GameModule,
+    QueueModule,
   ],
   controllers: [],
   providers: [RolesGuard],
