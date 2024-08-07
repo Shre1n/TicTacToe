@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { SessionData } from 'express-session';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../users/users.entity';
 import { Game } from '../games/games.entity';
