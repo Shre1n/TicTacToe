@@ -41,6 +41,9 @@ export class QueueController {
   @Post()
   @ApiOperation({
     summary: 'Moves current player into the matchmaking queue',
+    description:
+      'Player searches for a fitting opponent inside the matchmaking queue. If none is found, ' +
+      'the player will be added to the queue, otherwise a game will be started. The user needs to be logged in.',
   })
   @ApiOkResponse({ description: 'Successful operation' })
   @ApiBadRequestResponse({ description: 'Player is busy' })
@@ -48,9 +51,9 @@ export class QueueController {
     description: 'No opponent found. Player is waiting in queue',
   })
   async enter(@Session() session: SessionData) {
-    if (this.queueService.isPlayerInQueue(session))
+    if (this.queueService.isPlayerInQueue(session.user))
       throw new BadRequestException('Player already in queue.');
-    if (await this.queueService.isPlayerInGame(session))
+    if (await this.queueService.isPlayerInGame(session.activeGameId))
       throw new BadRequestException('Player already in game.');
 
     const opponent = await this.queueService.findOpponent(session.user);
@@ -69,5 +72,13 @@ export class QueueController {
 
   //@UseGuards(IsLoggedInGuard)
   @Delete()
-  async leave(@Session() session: SessionData) {}
+  @ApiOperation({
+    summary: 'Removes the player from the matchmaking queue.',
+    description:
+      'The player is removed from the matchmaking queue. The user needs to be logged in.',
+  })
+  @ApiOkResponse({ description: 'Successful operation' })
+  async leave(@Session() session: SessionData) {
+    this.queueService.removePlayer(session.user);
+  }
 }

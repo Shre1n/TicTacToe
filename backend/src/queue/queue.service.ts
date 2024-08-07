@@ -25,10 +25,10 @@ export class QueueService {
     return queue;
   }
 
-  async isPlayerInGame(session: SessionData) {
-    if (session.activeGameId != -1) {
+  async isPlayerInGame(gameId: number) {
+    if (gameId != -1) {
       const activeGame = await this.gameRepository.findOneBy({
-        id: session.activeGameId,
+        id: gameId,
       });
       if (activeGame?.isFinished === false) {
         return true;
@@ -37,8 +37,8 @@ export class QueueService {
     return false;
   }
 
-  isPlayerInQueue(session: SessionData) {
-    return this.queue.some((x) => x.player.id === session.user.id);
+  isPlayerInQueue(player: User) {
+    return this.queue.some((x) => x.player.id === player.id);
   }
 
   /**
@@ -64,11 +64,15 @@ export class QueueService {
       const opponent = candidates.reduce((prev, curr) =>
         prev && prev.entryTime > curr.entryTime ? prev : curr,
       ).player;
-      this.queue = this.queue.filter((x) => x.player.id !== opponent.id);
+      this.removePlayer(opponent);
       return opponent;
     }
 
     this.queue.push({ player, entryTime: new Date() });
     return undefined;
+  }
+
+  removePlayer(player: User) {
+    this.queue = this.queue.filter((x) => x.player.id !== player.id);
   }
 }
