@@ -4,6 +4,7 @@ import {RegisterComponent} from "./register/register.component";
 import {NgModule} from "@angular/core";
 import {PlayNowComponent} from "./play-now/play-now.component";
 import {MatchMakingComponent} from "./match-making/match-making.component";
+import {TicTacToeComponent} from "./tic-tac-toe/tic-tac-toe.component";
 
 export const routes: Routes = [
   {path: '', component: LoginComponent},
@@ -11,6 +12,7 @@ export const routes: Routes = [
   {path: 'register', component: RegisterComponent},
   {path: 'play-now', component: PlayNowComponent},
   {path: 'matchMaking', component: MatchMakingComponent},
+  {path: 'tictactoe', component: TicTacToeComponent},
 
   { path: '**', redirectTo: '' }
 ];

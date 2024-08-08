@@ -34,6 +34,10 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit{
       this.yourProfile.nativeElement.classList.add('no-shake');
       this.unfoldSides();
       this.hideMiddleElements();
+
+      setTimeout(() => {
+        this.router.navigate(['/tictactoe']);
+      }, 1000);
     });
 
   }
