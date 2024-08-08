@@ -1,0 +1,123 @@
+.matchmaking-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  font-family: Arial, sans-serif;
+}
+
+.left-side, .right-side {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform-origin: center; /* Setzt den Ursprung der Transformation auf die Mitte */
+  transition: transform 1s ease-out; /* Standard-Transition, falls kein explizites Klappen stattfindet */
+}
+
+.left-side {
+  background-color: #28a745; /* Grün */
+}
+
+.right-side {
+  background-color: #dc3545; /* Rot */
+}
+
+.middle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.timer {
+  font-size: 2rem;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.vs-text {
+  font-size: 5rem;
+  color: yellow;
+  text-shadow: 2px 2px 4px #000;
+  font-weight: bold;
+}
+
+.cancel-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1.5rem;
+  color: #fff;
+  background-color: #6c757d;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cancel-button:hover {
+  background-color: #5a6268;
+}
+
+.profile-img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+}
+
+/* Animationen für das Wackeln des eigenen Profilbildes */
+.your-profile-img {
+  animation: shake 1s infinite alternate;
+}
+
+.no-shake {
+  animation: none;
+}
+
+@keyframes shake {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* Animation für das Hereinfliegen des Gegnerprofilbildes */
+.opponent-profile-img {
+  animation: flyIn 0.8s ease-out forwards;
+}
+
+@keyframes flyIn {
+  0% {
+    transform: translateX(500%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.unfold-left {
+  transform: rotateY(-90deg);
+  transform-origin: left;
+}
+
+.unfold-right {
+  transform: rotateY(90deg);
+  transform-origin: right;
+}
+
+.hide-middle {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
