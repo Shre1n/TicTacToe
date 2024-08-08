@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Game } from '../../games.entity';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../../../users/users.entity';
@@ -49,20 +53,20 @@ export class GameService {
       relations: ['player1', 'player2'],
     });
 
-    if (!game || game.isFinished) {
-      throw new Error('Invalid game or game already finished');
-    }
+    if (!game) throw new NotFoundException('Game not found');
+
+    if (game.isFinished) throw new BadRequestException('Game already finished');
 
     if (
       (game.turn === 1 && game.player1.id !== playerId) ||
       (game.turn === 2 && game.player2.id !== playerId)
     ) {
-      throw new Error('Not your turn!');
+      throw new BadRequestException('Not your turn');
     }
 
     const move = 1 << position;
     if (game.player1Board & move || game.player2Board & move) {
-      throw new Error('Invalid move!');
+      throw new BadRequestException('Position already taken');
     }
 
     if (game.turn === 1) {
@@ -97,5 +101,18 @@ export class GameService {
       game.id = -1;
       game.isFinished = true;
     }
+  }
+
+  async getGameStatus(gameId: number) {
+    const game = await this.gameRepository.findOne({
+      where: { id: gameId },
+      relations: ['player1', 'player2'],
+    });
+
+    if (!game) {
+      throw new NotFoundException('Game not found');
+    }
+
+    return game;
   }
 }
