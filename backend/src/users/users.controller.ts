@@ -7,7 +7,7 @@ import { UsersService } from './users.service';
 @ApiTags('user')
 @Controller('user')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Post('register')
   @ApiResponse({ status: 201, type: User })
