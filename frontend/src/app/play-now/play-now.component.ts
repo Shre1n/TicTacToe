@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {PassingArgumentsService} from "../services/passing-arguments.service";
+import {ConnectService} from "../services/connect.service";
 
 @Component({
   selector: 'app-play-now',
@@ -14,27 +15,19 @@ export class PlayNowComponent implements OnInit{
   //get Username from Backend API
   username: string = '';
 
-  constructor(private router: Router, private passingArgumentsService: PassingArgumentsService) {
+  constructor(private router: Router, private connectService: ConnectService) {
 
   }
 
-  ngOnInit(): void {
-    this.passingArgumentsService.getCurrentUsername().subscribe({
-      next: (data) => {
-        this.username = data.username
-        console.log(data.username)
-      },
-      error: (err) => console.error('Fehler beim Abrufen des Benutzernamens', err)
-    });
-    console.log(this.username)
-  }
+  ngOnInit(): void {}
 
 
 
 
   navMatchMaking(){
+    this.connectService.enterQueue();
     //todo pass user information directly with queryParams
-    this.router.navigate(['/matchMaking'], {queryParams: {username: this.username}})
+    this.router.navigate(['/matchMaking'])
   }
 
 }
