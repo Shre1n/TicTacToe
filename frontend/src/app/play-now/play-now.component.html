@@ -1,3 +1,37 @@
-<div class="container">
-  <button class="btn btn-primary" (click)="navMatchMaking()"> Jetzt Spielen</button>
-</div>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TicTacToe - Play Now</title>
+</head>
+
+
+<body data-bs-theme="dark">
+
+  <nav class="navbar bg-body-tertiary">
+    <div class="container-fluid d-flex justify-content-end">
+      <span class="navbar-text">
+        <button class="btn p-0" (click)="navProfile()">
+          <span class="me-4 userName">{{username}}</span>
+          <img src="assets/p1.png" class="profile-img" alt="yourProfile">
+        </button>
+      </span>
+    </div>
+  </nav>
+
+  <section class="container">
+    <div class="intro-box text-center p-4">
+      <h2>Willkommen bei TicTacToe Online</h2>
+      <p>
+        Treten Sie gegen andere Spieler in einem spannenden TicTacToe-Match an!
+        Nutzen Sie unser Matchmaking-System, um einen Gegner zu finden und spielen Sie direkt los.
+      </p>
+      <button class="btn led-button mt-4" (click)="navMatchMaking()">Jetzt Spielen</button>
+    </div>
+  </section>
+
+</body>
+</html>
+
+
+

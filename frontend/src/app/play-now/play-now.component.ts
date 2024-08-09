@@ -29,6 +29,11 @@ export class PlayNowComponent implements OnInit{
     console.log(this.username)
   }
 
+  navProfile(){
+    //todo navigate to profile
+    this.router.navigate(['/profile'])
+  }
+
 
 
 
