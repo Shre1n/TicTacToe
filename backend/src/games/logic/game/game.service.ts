@@ -98,4 +98,18 @@ export class GameService {
       game.isFinished = true;
     }
   }
+
+  async isPlayerInGame(player: User) {
+    return await this.gameRepository.existsBy([
+      { player1: player, isFinished: false },
+      { player2: player, isFinished: false },
+    ]);
+  }
+
+  async getActiveGame(player: User) {
+    return await this.gameRepository.findOneBy([
+      { player1: player, isFinished: false },
+      { player2: player, isFinished: false },
+    ]);
+  }
 }

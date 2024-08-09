@@ -10,23 +10,25 @@ import { PositionDto } from '../../dto/position.dto';
 export class GameController {
   constructor(private readonly gameService: GameService) {}
 
+  //TODO: Can be removed
   @Post()
   async startGame(@Session() session: SessionData, @Body() players: PlayerDto) {
     const game = await this.gameService.createGame(
       players.player1,
       players.player2,
     );
-    session.activeGameId = game.id;
+    //session.activeGameId = game.id;
     return game;
   }
 
+  //TODO: Can be removed
   @Put()
   async makeMove(
     @Session() session: SessionData,
     @Body() moveData: PositionDto,
   ) {
     return this.gameService.makeAMove(
-      session.activeGameId,
+      0, //find gameid via user
       session.user.id,
       moveData.position,
     );

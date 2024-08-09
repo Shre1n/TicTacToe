@@ -17,16 +17,4 @@ export class QueueController {
   async get() {
     return this.queueService.getQueue();
   }
-
-  //@UseGuards(IsLoggedInGuard)
-  @Delete()
-  @ApiOperation({
-    summary: 'Removes the player from the matchmaking queue.',
-    description:
-      'The player is removed from the matchmaking queue. The user needs to be logged in.',
-  })
-  @ApiOkResponse({ description: 'Successful operation' })
-  async leave(@Session() session: SessionData) {
-    this.queueService.removePlayer(session.user);
-  }
 }

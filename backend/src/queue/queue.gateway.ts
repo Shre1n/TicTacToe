@@ -1,6 +1,7 @@
 import {
   ConnectedSocket,
   OnGatewayConnection,
+  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -18,7 +19,7 @@ import { GameService } from '../games/logic/game/game.service';
 import { PreGameObject } from './preGameObject';
 
 @WebSocketGateway({ namespace: 'socket' })
-export class QueueGateway implements OnGatewayConnection {
+export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
 
   constructor(
@@ -26,11 +27,25 @@ export class QueueGateway implements OnGatewayConnection {
     private readonly gameService: GameService,
   ) {}
 
-  handleConnection(@ConnectedSocket() client: Socket) {
+  handleDisconnect(@ConnectedSocket() client: Socket) {
+    const request = client.request as Request;
+    const session = request.session;
+
+    if (session.isLoggedIn) {
+      client.leave(session.id);
+    }
+  }
+
+  async handleConnection(@ConnectedSocket() client: Socket) {
     const request = client.request as Request;
     const session = request.session;
     if (session.isLoggedIn !== true) client.disconnect();
     else client.join(session.id);
+
+    const activeGame = await this.gameService.getActiveGame(session.user);
+    if (activeGame) {
+      client.join(activeGame.id.toString());
+    }
   }
 
   @UseGuards(IsSocketLoggedInGuard)
@@ -38,30 +53,32 @@ export class QueueGateway implements OnGatewayConnection {
   async handleEnter(@ConnectedSocket() client: Socket) {
     const request = client.request as Request;
     const session = request.session;
-    console.log(session.id);
+
+    // Check if the player can enter the queue
     if (this.queueService.isPlayerInQueue(session.user))
       throw new WsException(
         new ExceptionObject(ExceptionSource.queue, 'Player already in queue.'),
       );
-    if (await this.queueService.isPlayerInGame(session.activeGameId))
+    if (await this.gameService.isPlayerInGame(session.user))
       throw new WsException(
         new ExceptionObject(ExceptionSource.queue, 'Player already in game.'),
       );
 
+    // Try to find an opponent; Add the player to queue and return if none is found
     const opponent = await this.queueService.findOpponent(session.user);
     if (!opponent) {
       this.queueService.addPlayer(session.user, session.id);
       return;
     }
-    this.queueService.removePlayer(opponent.player);
 
+    // Prepare a game and wait for both player to acknowledge the match
+    this.queueService.removePlayer(opponent.player);
     const preGame = new PreGameObject(
       session.user,
       opponent.player,
       session.id,
       opponent.sessionId,
     );
-
     if (!this.queueService.prepareGame(preGame))
       throw new WsException(
         new ExceptionObject(
@@ -79,6 +96,8 @@ export class QueueGateway implements OnGatewayConnection {
   async acknowledgeHandler(@ConnectedSocket() client: Socket) {
     const request = client.request as Request;
     const session = request.session;
+
+    // Check if the player still has a game waiting for acknowledgement
     if (!this.queueService.isWaitingForAcknowledgement(session.user))
       throw new WsException(
         new ExceptionObject(
@@ -87,19 +106,27 @@ export class QueueGateway implements OnGatewayConnection {
         ),
       );
 
+    // Acknowledge the game and start it, when it's fully acknowledged
     this.queueService.acknowledgePreGame(session.user);
-
     if (this.queueService.isPreGameAcknowledged(session.user)) {
       const preGame = this.queueService.removePreGame(session.user);
       const game = await this.gameService.createGame(
         preGame.player1.id,
         preGame.player2.id,
       );
-      session.activeGameId = game.id;
       this.server
         .in([preGame.player1Id, preGame.player2Id])
         .socketsJoin(game.id.toString());
       this.server.to(game.id.toString()).emit(ServerSentEvents.gameStarted);
     }
+  }
+
+  @UseGuards(IsSocketLoggedInGuard)
+  @SubscribeMessage(ClientSentEvents.leaveQueue)
+  async leaveHandler(@ConnectedSocket() client: Socket) {
+    const request = client.request as Request;
+    const session = request.session;
+
+    this.queueService.removePlayer(session.user);
   }
 }
