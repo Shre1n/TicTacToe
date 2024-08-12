@@ -1,10 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Game } from '../../games.entity';
+import { Game } from './games.entity';
 import { DataSource, Repository } from 'typeorm';
-import { User } from '../../../users/users.entity';
+import { User } from '../users/users.entity';
+import { ExceptionObject } from '../socket/exceptionObject';
+import { ExceptionSource } from '../socket/exceptionSource';
 
 @Injectable()
-export class GameService {
+export class GamesService {
   private readonly userRepository: Repository<User>;
   private readonly gameRepository: Repository<Game>;
 
@@ -43,26 +45,17 @@ export class GameService {
     return this.gameRepository.save(game);
   }
 
-  async makeAMove(gameId: number, playerId: number, position: number) {
-    const game = await this.gameRepository.findOne({
-      where: { id: gameId },
-      relations: ['player1', 'player2'],
-    });
-
-    if (!game || game.isFinished) {
-      throw new Error('Invalid game or game already finished');
-    }
-
+  async makeAMove(game: Game, playerId: number, position: number) {
     if (
       (game.turn === 1 && game.player1.id !== playerId) ||
       (game.turn === 2 && game.player2.id !== playerId)
     ) {
-      throw new Error('Not your turn!');
+      return new ExceptionObject(ExceptionSource.game, 'Not your turn!');
     }
 
     const move = 1 << position;
     if (game.player1Board & move || game.player2Board & move) {
-      throw new Error('Invalid move!');
+      return new ExceptionObject(ExceptionSource.game, 'Invalid move!');
     }
 
     if (game.turn === 1) {
@@ -81,12 +74,10 @@ export class GameService {
     for (const combo of this.winMasks) {
       if ((game.player1Board & combo) === combo) {
         game.winningState = 'p1';
-        game.id = -1;
         game.isFinished = true;
         return;
       } else if ((game.player2Board & combo) === combo) {
         game.winningState = 'p2';
-        game.id = -1;
         game.isFinished = true;
         return;
       }
@@ -94,22 +85,27 @@ export class GameService {
 
     if ((game.player1Board | game.player2Board) === 0b111111111) {
       game.winningState = 'draw';
-      game.id = -1;
       game.isFinished = true;
     }
   }
 
   async isPlayerInGame(player: User) {
-    return await this.gameRepository.existsBy([
-      { player1: player, isFinished: false },
-      { player2: player, isFinished: false },
-    ]);
+    return await this.gameRepository.exists({
+      where: [
+        { player1: { id: player.id }, isFinished: false },
+        { player2: { id: player.id }, isFinished: false },
+      ],
+      relations: { player1: true, player2: true },
+    });
   }
 
   async getActiveGame(player: User) {
-    return await this.gameRepository.findOneBy([
-      { player1: player, isFinished: false },
-      { player2: player, isFinished: false },
-    ]);
+    return await this.gameRepository.findOne({
+      where: [
+        { player1: { id: player.id }, isFinished: false },
+        { player2: { id: player.id }, isFinished: false },
+      ],
+      relations: { player1: true, player2: true },
+    });
   }
 }

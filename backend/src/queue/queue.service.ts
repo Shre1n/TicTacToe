@@ -151,12 +151,11 @@ export class QueueService {
    * @param player - User who acknowledges the related preGame
    */
   acknowledgePreGame(player: User) {
-    this.acknowledgementQueue = this.acknowledgementQueue.map((x) =>
-      x.player1.id == player.id
-        ? { player1Acknowledged: true, ...x }
-        : x.player2.id === player.id
-          ? { player2Acknowledged: true, ...x }
-          : x,
-    );
+    this.acknowledgementQueue = this.acknowledgementQueue.map((x) => {
+      if (x.player1.id == player.id) return { player1Acknowledged: true, ...x };
+      if (x.player2.id === player.id)
+        return { player2Acknowledged: true, ...x };
+      return x;
+    });
   }
 }

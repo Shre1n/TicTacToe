@@ -12,19 +12,28 @@ import { IsSocketLoggedInGuard } from '../guards/is-socket-logged-in/is-socket-l
 import { QueueService } from './queue.service';
 import { Server, Socket } from 'socket.io';
 import { Request } from 'express';
-import { ClientSentEvents, ServerSentEvents } from '../socket/events';
+import {
+  ClientSentEvents,
+  ClientToServerEvents,
+  ServerSentEvents,
+  ServerToClientEvents,
+} from '../socket/events';
 import { ExceptionObject } from '../socket/exceptionObject';
 import { ExceptionSource } from '../socket/exceptionSource';
-import { GameService } from '../games/logic/game/game.service';
+import { GamesService } from '../games/games.service';
 import { PreGameObject } from './preGameObject';
+import { GameDto } from '../games/dto/game.dto';
 
 @WebSocketGateway({ namespace: 'socket' })
 export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  @WebSocketServer() server: Server;
+  @WebSocketServer() server: Server = new Server<
+    ClientToServerEvents,
+    ServerToClientEvents
+  >();
 
   constructor(
     private readonly queueService: QueueService,
-    private readonly gameService: GameService,
+    private readonly gameService: GamesService,
   ) {}
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
@@ -117,7 +126,9 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.server
         .in([preGame.player1Id, preGame.player2Id])
         .socketsJoin(game.id.toString());
-      this.server.to(game.id.toString()).emit(ServerSentEvents.gameStarted);
+      this.server
+        .to(game.id.toString())
+        .emit(ServerSentEvents.gameStarted, GameDto.from(game));
     }
   }
 

@@ -10,7 +10,7 @@ import { RolesGuard } from './guards/roles/roles.guard';
 import { ProfilePicture } from './profilePicture/profilePicture.entity';
 import { AuthModule } from './auth/auth.module';
 import { EloService } from './elo/elo.service';
-import { GameModule } from './games/logic/game/game.module';
+import { GamesModule } from './games/games.module';
 import { Game } from './games/games.entity';
 import { QueueModule } from './queue/queue.module';
 
@@ -34,7 +34,7 @@ import { QueueModule } from './queue/queue.module';
     }),
     UsersModule,
     AuthModule,
-    GameModule,
+    GamesModule,
     QueueModule,
   ],
   controllers: [],
