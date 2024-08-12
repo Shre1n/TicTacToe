@@ -1,0 +1,44 @@
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Profile</title>
+</head>
+
+<body data-bs-theme="dark">
+<div class="container light-style flex-grow-1 container-p-y">
+  <h4 class="font-weight-bold py-3 mb-4">
+    Account settings
+  </h4>
+
+  <div class="card overflow-hidden">
+    <div class="row no-gutters row-bordered row-border-light">
+      <!-- Options Component (Left Side) -->
+      <div class="col-md-3 pt-0">
+        <app-options (tabSelected)="setActiveTab($event)"></app-options>
+      </div>
+
+
+        <!-- Profile Content Component (Right Side) -->
+        <div class="col-md-9">
+          @if (activeTab === 'general') {
+            <div class="tab-content">
+              <!-- General Profile Info -->
+              <div class="tab-pane fade active show" id="account-general">
+                <app-player-content></app-player-content>
+              </div>
+            </div>
+          }
+          @if (activeTab === 'password'){
+            <div class="tab-pane fade active show" id="account-change-password">
+              <app-player-password-change></app-player-password-change>
+            </div>
+          }
+        </div>
+
+
+
+    </div>
+  </div>
+</div>
+
