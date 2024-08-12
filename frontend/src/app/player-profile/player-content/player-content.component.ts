@@ -12,4 +12,18 @@ export class PlayerContentComponent {
   yourElo = 0;
   name = "XYZ"
 
+  file: File | null = null;
+
+  constructor(private http: HttpClient, private playerContent: PlayerContentService) {
+  }
+
+
+  selectedFile(event:any){
+    this.file = event.target.files[0];
+  }
+
+  save(){
+    this.playerContent.onUpload(this.file);
+
+  }
 }

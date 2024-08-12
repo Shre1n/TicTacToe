@@ -31,6 +31,12 @@ export class ProfileDto {
     matchHistory: MatchDto[],
   ): ProfileDto {
     const { username, elo, profilePicture } = user;
-    return { username, elo, profilePictureId: profilePicture?.id, stats, matchHistory };
+    return {
+      username,
+      elo,
+      profilePictureId: profilePicture?.id,
+      stats,
+      matchHistory,
+    };
   }
 }
