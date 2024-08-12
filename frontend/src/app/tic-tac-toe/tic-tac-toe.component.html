@@ -1,16 +1,41 @@
-<!-- Navigationsleiste -->
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TicTacToe</title>
+</head>
 
-<nav class="navbar bg-body-tertiary">
-  <div class="container-fluid">
-    <span class="navbar-text">
-      <img src="assets/p1.png" class="profile-img" alt="yourProfile" #yourProfile>
-      {{yourElo}}
-    </span>
-    <span class="navbar-text">
-      {{opponentElo}}
-      <img src="assets/p2.png" class="profile-img justify-content-end" alt="yourProfile" #opponentProfile>
-    </span>
-  </div>
-</nav>
+
+<body data-bs-theme="dark">
+  <!-- Navigationsleiste -->
+
+  <nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+      <span class="navbar-text">
+        <img src="assets/p1.png" class="profile-img" alt="yourProfile" #yourProfile>
+        {{ yourElo }}
+      </span>
+      <span class="navbar-text">
+        {{ opponentElo }}
+        <img src="assets/p2.png" class="profile-img justify-content-end" alt="yourProfile" #opponentProfile>
+      </span>
+    </div>
+  </nav>
+
+
+  <section class="container-fluid">
+    <div class="d-flex justify-content-center align-items-center">
+      <div class="tictactoe-board">
+        @for (cell of cells; let i = $index; track i //change to a unique tracking index){
+        <button class="tictactoe-cell" (click)="makeMove(i)">
+          {{ cell }}
+        </button>
+        }
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
 
 

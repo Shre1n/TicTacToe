@@ -12,7 +12,7 @@ import {Router} from "@angular/router";
 export class TicTacToeComponent {
 
   //todo make move and sends to server
-  cells: string[] = Array(9).fill('');
+  cells: string[] = Array(9).fill(''); // todo server sends Cells then -> cell track in html can be changed to unique
   yourElo: number = 0; // Dummy-Elo-Punkte für den Nutzer
   opponentElo: number = 0; // Dummy-Elo-Punkte für den Gegner
   gameStatus: string = 'In Progress';
