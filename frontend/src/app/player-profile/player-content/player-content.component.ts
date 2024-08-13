@@ -7,14 +7,17 @@ import { Component } from '@angular/core';
   templateUrl: './player-content.component.html',
   styleUrl: './player-content.component.css'
 })
-export class PlayerContentComponent {
+export class PlayerContentComponent implements OnInit{
 
-  yourElo = 0;
-  name = "XYZ"
+  name = ""
 
   file: File | null = null;
 
-  constructor(private http: HttpClient, private playerContent: PlayerContentService) {
+  ngOnInit(){
+    this.playerContent.readUser();
+  }
+
+  constructor(private http: HttpClient, public playerContent: PlayerContentService) {
   }
 
 
@@ -24,6 +27,8 @@ export class PlayerContentComponent {
 
   save(){
     this.playerContent.onUpload(this.file);
-
   }
+
+
+
 }

@@ -1,7 +1,7 @@
 <div class="tab-content">
   <div class="tab-pane fade active show" id="account-general">
     <div class="card-body media align-items-center">
-      <img src="" alt="yourProfilePicture"
+      <img src="{{this.playerContent.profilePicture}}" alt="yourProfilePicture"
            class="d-block ui-w-80">
       <div class="media-body ml-4">
         <label class="btn btn-outline-primary">
@@ -16,14 +16,14 @@
     <div class="card-body">
       <div class="form-group">
         <label class="form-label"> Dein Nutzername</label>
-        <input type="text" class="form-control mb-1" value='{{name}}'>
+        <input type="text" class="form-control mb-1" value='{{this.playerContent.username}}'>
       </div>
     </div>
 
     <div class="tab-pane fade show" id="account-info">
       <div class="card-body pb-2">
         <div class="form-group">
-          <label class="form-label">{{ yourElo }} </label>
+          <label class="form-label">{{ this.playerContent.elo }} </label>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Header,
   HttpStatus,
   NotFoundException,
   Param,
@@ -122,6 +123,7 @@ export class UsersController {
   @ApiParam({ name: 'id', description: 'Avatar ID', example: '1' })
   @ApiOkResponse()
   @ApiNotFoundResponse()
+  @Header('Content-Type', 'image/png')
   async getAvatar(@Param('id', ParseIntPipe) id: number) {
     const data = await this.profilePictureService.get(id);
     if (!data) throw new NotFoundException('Avatar not found');

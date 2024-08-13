@@ -1,11 +1,20 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpResponse} from "@angular/common/http";
+import {UserDto} from "../userDto";
+import * as url from "node:url";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlayerContentService {
-  constructor(private http: HttpClient) {}
+
+  username = "";
+  profilePicture = '';
+  elo = 0;
+
+
+  constructor(private http: HttpClient) {
+  }
 
   onUpload(file: File | null) {
     if (file) {
@@ -13,7 +22,7 @@ export class PlayerContentService {
       formData.append('avatar', file); // Füge die Datei zum FormData hinzu
       formData.append('title', 'my nice avatar'); // Füge den Titel hinzu
 
-      this.http.post<HttpResponse<any>>('/api/user/avatar', formData, { observe: 'response' }).subscribe({
+      this.http.post<HttpResponse<any>>('/api/user/avatar', formData, {observe: 'response'}).subscribe({
         next: (response: HttpResponse<any>) => {
           switch (response.status) {
             case 201:
@@ -35,5 +44,18 @@ export class PlayerContentService {
     }
   }
 
+  readProfilePicture(id: number) {
+    this.http.get(`/api/user/avatar/${id}`, {responseType: 'arraybuffer'}).subscribe(buffer => {
+      this.profilePicture = URL.createObjectURL(new Blob([buffer]))
+    });
+  }
 
+
+  readUser(): void {
+    this.http.get<UserDto>(`/api/user/me`).subscribe((user: UserDto): void => {
+      this.username = user.username;
+      this.readProfilePicture(user.profilePictureId)
+      this.elo = user.elo;
+    })
+  }
 }
