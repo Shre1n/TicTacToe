@@ -4,7 +4,7 @@ import { User } from '../users/users.entity';
 @Injectable()
 export class EloService {
   private readonly kFactor: number = 20;
-  async calculate(
+  calculate(
     player: User,
     opponent: User,
     performance_rating: 1 | 0 | 0.5,

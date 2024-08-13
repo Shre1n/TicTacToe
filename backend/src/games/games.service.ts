@@ -1,9 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Game } from './games.entity';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../users/users.entity';
-import { ExceptionObject } from '../socket/exceptionObject';
-import { ExceptionSource } from '../socket/exceptionSource';
+import { EloService } from '../elo/elo.service';
 
 @Injectable()
 export class GamesService {
@@ -21,7 +24,10 @@ export class GamesService {
     0b001010100, // Diagonal 2
   ];
 
-  constructor(private dataSource: DataSource) {
+  constructor(
+    private dataSource: DataSource,
+    private readonly eloService: EloService,
+  ) {
     this.gameRepository = this.dataSource.getRepository(Game);
     this.userRepository = this.dataSource.getRepository(User);
   }
@@ -42,20 +48,24 @@ export class GamesService {
     game.player1 = player1;
     game.player2 = player2;
     game.turn = Math.random() < 0.5 ? 1 : 2;
-    return this.gameRepository.save(game);
+    return await this.gameRepository.save(game);
   }
 
-  async makeAMove(game: Game, playerId: number, position: number) {
+  async makeAMove(
+    game: Game,
+    playerId: number,
+    position: number,
+  ): Promise<Game> {
     if (
       (game.turn === 1 && game.player1.id !== playerId) ||
       (game.turn === 2 && game.player2.id !== playerId)
     ) {
-      return new ExceptionObject(ExceptionSource.game, 'Not your turn!');
+      throw new BadRequestException('Not your turn!');
     }
 
     const move = 1 << position;
     if (game.player1Board & move || game.player2Board & move) {
-      return new ExceptionObject(ExceptionSource.game, 'Invalid move!');
+      throw new BadRequestException('Invalid move!');
     }
 
     if (game.turn === 1) {
@@ -66,8 +76,9 @@ export class GamesService {
       game.turn = 1;
     }
 
-    this.checkWinner(game);
-    return this.gameRepository.save(game);
+    if (this.checkWinner(game)) await this.updateElo(game);
+
+    return await this.gameRepository.save(game);
   }
 
   private checkWinner(game: Game) {
@@ -75,18 +86,20 @@ export class GamesService {
       if ((game.player1Board & combo) === combo) {
         game.winningState = 'p1';
         game.isFinished = true;
-        return;
+        return true;
       } else if ((game.player2Board & combo) === combo) {
         game.winningState = 'p2';
         game.isFinished = true;
-        return;
+        return true;
       }
     }
 
     if ((game.player1Board | game.player2Board) === 0b111111111) {
       game.winningState = 'draw';
       game.isFinished = true;
+      return true;
     }
+    return false;
   }
 
   async isPlayerInGame(player: User) {
@@ -107,5 +120,48 @@ export class GamesService {
       ],
       relations: { player1: true, player2: true },
     });
+  }
+
+  async updateElo(game: Game) {
+    switch (game.winningState) {
+      case 'p1':
+        game.player1.elo = this.eloService.calculate(
+          game.player1,
+          game.player2,
+          1,
+        );
+        game.player2.elo = this.eloService.calculate(
+          game.player2,
+          game.player1,
+          0,
+        );
+        break;
+      case 'p2':
+        game.player1.elo = this.eloService.calculate(
+          game.player1,
+          game.player2,
+          0,
+        );
+        game.player2.elo = this.eloService.calculate(
+          game.player2,
+          game.player1,
+          1,
+        );
+        break;
+      case 'draw':
+        game.player1.elo = this.eloService.calculate(
+          game.player1,
+          game.player2,
+          0.5,
+        );
+        game.player2.elo = this.eloService.calculate(
+          game.player2,
+          game.player1,
+          0.5,
+        );
+        break;
+    }
+    await this.userRepository.save(game.player1);
+    await this.userRepository.save(game.player2);
   }
 }

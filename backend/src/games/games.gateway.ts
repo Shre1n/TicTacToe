@@ -4,7 +4,6 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsException,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import {
@@ -14,14 +13,20 @@ import {
   ServerToClientEvents,
 } from '../socket/events';
 import { GamesService } from './games.service';
-import { UseGuards } from '@nestjs/common';
+import {
+  NotFoundException,
+  UseFilters,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { IsSocketLoggedInGuard } from '../guards/is-socket-logged-in/is-socket-logged-in.guard';
 import { MoveDto } from './dto/move.dto';
 import { Request } from 'express';
-import { ExceptionObject } from '../socket/exceptionObject';
-import { ExceptionSource } from '../socket/exceptionSource';
 import { GameUpdateDto } from './dto/gameUpdate.dto';
+import { HttpExceptionTransformationFilter } from '../filter/HttpExceptionTransformationFilter';
 
+@UseFilters(HttpExceptionTransformationFilter)
 @WebSocketGateway({ namespace: 'socket' })
 export class GamesGateway {
   @WebSocketServer() server: Server = new Server<
@@ -32,6 +37,7 @@ export class GamesGateway {
   constructor(private readonly gameService: GamesService) {}
 
   @UseGuards(IsSocketLoggedInGuard)
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage(ClientSentEvents.makeMove)
   async handleMakeMove(
     @ConnectedSocket() client: Socket,
@@ -42,21 +48,14 @@ export class GamesGateway {
 
     const activeGame = await this.gameService.getActiveGame(session.user);
     if (!activeGame || activeGame.isFinished) {
-      throw new WsException(
-        new ExceptionObject(
-          ExceptionSource.game,
-          'Invalid game or game already finished',
-        ),
-      );
+      throw new NotFoundException('Invalid game or game already finished');
     }
+
     const game = await this.gameService.makeAMove(
       activeGame,
       session.user.id,
       data.position,
     );
-    if (game instanceof ExceptionObject) {
-      throw new WsException(game);
-    }
 
     this.server
       .to(game.id.toString())

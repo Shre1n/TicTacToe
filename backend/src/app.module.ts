@@ -38,7 +38,7 @@ import { QueueModule } from './queue/queue.module';
     QueueModule,
   ],
   controllers: [],
-  providers: [RolesGuard, EloService],
+  providers: [RolesGuard],
 })
 export class AppModule implements OnModuleInit {
   // Generate an Admin User if no Admin exists
