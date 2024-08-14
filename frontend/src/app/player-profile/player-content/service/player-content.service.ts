@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpResponse} from "@angular/common/http";
 import {UserDto} from "../userDto";
-import * as url from "node:url";
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +18,8 @@ export class PlayerContentService {
   onUpload(file: File | null) {
     if (file) {
       const formData = new FormData();
-      formData.append('avatar', file); // Füge die Datei zum FormData hinzu
-      formData.append('title', 'my nice avatar'); // Füge den Titel hinzu
+      formData.append('avatar', file);
+      formData.append('title', 'my nice avatar');
 
       this.http.post<HttpResponse<any>>('/api/user/avatar', formData, {observe: 'response'}).subscribe({
         next: (response: HttpResponse<any>) => {
