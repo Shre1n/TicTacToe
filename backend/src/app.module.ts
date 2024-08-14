@@ -10,8 +10,9 @@ import { RolesGuard } from './guards/roles/roles.guard';
 import { ProfilePicture } from './profilePicture/profilePicture.entity';
 import { AuthModule } from './auth/auth.module';
 import { EloService } from './elo/elo.service';
-import { GameModule } from './games/logic/game/game.module';
+import { GamesModule } from './games/games.module';
 import { Game } from './games/games.entity';
+import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -33,10 +34,11 @@ import { Game } from './games/games.entity';
     }),
     UsersModule,
     AuthModule,
-    GameModule,
+    GamesModule,
+    QueueModule,
   ],
   controllers: [],
-  providers: [RolesGuard, EloService],
+  providers: [RolesGuard],
 })
 export class AppModule implements OnModuleInit {
   // Generate an Admin User if no Admin exists
