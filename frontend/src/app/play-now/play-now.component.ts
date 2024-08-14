@@ -21,6 +21,11 @@ export class PlayNowComponent implements OnInit{
 
   ngOnInit(): void {}
 
+  navProfile(){
+    //todo navigate to profile
+    this.router.navigate(['/profile'])
+  }
+
 
 
 

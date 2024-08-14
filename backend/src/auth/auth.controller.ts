@@ -43,14 +43,6 @@ export class AuthController {
     session.user = user;
     session.isLoggedIn = true;
 
-    const game = await this.gameRepository.findOne({
-      where: [
-        { player1: user, isFinished: false },
-        { player2: user, isFinished: false },
-      ],
-    });
-    session.activeGameId = game ? game.id : -1;
-
     return user;
   }
 

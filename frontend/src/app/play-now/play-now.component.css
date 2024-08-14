@@ -1,11 +1,91 @@
 .container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
 }
+
+.self-margin{
+  margin-top: 15rem;
+}
+
 
 .btn {
   font-size: 1.5rem;
   padding: 1rem 2rem;
 }
+
+.profile-img {
+  image-resolution: 96dpi;
+  max-height: 7vh;
+}
+
+.userName{
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  background: linear-gradient(90deg, #69dbc9, rgb(116, 166, 158));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  letter-spacing: 0.05em;
+  font-family: 'Roboto', sans-serif;
+  padding: 0.2em 0.5em;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 0.5em;
+}
+
+.led-button {
+  background-color: #000000;
+  color: #fff;
+  border: 2px solid #00ff7f;
+  padding: 20px 40px;
+  font-size: 1.5em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 5px #00ff7f, 0 0 10px #00ff7f, 0 0 20px #00ff7f, 0 0 40px #00ff7f;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+.led-button:before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 127, 0.5), transparent);
+  transform: rotate(45deg);
+  transition: all 0.5s ease-in-out;
+}
+
+.led-button:hover:before {
+  left: 100%;
+  transition: all 0.5s ease-in-out;
+}
+
+.intro-box {
+  border: 2px solid #00ff7f;
+  border-radius: 15px;
+  background-color: #1a1a1a;
+  max-width: 600px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 255, 127, 0.5);
+}
+
+.intro-box h2 {
+  color: #00ff7f;
+  margin-bottom: 20px;
+  font-size: 1.8em;
+}
+
+.intro-box p {
+  color: #e0e0e0;
+  font-size: 1.1em;
+  line-height: 1.5em;
+}
+
+
+
