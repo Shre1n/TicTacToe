@@ -4,19 +4,23 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { User } from './users/users.entity';
 import * as session from 'express-session';
+import { SessionIoAdapter } from './socket/sessionIo.adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors(); //Enable CORS Requests
   app.useGlobalPipes(new ValidationPipe());
+  const sessionMiddleware = session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: false,
+  });
+  app.use(sessionMiddleware);
 
-  app.use(
-    session({
-      secret: 'secret',
-      resave: false,
-      saveUninitialized: false,
-    }),
-  );
+  const ioAdapter = new SessionIoAdapter(sessionMiddleware, app);
+  app.useWebSocketAdapter(ioAdapter);
+
+  app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
     .setTitle('TicTacToe API')
@@ -31,9 +35,8 @@ async function bootstrap() {
 bootstrap();
 
 declare module 'express-session' {
-  interface SessionData {
+  interface SessionData extends session.Session {
     isLoggedIn: boolean;
     user: User;
-    activeGameId: number;
   }
 }
