@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {HttpClient} from "@angular/common/http";
+import {PlayerContentService} from "./service/player-content.service";
+import {ImageLoaderConfig} from "@angular/common";
 
 @Component({
   selector: 'app-player-content',
