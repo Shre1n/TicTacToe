@@ -101,13 +101,13 @@ export class UsersService {
 
   async updatePassword(updatePasswordDto: UpdatePasswordDto, user: User) {
     const verify = await bcrypt.compare(
-      updatePasswordDto.old_password,
+      updatePasswordDto.oldPassword,
       user.password,
     );
     if (!verify) throw new ForbiddenException('Invalid credentials');
 
     const hashed_password = await bcrypt.hash(
-      updatePasswordDto.new_password,
+      updatePasswordDto.newPassword,
       10,
     );
     await this.usersRepository.update(

@@ -13,15 +13,15 @@ export class PasswordChangeService {
 
 
   changePassword(oldPassword: string, newPassword: string) {
-    this.http.put<HttpResponse<any>>('/api/user', {oldPassword: oldPassword, newPassword: newPassword}).subscribe({
+
+    this.http.put<HttpResponse<any>>('/api/user', {oldPassword: oldPassword, newPassword: newPassword}, {observe: 'response'}).subscribe({
       next: (response: HttpResponse<any>) => {
-        switch (response.status) {
+        switch (response?.status) {
           case 200:
             alert("Passwortänderung erfolgreich!");
             break;
           case 400:
             alert('Invalide Eingaben!');
-            console.log(oldPassword, newPassword);
             break;
           case 403:
             alert("Die Angaben ware nicht richtig!")

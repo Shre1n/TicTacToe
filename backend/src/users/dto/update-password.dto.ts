@@ -5,7 +5,7 @@ export class UpdatePasswordDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty({ description: 'Old password. Used to verify your access' })
-  old_password: string;
+  oldPassword: string;
 
   @IsStrongPassword({
     minLength: 6,
@@ -19,5 +19,5 @@ export class UpdatePasswordDto {
       'New Password. MinLength: 6. Has to have at least one lower, one upper, one number and one symbol.',
     example: 'Pw12345!',
   })
-  new_password: string;
+  newPassword: string;
 }
