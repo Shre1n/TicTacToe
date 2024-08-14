@@ -15,13 +15,19 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { RegisterUserDto } from '../auth/dto/register-user.dto';
 import { ProfilePicture } from '../profilePicture/profilePicture.entity';
 import { SessionData } from 'express-session';
+import { GamesService } from '../games/games.service';
+import { QueueService } from '../queue/queue.service';
 
 @Injectable()
 export class UsersService {
   private readonly usersRepository: Repository<User>;
   private readonly gameRepository: Repository<Game>;
 
-  constructor(private dataSource: DataSource) {
+  constructor(
+    private dataSource: DataSource,
+    private gameService: GamesService,
+    private queueService: QueueService,
+  ) {
     this.usersRepository = this.dataSource.getRepository(User);
     this.gameRepository = this.dataSource.getRepository(Game);
   }
@@ -51,15 +57,11 @@ export class UsersService {
   async getCurrentUserInformation(session: SessionData) {
     const dto = UserDto.from(session.user);
     dto.state = UserState.Ready;
-    if (session.activeGameId != -1) {
-      const activeGame = await this.gameRepository.findOneBy({
-        id: session.activeGameId,
-      });
-      if (activeGame?.isFinished === false) {
-        dto.state = UserState.Playing;
-      }
-    }
-    // TODO: Matchmaking State
+    if (this.queueService.isPlayerInQueue(session.user))
+      dto.state = UserState.Waiting;
+
+    if (await this.gameService.isPlayerInGame(session.user))
+      dto.state = UserState.Playing;
     return dto;
   }
 

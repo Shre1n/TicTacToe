@@ -1,4 +1,10 @@
-import { Controller, Get, NotFoundException, Session } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Session,
+  UseGuards,
+} from '@nestjs/common';
 import { GamesService } from './games.service';
 import {
   ApiNotFoundResponse,
@@ -8,13 +14,14 @@ import {
 } from '@nestjs/swagger';
 import { GameDto } from './dto/game.dto';
 import { SessionData } from 'express-session';
+import { IsLoggedInGuard } from '../guards/is-logged-in/is-logged-in.guard';
 
 @ApiTags('game')
 @Controller('game')
 export class GamesController {
   constructor(private readonly gameService: GamesService) {}
 
-  //@UseGuards()//TODO: isloggedin
+  @UseGuards(IsLoggedInGuard)
   @Get('active')
   @ApiOperation({
     summary: 'Gets the active game of the current user',
