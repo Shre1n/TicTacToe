@@ -55,7 +55,7 @@ export class Game {
 
   @Column({ type: 'integer', default: 1 })
   @ApiProperty({ description: 'The current turn of the game', example: 1 })
-  turn: number;
+  turn: 1 | 2;
 
   @Column({ type: 'boolean', default: false })
   @ApiProperty({
