@@ -1,4 +1,11 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './users.entity';
 import { RegisterUserDto } from '../auth/dto/register-user.dto';
@@ -17,5 +24,16 @@ export class UsersController {
       .catch(() => {
         throw new BadRequestException('Username already exists');
       });
+  }
+
+  @Get(':username')
+  @ApiResponse({ status: 200, type: User })
+  @ApiResponse({ status: 404, description: 'User does not exist' })
+  async getUserByUsername(@Param('username') username: string) {
+    const user = await this.usersService.findOne(username);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    return user;
   }
 }

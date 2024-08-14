@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Post,
   Req,
   Session,
@@ -43,6 +44,15 @@ export class AuthController {
     session.isLoggedIn = true;
 
     return user;
+  }
+
+  @Get('username')
+  async getCurrentUsername(@Session() session: SessionData) {
+    if (session.user) {
+      return { username: session.user.username };
+    } else {
+      throw new Error('No user is logged in');
+    }
   }
 
   @Delete()
