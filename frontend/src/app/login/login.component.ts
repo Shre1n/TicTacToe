@@ -18,13 +18,13 @@ export class LoginComponent {
   username: string = '';
   password: string = '';
 
-  constructor(private loginService: LoginService, private router: Router, private connectService: ConnectService) {}
+  constructor(private loginService: LoginService, private router: Router) {}
 
 
   onSubmit() {
       this.loginService.login(this.username, this.password).subscribe({
         next: response => {
-          this.connectService.connect();
+          // this.connectService.connect();
           this.router.navigate(['play-now'])
           //todo show user the success
           console.log(response);

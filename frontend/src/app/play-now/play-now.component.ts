@@ -15,7 +15,7 @@ export class PlayNowComponent implements OnInit{
   //get Username from Backend API
   username: string = '';
 
-  constructor(private router: Router, private connectService: ConnectService) {
+  constructor(private router: Router) {
 
   }
 
@@ -30,7 +30,7 @@ export class PlayNowComponent implements OnInit{
 
 
   navMatchMaking(){
-    this.connectService.enterQueue();
+    // this.connectService.enterQueue();
     //todo pass user information directly with queryParams
     this.router.navigate(['/matchMaking'])
   }

@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import {io, Socket} from "socket.io-client";
 
-@Injectable({
-  providedIn: 'root'
-})
+// @Injectable({
+//   providedIn: 'root'
+// })
 export class ConnectService {
 
   constructor(private socket: Socket) {
-    this.socket.on('gameFound', () => this.gameFound());
-    this.socket.on('gameStarted', () => this.gameStarted());
-    this.socket.on('moveMade', () => this.moveMade());
-    this.socket.on('gameOver', () => this.gameOver());
-    this.socket.on('gameStateSent', () => this.gameStateSent());
+    // this.socket.on('gameFound', () => this.gameFound());
+    // this.socket.on('gameStarted', () => this.gameStarted());
+    // this.socket.on('moveMade', () => this.moveMade());
+    // this.socket.on('gameOver', () => this.gameOver());
+    // this.socket.on('gameStateSent', () => this.gameStateSent());
   }
 
 

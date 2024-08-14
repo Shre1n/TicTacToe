@@ -7,10 +7,10 @@ import {MatchMakingComponent} from "./match-making/match-making.component";
 
 export const routes: Routes = [
   {path: '', component: LoginComponent},
-  {path: 'login', component: LoginComponent},
-  {path: 'register', component: RegisterComponent},
-  {path: 'play-now', component: PlayNowComponent},
-  {path: 'matchMaking', component: MatchMakingComponent},
+  {path: 'login', title:'Login', component: LoginComponent},
+  {path: 'register', title:'Register', component: RegisterComponent},
+  {path: 'play-now', title:'Play-Now', component: PlayNowComponent},
+  {path: 'matchMaking', title:'Matchmaking', component: MatchMakingComponent},
 
   { path: '**', redirectTo: '' }
 ];

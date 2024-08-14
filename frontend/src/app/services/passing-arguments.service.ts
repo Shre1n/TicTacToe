@@ -11,7 +11,7 @@ export class PassingArgumentsService {
 
   private apiUrl = 'http://localhost:3000/auth';
 
-  constructor(private http : HttpClient, private connectService: ConnectService) { }
+  constructor(private http : HttpClient) { }
 
 
 }
