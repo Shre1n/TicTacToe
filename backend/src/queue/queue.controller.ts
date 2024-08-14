@@ -1,6 +1,5 @@
-import { Controller, Delete, Get, Session, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { SessionData } from 'express-session';
 import { QueueService } from './queue.service';
 import { RolesGuard } from '../guards/roles/roles.guard';
 import { QueueDto } from './dto/queue.dto';

@@ -4,6 +4,7 @@ import {RegisterComponent} from "./register/register.component";
 import {NgModule} from "@angular/core";
 import {PlayNowComponent} from "./play-now/play-now.component";
 import {MatchMakingComponent} from "./match-making/match-making.component";
+import {PlayerProfileComponent} from "./player-profile/player-profile.component";
 
 export const routes: Routes = [
   {path: '', component: LoginComponent},
@@ -11,7 +12,7 @@ export const routes: Routes = [
   {path: 'register', title:'Register', component: RegisterComponent},
   {path: 'play-now', title:'Play-Now', component: PlayNowComponent},
   {path: 'matchMaking', title:'Matchmaking', component: MatchMakingComponent},
-
+  {path: 'player-profile', title:'Profile', component: PlayerProfileComponent},
   { path: '**', redirectTo: '' }
 ];
 

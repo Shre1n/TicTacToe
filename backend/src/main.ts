@@ -20,6 +20,8 @@ async function bootstrap() {
   const ioAdapter = new SessionIoAdapter(sessionMiddleware, app);
   app.useWebSocketAdapter(ioAdapter);
 
+  app.setGlobalPrefix('api');
+
   const config = new DocumentBuilder()
     .setTitle('TicTacToe API')
     .setDescription('The TicTacToe API description')
@@ -33,7 +35,7 @@ async function bootstrap() {
 bootstrap();
 
 declare module 'express-session' {
-  interface SessionData {
+  interface SessionData extends session.Session {
     isLoggedIn: boolean;
     user: User;
   }
