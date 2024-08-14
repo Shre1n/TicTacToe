@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
+import { Socket } from 'ngx-socket-io';
 import {Observable} from "rxjs";
+import {ConnectService} from "./connect.service";
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +13,5 @@ export class PassingArgumentsService {
 
   constructor(private http : HttpClient) { }
 
-
-  getCurrentUsername(): Observable<{ username: string }> {
-    return this.http.get<{ username: string }>(`${this.apiUrl}/username`);
-  }
 
 }
