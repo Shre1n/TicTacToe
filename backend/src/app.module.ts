@@ -11,7 +11,6 @@ import { ProfilePicture } from './profilePicture/profilePicture.entity';
 import { AuthModule } from './auth/auth.module';
 import { GamesModule } from './games/games.module';
 import { ProfilePictureService } from './profilePicture/profilePicture.service';
-import { GameModule } from './games/logic/game/game.module';
 import { Game } from './games/games.entity';
 import { QueueModule } from './queue/queue.module';
 
@@ -51,8 +50,7 @@ export class AppModule implements OnModuleInit {
     });
 
     if (!adminUser) {
-      const salt = await bcrypt.genSalt();
-      const hashedPassword = await bcrypt.hash('adminPass', salt);
+      const hashedPassword = await bcrypt.hash('adminPass', 10);
 
       const admin = userRepository.create({
         username: 'admin',

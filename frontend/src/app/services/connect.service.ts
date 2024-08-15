@@ -1,49 +1,49 @@
 import { Injectable } from '@angular/core';
-import {io, Socket} from "socket.io-client";
+import {SocketService} from "./socket.service";
 
-// @Injectable({
-//   providedIn: 'root'
-// })
+@Injectable()
 export class ConnectService {
 
-  constructor(private socket: Socket) {
-    // this.socket.on('gameFound', () => this.gameFound());
-    // this.socket.on('gameStarted', () => this.gameStarted());
-    // this.socket.on('moveMade', () => this.moveMade());
-    // this.socket.on('gameOver', () => this.gameOver());
-    // this.socket.on('gameStateSent', () => this.gameStateSent());
+  constructor(private socketService: SocketService) {
+    this.connect();
   }
 
 
   connect(){
-    this.socket = io('http://' + window.location.host)
+    this.socketService.on('gameFound', () => this.gameFound());
+    this.socketService.on('gameStarted', () => this.gameStarted());
+    this.socketService.on('moveMade', () => this.moveMade());
+    this.socketService.on('gameOver', () => this.gameOver());
+    this.socketService.on('gameStateSent', () => this.gameStateSent());
+
+    this.socketService.connect(); // Stelle die Verbindung her
   }
 
   enterQueue(){
-    this.socket.emit('enterQueue')
+    this.socketService.emit('enterQueue');
   }
 
 
   gameFound(){
-    this.socket.emit('gameFoundAcknowledged')
+    this.socketService.emit('gameFoundAcknowledged')
   }
 
   gameStarted(){
     //navigate to sites
-    this.socket.emit('')
+    this.socketService.emit('')
   }
 
   moveMade(){
 
-    this.socket.emit('')
+    this.socketService.emit('')
   }
 
   gameOver(){
-    this.socket.emit('')
+    this.socketService.emit('')
   }
 
   gameStateSent(){
-    this.socket.emit('')
+    this.socketService.emit('')
   }
 
 }

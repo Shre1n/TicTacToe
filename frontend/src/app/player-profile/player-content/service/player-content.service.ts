@@ -1,18 +1,17 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpResponse} from "@angular/common/http";
 import {UserDto} from "../userDto";
+import {
+  ReadUserProfilePictureService
+} from "../../../services/user/readUserProfilePicture/read-user-profile-picture.service";
+import {ReadUserService} from "../../../services/user/readUser/read-user.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlayerContentService {
 
-  username = "";
-  profilePicture = '';
-  elo = 0;
-
-
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private readUserService: ReadUserService) {
   }
 
   onUpload(file: File | null) {
@@ -43,18 +42,8 @@ export class PlayerContentService {
     }
   }
 
-  readProfilePicture(id: number) {
-    this.http.get(`/api/user/avatar/${id}`, {responseType: 'arraybuffer'}).subscribe(buffer => {
-      this.profilePicture = URL.createObjectURL(new Blob([buffer]))
-    });
-  }
-
 
   readUser(): void {
-    this.http.get<UserDto>(`/api/user/me`).subscribe((user: UserDto): void => {
-      this.username = user.username;
-      this.readProfilePicture(user.profilePictureId)
-      this.elo = user.elo;
-    })
+    this.readUserService.readUser();
   }
 }

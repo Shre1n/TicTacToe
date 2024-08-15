@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import {AdminService} from "../services/admin.service";
+import {Component, OnInit} from '@angular/core';
+import {AdminService} from "./services/admin.service";
 import {Router} from "@angular/router";
 import {FormsModule} from "@angular/forms";
 
@@ -12,7 +12,7 @@ import {FormsModule} from "@angular/forms";
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
 })
-export class AdminDashboardComponent {
+export class AdminDashboardComponent implements OnInit {
 
   constructor(private adminService: AdminService, private router: Router) {
   }
@@ -34,17 +34,34 @@ export class AdminDashboardComponent {
   }
 
   toggleRightSidebar() {
-    document.getElementById('wrapper')?.classList.toggle('toggled-right');
+    const rightSidebar = document.getElementById('right-sidebar-wrapper');
+    const wrapper = document.getElementById('wrapper');
+
+    if (rightSidebar && wrapper) {
+      if (wrapper.classList.contains('toggled-right')) {
+        rightSidebar.classList.remove('transition');
+        setTimeout(() => {
+          rightSidebar.classList.add('transition');
+          rightSidebar.style.display = 'none';
+          wrapper.classList.remove('toggled-right');
+        }, 250);
+      } else {
+
+        rightSidebar.style.display = 'block';
+        setTimeout(() => {
+          rightSidebar.classList.add('transition');
+          wrapper.classList.add('toggled-right');
+        }, 10);
+      }
+    }
   }
 
   toggleQueue(){
     this.showQueue = !this.showQueue;
-    this.showGames = false;
   }
 
   toggleGames(){
     this.showGames = !this.showGames;
-    this.showQueue = false;
   }
 
   viewGame(gameId: number) {
@@ -52,9 +69,7 @@ export class AdminDashboardComponent {
   }
 
   getMatchMakingQueue() {
-    this.adminService.getMatchMakingQueue().subscribe((queue: string[]) => {
-      this.matchMakingQueue = queue;
-    });
+    this.adminService.getMatchMakingQueue();
   }
 
   getRunningGames() {

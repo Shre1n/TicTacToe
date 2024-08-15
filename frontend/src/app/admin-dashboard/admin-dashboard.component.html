@@ -1,14 +1,13 @@
 <div class="d-flex" id="wrapper">
   <!-- Left Sidebar for Running Games -->
-  <div class="bg-light border-right" id="left-sidebar-wrapper">
+  <div class="border-right" id="left-sidebar-wrapper">
     <div class="sidebar-heading">Running Games</div>
     <div class="list-group list-group-flush">
-      <a class="list-group-item list-group-item-action bg-light" (click)="toggleGames()"></a>
+      <a class="list-group-item list-group-item-action" (click)="toggleGames()"></a>
       <ul class="list-group">
         @for (game of runningGames; track game) {
           <li class="list-group-item">
             Game ID: {{ game.id }}, Players: {{ game.player1 }} vs {{ game.player2 }}
-            <button class="btn btn-sm btn-info" (click)="viewGame(game.id)">View</button>
           </li>
         }
       </ul>
@@ -18,7 +17,7 @@
 
   <!-- Page Content -->
   <div id="page-content-wrapper">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <nav class="navbar navbar-expand-lg navbar-light border-bottom">
       <button class="btn btn-primary" id="menu-toggle-left" (click)="toggleLeftSidebar()">Current Games</button>
       <form class="d-flex ms-auto" (submit)="onSearch()">
         <input class="form-control me-2" type="search" placeholder="Search" [(ngModel)]="searchText" name="searchText" aria-label="Search">
@@ -36,10 +35,10 @@
   <!-- /#page-content-wrapper -->
 
   <!-- Right Sidebar for Matchmaking Queue -->
-  <div class="bg-light border-left" id="right-sidebar-wrapper">
+  <div class="border-left transition" id="right-sidebar-wrapper">
     <div class="sidebar-heading">Matchmaking Queue</div>
     <div class="list-group list-group-flush">
-      <a class="list-group-item list-group-item-action bg-light" (click)="toggleQueue()"></a>
+      <a class="list-group-item list-group-item-action" (click)="toggleQueue()"></a>
       <ul class="list-group">
         @for (player of matchMakingQueue; track player) {
           <li class="list-group-item">

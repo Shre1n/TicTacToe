@@ -1,0 +1,20 @@
+/* Container für die Sidebar */
+#left-sidebar-wrapper {
+  width: 250px;
+  height: 100vh; /* Volle Höhe des Viewports */
+  overflow-y: auto; /* Scrollen bei Bedarf */
+}
+
+.sidebar-heading {
+  font-size: 1.25rem;
+  font-weight: bold;
+  padding: 1rem;
+}
+
+.list-group-item {
+  padding: 0.75rem 1.25rem;
+}
+
+.list-group-item-action {
+  cursor: pointer;
+}

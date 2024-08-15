@@ -51,7 +51,12 @@ export class AuthController {
     );
     session.user = user;
     session.isLoggedIn = true;
-    return this.userService.getCurrentUserInformation(session);
+    session.isAdmin = user.isAdmin;
+    const userInfo = await this.userService.getCurrentUserInformation(session);
+    return {
+      ...userInfo,
+      isAdmin: session.isAdmin,
+    };
   }
 
   @Delete()

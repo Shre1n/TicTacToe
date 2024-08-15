@@ -55,6 +55,8 @@ export class UsersService {
   }
 
   async getCurrentUserInformation(session: SessionData) {
+    if (session.user.isAdmin) return;
+
     const dto = UserDto.from(session.user);
     dto.state = UserState.Ready;
     if (this.queueService.isPlayerInQueue(session.user))

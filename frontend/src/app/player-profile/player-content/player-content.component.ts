@@ -2,6 +2,10 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {PlayerContentService} from "./service/player-content.service";
 import {ImageLoaderConfig} from "@angular/common";
+import {ReadUserService} from "../../services/user/readUser/read-user.service";
+import {
+  ReadUserProfilePictureService
+} from "../../services/user/readUserProfilePicture/read-user-profile-picture.service";
 
 @Component({
   selector: 'app-player-content',
@@ -20,7 +24,7 @@ export class PlayerContentComponent implements OnInit{
     this.playerContent.readUser();
   }
 
-  constructor(private http: HttpClient, public playerContent: PlayerContentService) {
+  constructor(private http: HttpClient, public playerContent: PlayerContentService, public readUser: ReadUserService, public readProfile: ReadUserProfilePictureService) {
   }
 
 

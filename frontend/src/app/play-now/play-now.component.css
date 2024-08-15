@@ -3,10 +3,9 @@
   justify-content: center;
 }
 
-.self-margin{
+.self-margin {
   margin-top: 15rem;
 }
-
 
 .btn {
   font-size: 1.5rem;
@@ -14,13 +13,18 @@
 }
 
 .profile-img {
-  image-resolution: 96dpi;
   max-height: 7vh;
+  border-radius: 50%;
 }
 
-.userName{
-  text-align: center;
-  font-size: 1.2em;
+.user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+
+.userName {
+  font-size: 1em;
   font-weight: bold;
   background: linear-gradient(90deg, #69dbc9, rgb(116, 166, 158));
   -webkit-background-clip: text;
@@ -29,8 +33,13 @@
   letter-spacing: 0.05em;
   font-family: 'Roboto', sans-serif;
   padding: 0.2em 0.5em;
-  background-color: rgba(0, 0, 0, 0.7);
-  border-radius: 0.5em;
+}
+
+.userElo {
+  font-size: 0.5em;
+  color: #4bc589;
+  justify-content: end;
+  font-family: 'Roboto', sans-serif;
 }
 
 .led-button {
@@ -86,6 +95,3 @@
   font-size: 1.1em;
   line-height: 1.5em;
 }
-
-
-
