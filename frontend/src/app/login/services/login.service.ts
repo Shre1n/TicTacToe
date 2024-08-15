@@ -16,4 +16,12 @@ export class LoginService {
     const user = { username, password };
     return this.http.post<LoginResponse>(this.apiUrl, user);
   }
+
+  setAdminStatus(isAdmin: boolean) {
+    localStorage.setItem('isAdmin', JSON.stringify(isAdmin));
+  }
+
+  isAdmin(): boolean {
+    return JSON.parse(localStorage.getItem('isAdmin') || 'false');
+  }
 }

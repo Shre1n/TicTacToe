@@ -14,7 +14,7 @@ import {FormsModule} from "@angular/forms";
 })
 export class AdminDashboardComponent implements OnInit {
 
-  constructor(private adminService: AdminService, private router: Router) {
+  constructor(public adminService: AdminService, private router: Router) {
   }
 
   searchText: string = '';
@@ -73,9 +73,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   getRunningGames() {
-    this.adminService.getRunningGames().subscribe((games: { id: number, player1: string, player2: string }[]) => {
-      this.runningGames = games;
-    });
+    this.adminService.getRunningGames();
   }
 
   onSearch() {

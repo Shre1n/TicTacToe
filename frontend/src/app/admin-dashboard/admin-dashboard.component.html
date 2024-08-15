@@ -40,9 +40,11 @@
     <div class="list-group list-group-flush">
       <a class="list-group-item list-group-item-action" (click)="toggleQueue()"></a>
       <ul class="list-group">
-        @for (player of matchMakingQueue; track player) {
+        @for (player of this.adminService.matchMakingQueue?.queueEntries; track player) {
           <li class="list-group-item">
-            {{ player }}
+            {{ player.username}}
+            {{ player.elo }}
+            {{ player.entryTime }}
           </li>
         }
       </ul>

@@ -26,8 +26,10 @@ export class LoginComponent {
   onSubmit() {
       this.loginService.login(this.username, this.password).subscribe({
         next: (response: LoginResponse) => {
-          if (response.isAdmin)
+          if (response.isAdmin) {
             this.router.navigate(['/admin']);
+            this.loginService.setAdminStatus(true);
+          }
           else
             this.router.navigate(['/play-now']);
           this.connectService.connect();
