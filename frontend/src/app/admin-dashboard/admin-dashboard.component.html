@@ -6,7 +6,7 @@
       <a class="list-group-item list-group-item-action" (click)="toggleGames()"></a>
       <ul class="list-group">
         @for (game of this.adminService.runningGames; track game) {
-          <li class="list-group-item">
+          <li class="list-group-item list-group-item-action" (click)="selectGame(game, $event)">
             Game ID: {{ game.id }}, Players: {{ game.player1.username }} vs {{ game.player2.username }}
           </li>
         }
@@ -20,7 +20,8 @@
     <nav class="navbar navbar-expand-lg navbar-light border-bottom">
       <button class="btn btn-primary" id="menu-toggle-left" (click)="toggleLeftSidebar()">Current Games</button>
       <form class="d-flex ms-auto" (submit)="onSearch()">
-        <input class="form-control me-2" type="search" placeholder="Search" [(ngModel)]="searchText" name="searchText" aria-label="Search">
+        <input class="form-control me-2" type="search" placeholder="Search" [(ngModel)]="searchText" name="searchText"
+               aria-label="Search">
         <button id="search" class="btn btn-outline-success" type="submit">
           <span><i class="fa-sharp fa-solid fa-magnifying-glass"></i></span>
         </button>
@@ -42,7 +43,7 @@
       <ul class="list-group">
         @for (player of this.adminService.matchMakingQueue?.queueEntries; track player) {
           <li class="list-group-item">
-            {{ player.username}}
+            {{ player.username }}
             {{ player.elo }}
             {{ player.entryTime }}
           </li>
@@ -51,4 +52,22 @@
     </div>
   </div>
   <!-- /#right-sidebar-wrapper -->
+
+  @if (selectedGame) {
+    <div class="game-details-box" [ngClass]="{'show': selectedGame}"
+         [ngStyle]="{'top.px': boxPosition.top, 'left.px': boxPosition.left}">
+        <div class="game-details-arrow"></div>
+        @if (selectedGame.player1) {
+          <button class="btn btn-primary" (click)="inspectPlayer(selectedGame.player1)">
+            Inspect {{ selectedGame.player1.username }}
+          </button>
+        }
+        @if (selectedGame.player2) {
+          <button class="btn btn-primary" (click)="inspectPlayer(selectedGame.player2)">
+            Inspect {{ selectedGame.player2.username }}
+          </button>
+        }
+
+    </div>
+  }
 </div>

@@ -4,7 +4,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { User } from './users.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Like, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { Game } from '../games/games.entity';
 import { UserStatsDto } from './dto/user-stats.dto';
@@ -30,6 +30,17 @@ export class UsersService {
   ) {
     this.usersRepository = this.dataSource.getRepository(User);
     this.gameRepository = this.dataSource.getRepository(Game);
+  }
+
+  async searchUsers(query: string) {
+    const users = await this.usersRepository.find({
+      where: {
+        username: Like(`%${query}%`),
+      },
+      take: 10,
+    });
+
+    return users.map((user) => user.username);
   }
 
   async create(registerDto: RegisterUserDto) {

@@ -73,3 +73,45 @@
   background-color: #0056b3;
   color: white;
 }
+
+.list-group-item {
+  position: relative;
+  cursor: pointer;
+}
+
+.game-details-box {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: none;
+  z-index: 1000;
+  max-width: 200px;
+}
+
+.game-details-box.show {
+  display: block; /* Show when 'show' class is added */
+}
+
+.game-details-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-width: 10px;
+  border-style: solid;
+}
+
+.game-details-box .game-details-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent white transparent transparent; /* Pfeil zeigt nach links */
+  top: 50%; /* Vertikale Zentrierung */
+  right: 100%; /* Positioniert den Pfeil an der linken Kante der Box */
+  transform: translateY(-50%); /* Zentriert den Pfeil vertikal */
+}
+

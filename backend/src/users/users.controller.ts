@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Session,
   StreamableFile,
   UploadedFile,
@@ -47,6 +48,16 @@ export class UsersController {
     private usersService: UsersService,
     private profilePictureService: ProfilePictureService,
   ) {}
+
+  @Get('search')
+  @ApiOperation({
+    summary: 'Search for a User',
+    description: 'Search for a User, creates a query and returns the result.',
+  })
+  @ApiOkResponse({ description: 'Successful operation', type: [String] })
+  async searchUsers(@Query('query') query: string) {
+    return this.usersService.searchUsers(query);
+  }
 
   @Post()
   @ApiOperation({

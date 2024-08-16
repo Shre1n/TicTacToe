@@ -44,7 +44,6 @@ export class AdminService {
     this.http.get<GameDto[]>(`${this.apiUrl}/game/running`).subscribe({
       next: (games: GameDto[]) => {
         this.runningGames = games;
-        console.log(this.runningGames)
       },
       error: (err) => {
         console.error('Failed to fetch games:', err);
