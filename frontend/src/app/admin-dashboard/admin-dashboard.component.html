@@ -5,9 +5,9 @@
     <div class="list-group list-group-flush">
       <a class="list-group-item list-group-item-action" (click)="toggleGames()"></a>
       <ul class="list-group">
-        @for (game of runningGames; track game) {
+        @for (game of this.adminService.runningGames; track game) {
           <li class="list-group-item">
-            Game ID: {{ game.id }}, Players: {{ game.player1 }} vs {{ game.player2 }}
+            Game ID: {{ game.id }}, Players: {{ game.player1.username }} vs {{ game.player2.username }}
           </li>
         }
       </ul>

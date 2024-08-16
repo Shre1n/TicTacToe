@@ -15,6 +15,7 @@ import {
 import { GameDto } from './dto/game.dto';
 import { SessionData } from 'express-session';
 import { IsLoggedInGuard } from '../guards/is-logged-in/is-logged-in.guard';
+import { Game } from './games.entity';
 
 @ApiTags('game')
 @Controller('game')
@@ -34,5 +35,16 @@ export class GamesController {
     const game = await this.gameService.getActiveGame(session.user);
     if (!game) throw new NotFoundException('Player not in a game');
     return GameDto.from(game);
+  }
+
+  @UseGuards(IsLoggedInGuard)
+  @Get('running')
+  @ApiOperation({
+    summary: 'Get all games',
+    description: 'Returns all games that exist.',
+  })
+  @ApiOkResponse({ description: 'List of all games', type: [Game] })
+  async getAllGames(): Promise<Game[]> {
+    return await this.gameService.getAllGames();
   }
 }

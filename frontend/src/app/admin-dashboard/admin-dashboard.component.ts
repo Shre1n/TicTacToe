@@ -14,15 +14,11 @@ import {FormsModule} from "@angular/forms";
 })
 export class AdminDashboardComponent implements OnInit {
 
-  constructor(public adminService: AdminService, private router: Router) {
-  }
+  constructor(public adminService: AdminService, private router: Router) {}
 
   searchText: string = '';
-
   showQueue: boolean = false;
   showGames: boolean = false;
-  matchMakingQueue: string[] = []
-  runningGames: {id:number, player1:string, player2:string}[]= [];
 
   ngOnInit() {
     this.getMatchMakingQueue();
@@ -62,10 +58,6 @@ export class AdminDashboardComponent implements OnInit {
 
   toggleGames(){
     this.showGames = !this.showGames;
-  }
-
-  viewGame(gameId: number) {
-    alert('Viewing game with ID: ' + gameId);
   }
 
   getMatchMakingQueue() {

@@ -122,6 +122,31 @@ export class GamesService {
     });
   }
 
+  async getAllGames(): Promise<Game[]> {
+    return await this.gameRepository.find({
+      where: { isFinished: false },
+      relations: ['player1', 'player2'],
+      select: {
+        id: true,
+        player1Board: false,
+        player2Board: false,
+        gameTime: true,
+        turn: false,
+        isFinished: false,
+        createdAt: false,
+        player1: {
+          id: false,
+          username: true,
+        },
+        player2: {
+          id: false,
+          username: true,
+        },
+        winningState: false,
+      },
+    });
+  }
+
   async updateElo(game: Game) {
     switch (game.winningState) {
       case 'p1':
