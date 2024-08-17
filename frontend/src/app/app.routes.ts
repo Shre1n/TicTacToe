@@ -9,15 +9,16 @@ import {AdminDashboardComponent} from "./admin-dashboard/admin-dashboard.compone
 import {Forbidden403Component} from "./forbidden-403/forbidden-403.component";
 import {AdminGuard} from "./admin-dashboard/guard/adminGuard";
 import {NotFound404Component} from "./not-found404/not-found404.component";
+import {AuthGuard} from "./forbidden-403/guard/UserGuard";
 
 export const routes: Routes = [
   {path: '', component: LoginComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'admin', component: AdminDashboardComponent, canActivate: [AdminGuard]},
-  {path: 'play-now', title:'Play-Now', component: PlayNowComponent},
-  {path: 'matchMaking', title:'Matchmaking', component: MatchMakingComponent},
-  {path: 'player-profile', title:'Profile', component: PlayerProfileComponent},
+  {path: 'play-now', title:'Play-Now', component: PlayNowComponent, canActivate: [AuthGuard]},
+  {path: 'matchMaking', title:'Matchmaking', component: MatchMakingComponent, canActivate: [AuthGuard]},
+  {path: 'player-profile', title:'Profile', component: PlayerProfileComponent, canActivate: [AuthGuard]},
   {path: 'forbidden', title:'forbidden - Forbidden', component: Forbidden403Component},
   {path: 'NotFound', title: 'Not Found', component: NotFound404Component},
   { path: '**', redirectTo: '/NotFound'}

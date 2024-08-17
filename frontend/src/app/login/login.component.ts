@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {LoginService} from "./services/login.service";
 import {FormsModule, NgForm} from "@angular/forms";
 import {Router} from "@angular/router";
@@ -15,7 +15,7 @@ import {SocketService} from "../services/socket.service";
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
 
   username: string = '';
   password: string = '';
@@ -29,6 +29,10 @@ export class LoginComponent {
 
 
   constructor(private loginService: LoginService, private router: Router, private connectService: ConnectService) {
+  }
+
+  ngOnInit() {
+    this.loginService.removeLocalStorage();
   }
 
 
@@ -51,6 +55,7 @@ export class LoginComponent {
             this.loginService.setAdminStatus(true);
           } else
             this.router.navigate(['/play-now']);
+            this.loginService.setAuthStatus(true);
           this.connectService.connect();
           //todo show user the success
         },

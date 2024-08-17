@@ -21,6 +21,25 @@ export class LoginService {
     localStorage.setItem('isAdmin', JSON.stringify(isAdmin));
   }
 
+  setAuthStatus(isAuth: boolean) {
+    if (this.isAdmin())
+      return;
+    localStorage.setItem('auth', JSON.stringify(isAuth));
+  }
+
+  removeLocalStorage(){
+    if (this.isAdmin())
+      localStorage.removeItem('isAdmin');
+    if (this.isAuthenticated()){
+      localStorage.removeItem('auth');
+    }
+  }
+
+  isAuthenticated(): boolean {
+    const token = JSON.parse(localStorage.getItem('auth') || 'false');
+    return !!token;
+  }
+
   isAdmin(): boolean {
     return JSON.parse(localStorage.getItem('isAdmin') || 'false');
   }
