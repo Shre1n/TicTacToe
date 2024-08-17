@@ -24,7 +24,11 @@ export class UserDto {
 
   public static from(user: User): UserDto {
     const { username, elo, profilePicture } = user;
-    return { username, elo, profilePictureId: profilePicture?.id };
+    return {
+      username,
+      elo: Math.round(elo),
+      profilePictureId: profilePicture?.id,
+    };
   }
 }
 

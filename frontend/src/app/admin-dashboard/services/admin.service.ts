@@ -7,6 +7,7 @@ import {QueueEntry} from "../interfaces/Queue/queueEntry";
 import {Router} from "@angular/router";
 import {ReadUserService} from "../../services/user/readUser/read-user.service";
 import {GameDto} from "../interfaces/Game/gamesDto"
+import {UserDto} from "../interfaces/Game/User/userDto";
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,19 @@ export class AdminService {
 
   runningGames: GameDto[] | undefined;
 
-  constructor(private http : HttpClient, private loginService: LoginService, private router: Router, private readUserService: ReadUserService) { }
+  searchResults: string[] = [];
+
+  //todo: make it false after search and then set it true again
+  showSearchResults: boolean = true;
+
+  userDetails: { username: string, games: GameDto[] } | null = null;
+
+  constructor(
+    private http : HttpClient,
+    private loginService: LoginService,
+    private router: Router,
+    private readUserService: ReadUserService
+  ) { }
 
   getMatchMakingQueue() {
     if (!this.loginService.isAdmin()) {
@@ -50,5 +63,32 @@ export class AdminService {
       }
     });
   }
+
+  searchUsers(query: string): void {
+    if (query.length > 0) {
+      this.http.get<{ username: string, games: GameDto[] }>(`${this.apiUrl}/user/search`, { params: { query } })
+        .subscribe({
+          next: (results: { username: string, games: GameDto[] }) => {
+            this.searchResults = [results.username];
+            this.userDetails = results;
+            console.log(this.userDetails.games);
+            this.showSearchResults = this.userDetails !== null;
+          },
+          error: (err) => {
+            console.error('Search failed:', err);
+            this.userDetails = null;
+            this.searchResults = [];
+            this.showSearchResults = false;
+          }
+        });
+    } else {
+      this.searchResults = [];
+      this.showSearchResults = false;
+    }
+  }
+
+
+
+
 
 }

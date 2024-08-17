@@ -17,6 +17,8 @@ import { ProfilePicture } from '../profilePicture/profilePicture.entity';
 import { SessionData } from 'express-session';
 import { GamesService } from '../games/games.service';
 import { QueueService } from '../queue/queue.service';
+import { UserGameDto } from './dto/user-game.dto';
+import { GameDto } from '../games/dto/game.dto';
 
 @Injectable()
 export class UsersService {
@@ -40,7 +42,21 @@ export class UsersService {
       take: 10,
     });
 
-    return users.map((user) => user.username);
+    if (users.length === 0) {
+      return [];
+    }
+
+    // Nur den ersten gefundenen Benutzer nehmen
+    const user = users[0];
+
+    // Spiele des Benutzers abrufen
+    const games = await this.getUserGames(user);
+
+    // Rückgabe des Benutzernamens und der Spiele
+    return {
+      username: user.username,
+      games,
+    };
   }
 
   async create(registerDto: RegisterUserDto) {
@@ -97,6 +113,18 @@ export class UsersService {
     return games.map((g) =>
       MatchDto.from(UserDto.from(g.player1 == user ? g.player2 : g.player1), g),
     );
+  }
+
+  //Admin
+  async getUserGames(user: User) {
+    const games = await this.gameRepository.find({
+      where: [
+        { player1: { id: user.id }, isFinished: true },
+        { player2: { id: user.id }, isFinished: true },
+      ],
+      relations: ['player1', 'player2'],
+    });
+    return games.map((game) => GameDto.from(game));
   }
 
   async getUserProfile(user: User) {

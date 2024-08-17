@@ -3,8 +3,8 @@ import {AdminService} from "./services/admin.service";
 import {Router} from "@angular/router";
 import {FormsModule} from "@angular/forms";
 import {GameDto} from "./interfaces/Game/gamesDto";
-import {UserDto} from "./interfaces/Game/User/UserDto";
-import {NgClass, NgStyle} from "@angular/common";
+import {UserDto} from "./interfaces/Game/User/userDto";
+import {NgClass, NgStyle, NgSwitch} from "@angular/common";
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -12,7 +12,8 @@ import {NgClass, NgStyle} from "@angular/common";
   imports: [
     FormsModule,
     NgStyle,
-    NgClass
+    NgClass,
+    NgSwitch
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
@@ -24,10 +25,9 @@ export class AdminDashboardComponent implements OnInit {
   searchText: string = '';
   showQueue: boolean = false;
   showGames: boolean = false;
-
   boxPosition = { top: 0, left: 0 };
-
   selectedGame: GameDto | null = null;
+
 
   ngOnInit() {
     this.getMatchMakingQueue();
@@ -48,6 +48,8 @@ export class AdminDashboardComponent implements OnInit {
       }
     }
   }
+
+  //todo: style it properly. Similar to the left sided translation
 
   toggleRightSidebar() {
     const rightSidebar = document.getElementById('right-sidebar-wrapper');
@@ -89,12 +91,22 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   onSearch() {
-    console.log('Search text:', this.searchText);
-    // Implement the search logic here
+    this.adminService.searchUsers(this.searchText);
+  }
+
+  selectUser(username: string) {
+    this.searchText = username;
+    this.adminService.searchResults = [];
+  }
+
+  inspectPlayer(player: UserDto) {
+    this.searchText = player.username;
+    console.log(this.searchText);
+    this.onSearch();
   }
 
   selectGame(game: any, event: MouseEvent) {
-    if (this.selectedGame && this.selectedGame.id === game.id) {
+    if (this.selectedGame && this.selectedGame.gameId === game.id) {
       this.selectedGame = null;
       const gameDetailsBox = document.querySelector('.game-details-box') as HTMLElement;
       if (gameDetailsBox) {
@@ -123,10 +135,5 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
-  inspectPlayer(player: UserDto) {
-    console.log('Inspecting player:', player);
 
-    // Optional: Redirect to player detail page or open a modal
-    // this.router.navigate(['/player-detail', player.id]);
-  }
 }

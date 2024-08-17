@@ -54,7 +54,7 @@ export class UsersController {
     summary: 'Search for a User',
     description: 'Search for a User, creates a query and returns the result.',
   })
-  @ApiOkResponse({ description: 'Successful operation', type: [String] })
+  @ApiOkResponse({ description: 'Successful operation', type: Object })
   async searchUsers(@Query('query') query: string) {
     return this.usersService.searchUsers(query);
   }
