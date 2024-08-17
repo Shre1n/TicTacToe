@@ -7,6 +7,12 @@
     <div class="input-group">
       <label for="username">Nutzername:</label>
       <input #_username id="username" [(ngModel)]="username" name="username" required>
+
+      @if (errors.get('_username')) {
+        <div class="text-danger">
+          <p>{{ errors.get('_username') }}</p>
+        </div>
+      }
     </div>
 
     <div class="input-group">
@@ -19,12 +25,25 @@
         type="password"
         (keydown.enter)="onSubmit()"
         required>
+
+      @if (errors.get('_password')) {
+        <div class="text-danger">
+          <p>{{ errors.get('_password') }}</p>
+        </div>
+      }
     </div>
+
 
     <div class="button-group">
       <button type="submit" class="btn">Login</button>
       <button type="button" class="btn" (click)="register()">Register</button>
     </div>
+
+    @if (errors.get('_error')) {
+      <div class="text-danger input-group mt-3">
+        <p>{{ errors.get('_error') }}</p>
+      </div>
+    }
 
   </form>
 </div>

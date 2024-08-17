@@ -35,11 +35,11 @@ export class LoginComponent {
   onSubmit() {
     this.errors.clear();
 
-    if (this._username.trim().length === 0) {
-      this.errors.set('username', 'Bitte gebe einen Nutzernamen ein.');
+    if (this.username.length == 0) {
+      this.errors.set('_username', 'Bitte gebe einen Nutzernamen ein.');
     }
-    if (!this.isPasswordValid(this._password)) {
-      this.errors.set('username', 'Bitte gebe einen Nutzernamen ein.');
+    if (this.password.length == 0) {
+      this.errors.set('_password', 'Bitte gebe ein Passwort ein.');
     }
 
 
@@ -54,8 +54,10 @@ export class LoginComponent {
           this.connectService.connect();
           //todo show user the success
         },
-        error: () => {
-          alert('No Login!')
+        error: error => {
+          if (error.status === 403) {
+            this.errors.set('_error', 'Der Nutzername oder das Passwort stimmt nicht.');
+          }
         }
       });
     }

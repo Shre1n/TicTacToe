@@ -60,9 +60,6 @@ export class RegisterComponent {
             } else {
               alert('Fehler bei der Registrierung.');
             }
-          },
-          complete: () => {
-            console.info('Registrierungsprozess abgeschlossen.');
           }
         });
     }
