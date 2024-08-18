@@ -14,7 +14,6 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { RolesGuard } from '../guards/roles/roles.guard';
 import { SessionData } from 'express-session';
@@ -54,11 +53,10 @@ export class AuthController {
     session.user = user;
     session.isLoggedIn = true;
     session.isAdmin = user.isAdmin;
+
     const userInfo = await this.userService.getCurrentUserInformation(session);
-    return {
-      ...userInfo,
-      isAdmin: session.isAdmin,
-    };
+    userInfo.isAdmin = user.isAdmin;
+    return userInfo;
   }
 
   @Delete()
