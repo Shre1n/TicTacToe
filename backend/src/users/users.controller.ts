@@ -28,6 +28,7 @@ import {
   ApiOperation,
   ApiParam,
   ApiTags,
+  ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { RegisterUserDto } from '../auth/dto/register-user.dto';
@@ -40,6 +41,7 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploadDto } from '../profilePicture/dto/fileUploadDto';
 import { ProfilePictureService } from '../profilePicture/profilePicture.service';
+import { RolesGuard } from '../guards/roles/roles.guard';
 
 @ApiTags('user')
 @Controller('user')
@@ -49,6 +51,7 @@ export class UsersController {
     private profilePictureService: ProfilePictureService,
   ) {}
 
+  @UseGuards(RolesGuard)
   @Get('search')
   @ApiOperation({
     summary: 'Search for a User',
@@ -91,6 +94,7 @@ export class UsersController {
       'Gets some basic infos about the current user. The user has to be logged in',
   })
   @ApiOkResponse({ description: 'Successful operation', type: UserDto })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   async getUserInfo(@Session() session: SessionData): Promise<UserDto> {
     return this.usersService.getCurrentUserInformation(session);
   }

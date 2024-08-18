@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('../../assets/background.webp'); /* Stellen Sie sicher, dass der Pfad korrekt ist */
+  background-image: url('../../../assets/background.webp'); /* Stellen Sie sicher, dass der Pfad korrekt ist */
   background-size: cover;
   background-position: center;
   filter: blur(8px);

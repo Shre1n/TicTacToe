@@ -14,6 +14,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { RolesGuard } from '../guards/roles/roles.guard';
 import { SessionData } from 'express-session';
@@ -26,6 +27,7 @@ import { Game } from '../games/games.entity';
 @Controller('auth')
 export class AuthController {
   private readonly gameRepository: Repository<Game>;
+
   constructor(
     private authService: AuthService,
     private dataSource: DataSource,
@@ -71,7 +73,21 @@ export class AuthController {
 
   @Post('admin-only')
   @UseGuards(RolesGuard)
-  async adminOnlyRoute() {
-    return { message: 'This route is only accessible by the admin' };
+  @ApiOperation({
+    summary: 'Check if the Authenticated User is an Admin',
+    description: 'Gets the Info of the User with a Flag',
+  })
+  @ApiOkResponse({ description: 'Successful operation' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  async adminOnlyRoute(@Session() session: SessionData) {
+    if (session.user.isAdmin === true) {
+      return {
+        session: session.isAdmin,
+      };
+    } else {
+      return {
+        message: 'This route is only accessible by the admin',
+      };
+    }
   }
 }

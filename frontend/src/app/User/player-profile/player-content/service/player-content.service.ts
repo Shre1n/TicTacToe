@@ -3,8 +3,8 @@ import {HttpClient, HttpResponse} from "@angular/common/http";
 import {UserDto} from "../userDto";
 import {
   ReadUserProfilePictureService
-} from "../../../services/user/readUserProfilePicture/read-user-profile-picture.service";
-import {ReadUserService} from "../../../services/user/readUser/read-user.service";
+} from "../../../../services/user/readUserProfilePicture/read-user-profile-picture.service";
+import {ReadUserService} from "../../../../services/user/readUser/read-user.service";
 
 @Injectable({
   providedIn: 'root'

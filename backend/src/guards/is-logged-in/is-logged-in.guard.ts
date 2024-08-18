@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Request } from 'express';
 
@@ -8,6 +13,12 @@ export class IsLoggedInGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    return request.session?.isLoggedIn;
+    const session = request.session;
+
+    if (session && session.isLoggedIn) {
+      return true;
+    } else {
+      throw new UnauthorizedException('Unauthorized');
+    }
   }
 }

@@ -1,10 +1,11 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, Output, ViewChild} from '@angular/core';
 import {LoginService} from "./services/login.service";
 import {FormsModule, NgForm} from "@angular/forms";
 import {Router} from "@angular/router";
 import {LoginResponse} from "./interfaces/LoginResponse";
-import {ConnectService} from "../services/connect.service";
-import {SocketService} from "../services/socket.service";
+import {ConnectService} from "../../services/connect.service";
+import {SocketService} from "../../services/socket.service";
+import {AuthService} from "../../services/user/auth/auth.service";
 
 @Component({
   selector: 'app-login',
@@ -15,12 +16,13 @@ import {SocketService} from "../services/socket.service";
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent implements OnInit{
+export class LoginComponent{
 
   username: string = '';
   password: string = '';
 
   errors = new Map<string, string>();
+
 
   @ViewChild('_username')
   private _username!: any;
@@ -28,12 +30,13 @@ export class LoginComponent implements OnInit{
   private _password!: any;
 
 
-  constructor(private loginService: LoginService, private router: Router, private connectService: ConnectService) {
+  constructor(
+    private loginService: LoginService,
+    private router: Router,
+    private connectService: ConnectService,
+    private authService: AuthService,) {
   }
 
-  ngOnInit() {
-    this.loginService.removeLocalStorage();
-  }
 
 
   onSubmit() {
@@ -52,10 +55,10 @@ export class LoginComponent implements OnInit{
         next: (response: LoginResponse) => {
           if (response.isAdmin) {
             this.router.navigate(['/admin']);
-            this.loginService.setAdminStatus(true);
-          } else
+          } else {
+            this.authService.isAuthenticated();
             this.router.navigate(['/play-now']);
-            this.loginService.setAuthStatus(true);
+          }
           this.connectService.connect();
           //todo show user the success
         },
@@ -66,16 +69,6 @@ export class LoginComponent implements OnInit{
         }
       });
     }
-  }
-
-  isPasswordValid(password: string): boolean {
-    const minLength = 6;
-    const hasLower = /[a-z]/.test(password);
-    const hasUpper = /[A-Z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-
-    return password.length >= minLength && hasLower && hasUpper && hasNumber && hasSymbol;
   }
 
   register() {

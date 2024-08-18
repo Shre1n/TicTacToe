@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {UserDto} from "../../../player-profile/player-content/userDto";
+import {UserDto} from "../../../User/player-profile/player-content/userDto";
 import {HttpClient} from "@angular/common/http";
 import {ReadUserProfilePictureService} from "../readUserProfilePicture/read-user-profile-picture.service";
 

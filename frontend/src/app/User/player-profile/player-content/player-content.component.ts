@@ -2,10 +2,10 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {PlayerContentService} from "./service/player-content.service";
 import {ImageLoaderConfig} from "@angular/common";
-import {ReadUserService} from "../../services/user/readUser/read-user.service";
+import {ReadUserService} from "../../../services/user/readUser/read-user.service";
 import {
   ReadUserProfilePictureService
-} from "../../services/user/readUserProfilePicture/read-user-profile-picture.service";
+} from "../../../services/user/readUserProfilePicture/read-user-profile-picture.service";
 
 @Component({
   selector: 'app-player-content',

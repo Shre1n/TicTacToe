@@ -81,9 +81,11 @@ export class UsersService {
     });
   }
 
-  async getCurrentUserInformation(session: SessionData) {
-    if (session.user.isAdmin) return;
+  async isAdmin(session: SessionData): Promise<boolean> {
+    return session.user.isAdmin;
+  }
 
+  async getCurrentUserInformation(session: SessionData) {
     const dto = UserDto.from(session.user);
     dto.state = UserState.Ready;
     if (this.queueService.isPlayerInQueue(session.user))
