@@ -17,7 +17,7 @@ export class AppComponent{
   }
 
   checkAuthentication(){
-    this.authService.isAuthenticated();
+    this.authService.isAuthenticated;
   }
 
 }

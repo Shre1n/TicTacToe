@@ -54,10 +54,11 @@ export class LoginComponent{
       this.loginService.login(this.username, this.password).subscribe({
         next: (response: LoginResponse) => {
           if (response.isAdmin) {
-            this.authService._isAdmin = response.isAdmin;
+            this.authService.isAuthenticated = true;
+            this.authService.isAdmin = response.isAdmin;
             this.router.navigate(['/admin']);
           } else {
-            this.authService.isAuthenticated();
+            this.authService.isAuthenticated = true;
             this.router.navigate(['/play-now']);
           }
           this.connectService.connect();
