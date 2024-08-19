@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {LoginService} from "./services/login.service";
 import {FormsModule, NgForm} from "@angular/forms";
 import {Router} from "@angular/router";
@@ -22,7 +22,6 @@ export class LoginComponent{
   password: string = '';
 
   errors = new Map<string, string>();
-
 
   @ViewChild('_username')
   private _username!: any;
@@ -53,12 +52,11 @@ export class LoginComponent{
     if (this.errors.size === 0) {
       this.loginService.login(this.username, this.password).subscribe({
         next: (response: LoginResponse) => {
+          this.authService.setAuthenticated(true);
+          this.authService.setAdmin(response.isAdmin);
           if (response.isAdmin) {
-            this.authService.isAuthenticated = true;
-            this.authService.isAdmin = response.isAdmin;
             this.router.navigate(['/admin']);
           } else {
-            this.authService.isAuthenticated = true;
             this.router.navigate(['/play-now']);
           }
           this.connectService.connect();
