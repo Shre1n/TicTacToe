@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Post,
   Session,
   UseGuards,
@@ -69,7 +70,7 @@ export class AuthController {
     await this.authService.logout(session);
   }
 
-  @Post('admin-only')
+  @Get('admin-only')
   @UseGuards(RolesGuard)
   @ApiOperation({
     summary: 'Check if the Authenticated User is an Admin',
@@ -80,7 +81,7 @@ export class AuthController {
   async adminOnlyRoute(@Session() session: SessionData) {
     if (session.user.isAdmin === true) {
       return {
-        session: session.isAdmin,
+        admin: session.isAdmin,
       };
     } else {
       return {

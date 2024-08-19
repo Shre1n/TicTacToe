@@ -40,12 +40,6 @@ export class AdminService {
         this.matchMakingQueue = queue;
       },
       error: (err) => {
-        if (err.status === 403) {
-          this.router.navigate(['/forbidden'])
-        }
-        if (err.status === 401) {
-          this.router.navigate(['/unauthorized'])
-        }
         console.error('Failed to fetch queue:', err);
       }
     });
@@ -57,12 +51,6 @@ export class AdminService {
         this.runningGames = games;
       },
       error: (err) => {
-        if (err.status === 403) {
-          this.router.navigate(['/forbidden'])
-        }
-        if (err.status === 401) {
-          this.router.navigate(['/unauthorized'])
-        }
         console.error('Failed to fetch games:', err);
       }
     });
@@ -82,14 +70,6 @@ export class AdminService {
             this.userDetails = null;
             this.searchResults = [];
             this.showSearchResults = false;
-
-            if (err.status === 403) {
-              this.router.navigate(['/forbidden'])
-            }
-            if (err.status === 401) {
-              this.router.navigate(['/unauthorized'])
-            }
-
           }
         });
     } else {

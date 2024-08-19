@@ -17,7 +17,6 @@ import { ProfilePicture } from '../profilePicture/profilePicture.entity';
 import { SessionData } from 'express-session';
 import { GamesService } from '../games/games.service';
 import { QueueService } from '../queue/queue.service';
-import { UserGameDto } from './dto/user-game.dto';
 import { GameDto } from '../games/dto/game.dto';
 
 @Injectable()
