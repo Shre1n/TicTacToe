@@ -2,9 +2,10 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { User } from './users.entity';
-import { DataSource, Like, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { Game } from '../games/games.entity';
 import { UserStatsDto } from './dto/user-stats.dto';
@@ -33,29 +34,17 @@ export class UsersService {
     this.gameRepository = this.dataSource.getRepository(Game);
   }
 
-  async searchUsers(query: string) {
-    const users = await this.usersRepository.find({
-      where: {
-        username: Like(`%${query}%`),
-      },
-      take: 10,
-    });
+  async getAllUsers() {
+    return await this.usersRepository.find();
+  }
 
-    if (users.length === 0) {
-      return [];
+  async searchUsers(username: string) {
+    const user = await this.findOne(username);
+
+    if (!user) {
+      throw new NotFoundException('User not found!');
     }
-
-    // Nur den ersten gefundenen Benutzer nehmen
-    const user = users[0];
-
-    // Spiele des Benutzers abrufen
-    const games = await this.getUserGames(user);
-
-    // Rückgabe des Benutzernamens und der Spiele
-    return {
-      username: user.username,
-      games,
-    };
+    return await this.getUserGames(user);
   }
 
   async create(registerDto: RegisterUserDto) {

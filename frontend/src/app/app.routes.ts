@@ -8,7 +8,7 @@ import {PlayerProfileComponent} from "./User/player-profile/player-profile.compo
 import {AdminDashboardComponent} from "./Admin/admin-dashboard/admin-dashboard.component";
 import {Forbidden403Component} from "./Error-Components/forbidden-403/forbidden-403.component";
 import {AdminGuard} from "./Admin/admin-dashboard/guard/adminGuard";
-import {NotFound404Component} from "./Error-Components/not-found404/not-found404.component";
+import {NotFound404Component} from "./Error-Components/not-found-404/not-found404.component";
 import {AuthGuard} from "./Auth/guard/AuthGuard";
 import {Unauthorized401Component} from "./Error-Components/unauthorized-401/unauthorized-401.component";
 

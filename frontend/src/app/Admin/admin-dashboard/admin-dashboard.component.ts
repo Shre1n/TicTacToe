@@ -30,12 +30,22 @@ export class AdminDashboardComponent implements OnInit {
   showQueue: boolean = false;
   showGames: boolean = false;
   boxPosition = { top: 0, left: 0 };
+  usernameHints: string[] = [];
   selectedGame: GameDto | null = null;
 
 
   ngOnInit() {
     this.getMatchMakingQueue();
     this.getRunningGames();
+    this.getAllUsers();
+  }
+
+  getAllUsers(){
+    this.adminService.getUsers();
+  }
+
+  updateHints() {
+    this.usernameHints = this.adminService.user.map((x) => x.username).filter((x) => x.startsWith(this.searchText)).slice(0,10);
   }
 
   logout(){
@@ -100,11 +110,11 @@ export class AdminDashboardComponent implements OnInit {
 
   onSearch() {
     this.adminService.searchUsers(this.searchText);
+    this.usernameHints = [];
   }
 
   selectUser(username: string) {
     this.searchText = username;
-    this.adminService.searchResults = [];
   }
 
   inspectPlayer(player: UserDto) {

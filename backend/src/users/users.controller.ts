@@ -42,6 +42,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploadDto } from '../profilePicture/dto/fileUploadDto';
 import { ProfilePictureService } from '../profilePicture/profilePicture.service';
 import { RolesGuard } from '../guards/roles/roles.guard';
+import { GameDto } from '../games/dto/game.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -52,14 +53,24 @@ export class UsersController {
   ) {}
 
   @UseGuards(RolesGuard)
-  @Get('search')
+  @Get()
+  @ApiOperation({ summary: 'Get users from the users' })
+  @ApiOkResponse({ description: 'successful operation', type: [UserDto] })
+  async getAllUsers() {
+    const users = await this.usersService.getAllUsers();
+    return users.map((x) => UserDto.from(x));
+  }
+
+  @UseGuards(RolesGuard)
+  @Get(':username')
+  @ApiParam({ name: 'username' })
   @ApiOperation({
     summary: 'Search for a User',
     description: 'Search for a User, creates a query and returns the result.',
   })
-  @ApiOkResponse({ description: 'Successful operation', type: Object })
-  async searchUsers(@Query('query') query: string) {
-    return this.usersService.searchUsers(query);
+  @ApiOkResponse({ description: 'Successful operation', type: [GameDto] })
+  async searchUsers(@Param('username') username: string) {
+    return this.usersService.searchUsers(username);
   }
 
   @Post()

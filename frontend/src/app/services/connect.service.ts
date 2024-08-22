@@ -13,10 +13,8 @@ export class ConnectService {
     this.socketService.on('gameFound', () => this.gameFound());
     this.socketService.on('gameStarted', () => this.gameStarted());
     this.socketService.on('moveMade', () => this.moveMade());
-    this.socketService.on('gameOver', () => this.gameOver());
-    this.socketService.on('gameStateSent', () => this.gameStateSent());
 
-    this.socketService.connect(); // Stelle die Verbindung her
+    this.socketService.connect();
   }
 
   enterQueue(){

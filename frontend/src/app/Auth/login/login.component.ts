@@ -4,7 +4,6 @@ import {FormsModule, NgForm} from "@angular/forms";
 import {Router} from "@angular/router";
 import {LoginResponse} from "./interfaces/LoginResponse";
 import {ConnectService} from "../../services/connect.service";
-import {SocketService} from "../../services/socket.service";
 
 @Component({
   selector: 'app-login',

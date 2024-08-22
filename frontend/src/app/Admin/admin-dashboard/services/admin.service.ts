@@ -20,12 +20,10 @@ export class AdminService {
 
   runningGames: GameDto[] | undefined;
 
-  searchResults: string[] = [];
+  user: UserDto[] = [];
 
-  //todo: make it false after search and then set it true again
-  showSearchResults: boolean = true;
+  userGames: GameDto[] = []
 
-  userDetails: { username: string, games: GameDto[] } | null = null;
 
   constructor(
     private http : HttpClient,
@@ -33,6 +31,18 @@ export class AdminService {
     private router: Router,
     private readUserService: ReadUserService
   ) { }
+
+
+  getUsers(){
+    this.http.get<[UserDto]>(`${this.apiUrl}/user`).subscribe({
+      next: (response: [UserDto]) => {
+        this.user = response;
+      },
+      error: (err)=> {
+        console.log(err);
+    }
+    });
+  }
 
   getMatchMakingQueue() {
     this.http.get<QueueEntry>(`${this.apiUrl}/queue`).subscribe({
@@ -58,23 +68,14 @@ export class AdminService {
 
   searchUsers(query: string): void {
     if (query.length > 0) {
-      this.http.get<{ username: string, games: GameDto[] }>(`${this.apiUrl}/user/search`, { params: { query } })
-        .subscribe({
-          next: (results: { username: string, games: GameDto[] }) => {
-            this.searchResults = [results.username];
-            this.userDetails = results;
-            this.showSearchResults = this.userDetails !== null;
+      this.http.get<[GameDto]>(`${this.apiUrl}/user/${query}`).subscribe({
+          next: (response: [GameDto]) => {
+            this.userGames = response;
           },
           error: (err) => {
             console.error('Search failed:', err);
-            this.userDetails = null;
-            this.searchResults = [];
-            this.showSearchResults = false;
           }
         });
-    } else {
-      this.searchResults = [];
-      this.showSearchResults = false;
     }
   }
 }
