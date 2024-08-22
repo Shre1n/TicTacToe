@@ -5,6 +5,7 @@ import {FormsModule} from "@angular/forms";
 import {GameDto} from "./interfaces/Game/gamesDto";
 import {UserDto} from "./interfaces/Game/User/userDto";
 import {NgClass, NgStyle, NgSwitch} from "@angular/common";
+import {LogoutService} from "../../Auth/logout/services/logout.service";
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -20,7 +21,10 @@ import {NgClass, NgStyle, NgSwitch} from "@angular/common";
 })
 export class AdminDashboardComponent implements OnInit {
 
-  constructor(public adminService: AdminService, private router: Router) {}
+  constructor(
+    public adminService: AdminService,
+    private logOut: LogoutService,
+    private router: Router) {}
 
   searchText: string = '';
   showQueue: boolean = false;
@@ -32,6 +36,10 @@ export class AdminDashboardComponent implements OnInit {
   ngOnInit() {
     this.getMatchMakingQueue();
     this.getRunningGames();
+  }
+
+  logout(){
+    this.logOut.logout();
   }
 
   toggleLeftSidebar() {

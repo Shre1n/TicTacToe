@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {AuthService} from "./services/user/auth/auth.service";
 import {LoginComponent} from "./Auth/login/login.component";
 
 @Component({
@@ -13,9 +12,7 @@ import {LoginComponent} from "./Auth/login/login.component";
 export class AppComponent{
 
 
-  constructor(
-    private authService: AuthService,
-  ) {
+  constructor() {
   }
 
 

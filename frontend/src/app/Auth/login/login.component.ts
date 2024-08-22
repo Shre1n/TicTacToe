@@ -5,7 +5,6 @@ import {Router} from "@angular/router";
 import {LoginResponse} from "./interfaces/LoginResponse";
 import {ConnectService} from "../../services/connect.service";
 import {SocketService} from "../../services/socket.service";
-import {AuthService} from "../../services/user/auth/auth.service";
 
 @Component({
   selector: 'app-login',
@@ -32,8 +31,7 @@ export class LoginComponent{
   constructor(
     private loginService: LoginService,
     private router: Router,
-    private connectService: ConnectService,
-    private authService: AuthService,) {
+    private connectService: ConnectService,) {
   }
 
 
@@ -52,9 +50,10 @@ export class LoginComponent{
     if (this.errors.size === 0) {
       this.loginService.login(this.username, this.password).subscribe({
         next: (response: LoginResponse) => {
-          this.authService.setAuthenticated();
-          this.authService.setAdmin();
+          window.localStorage.clear();
+          this.loginService.setAuthenticated();
           if (response.isAdmin) {
+            this.loginService.setAdmin();
             this.router.navigate(['/admin']);
           } else {
             this.router.navigate(['/play-now']);

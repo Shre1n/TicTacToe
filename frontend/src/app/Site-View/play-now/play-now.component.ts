@@ -3,7 +3,7 @@ import {Router} from "@angular/router";
 import {ConnectService} from "../../services/connect.service";
 import {ReadUserService} from "../../services/user/readUser/read-user.service";
 import {ReadUserProfilePictureService} from "../../services/user/readUserProfilePicture/read-user-profile-picture.service";
-import {AuthService} from "../../services/user/auth/auth.service";
+import {LogoutService} from "../../Auth/logout/services/logout.service";
 
 @Component({
   selector: 'app-play-now',
@@ -17,7 +17,7 @@ export class PlayNowComponent implements OnInit{
 
   constructor(
     private router: Router,
-    private authService: AuthService,
+    private logOut: LogoutService,
     private connectService: ConnectService,
     public readUser: ReadUserService,
     public readProfile: ReadUserProfilePictureService) {
@@ -29,7 +29,7 @@ export class PlayNowComponent implements OnInit{
   }
 
   logout(){
-    this.authService.logout();
+    this.logOut.logout();
   }
 
   navProfile(){
