@@ -10,28 +10,13 @@ import {LoginComponent} from "./Auth/login/login.component";
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit{
+export class AppComponent{
 
-  isAdmin: boolean = false;
-  isAuthenticated: boolean = false;
 
   constructor(
     private authService: AuthService,
   ) {
   }
 
-  ngOnInit() {
-    this.authService.isAuthenticated$.subscribe(
-      (isAuthenticated) => {
-        this.isAuthenticated = isAuthenticated;
-      }
-    );
-
-    this.authService.isAdmin$.subscribe(
-      (isAdmin) => {
-        this.isAdmin = isAdmin;
-      }
-    );
-  }
 
 }

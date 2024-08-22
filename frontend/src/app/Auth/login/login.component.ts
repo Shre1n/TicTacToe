@@ -52,8 +52,8 @@ export class LoginComponent{
     if (this.errors.size === 0) {
       this.loginService.login(this.username, this.password).subscribe({
         next: (response: LoginResponse) => {
-          this.authService.setAuthenticated(true);
-          this.authService.setAdmin(response.isAdmin);
+          this.authService.setAuthenticated();
+          this.authService.setAdmin();
           if (response.isAdmin) {
             this.router.navigate(['/admin']);
           } else {
