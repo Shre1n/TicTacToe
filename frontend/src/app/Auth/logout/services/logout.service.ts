@@ -13,7 +13,7 @@ export class LogoutService {
 
 
   logout() {
-    return this.http.post(`${this.apiUrl}/auth`, {}).subscribe({
+    return this.http.delete(`${this.apiUrl}/auth`, {}).subscribe({
       next: () => {
 
         window.localStorage.clear();
