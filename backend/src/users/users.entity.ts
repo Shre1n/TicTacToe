@@ -5,8 +5,10 @@ import {
   OneToOne,
   JoinColumn,
   CreateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { ProfilePicture } from '../profilePicture/profilePicture.entity';
+import { Game } from '../games/games.entity';
 
 @Entity()
 export class User {
@@ -31,4 +33,10 @@ export class User {
 
   @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
+
+  @OneToMany(() => Game, (game) => game.player1)
+  gamesAsPlayer1: Game[];
+
+  @OneToMany(() => Game, (game) => game.player2)
+  gamesAsPlayer2: Game[];
 }

@@ -38,5 +38,6 @@ declare module 'express-session' {
   interface SessionData extends session.Session {
     isLoggedIn: boolean;
     user: User;
+    isAdmin: boolean;
   }
 }

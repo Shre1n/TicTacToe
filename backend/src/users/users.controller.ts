@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Session,
   StreamableFile,
   UploadedFile,
@@ -27,6 +28,7 @@ import {
   ApiOperation,
   ApiParam,
   ApiTags,
+  ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { RegisterUserDto } from '../auth/dto/register-user.dto';
@@ -39,6 +41,8 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploadDto } from '../profilePicture/dto/fileUploadDto';
 import { ProfilePictureService } from '../profilePicture/profilePicture.service';
+import { RolesGuard } from '../guards/roles/roles.guard';
+import { GameDto } from '../games/dto/game.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -47,6 +51,27 @@ export class UsersController {
     private usersService: UsersService,
     private profilePictureService: ProfilePictureService,
   ) {}
+
+  @UseGuards(RolesGuard)
+  @Get()
+  @ApiOperation({ summary: 'Get users from the users' })
+  @ApiOkResponse({ description: 'successful operation', type: [UserDto] })
+  async getAllUsers() {
+    const users = await this.usersService.getAllUsers();
+    return users.map((x) => UserDto.from(x));
+  }
+
+  @UseGuards(RolesGuard)
+  @Get(':username')
+  @ApiParam({ name: 'username' })
+  @ApiOperation({
+    summary: 'Search for a User',
+    description: 'Search for a User, creates a query and returns the result.',
+  })
+  @ApiOkResponse({ description: 'Successful operation', type: [GameDto] })
+  async searchUsers(@Param('username') username: string) {
+    return this.usersService.searchUsers(username);
+  }
 
   @Post()
   @ApiOperation({
@@ -80,6 +105,7 @@ export class UsersController {
       'Gets some basic infos about the current user. The user has to be logged in',
   })
   @ApiOkResponse({ description: 'Successful operation', type: UserDto })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   async getUserInfo(@Session() session: SessionData): Promise<UserDto> {
     return this.usersService.getCurrentUserInformation(session);
   }

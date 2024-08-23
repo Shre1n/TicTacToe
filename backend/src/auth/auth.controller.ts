@@ -2,7 +2,10 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Post,
+  Req,
+  Res,
   Session,
   UseGuards,
 } from '@nestjs/common';
@@ -26,6 +29,7 @@ import { Game } from '../games/games.entity';
 @Controller('auth')
 export class AuthController {
   private readonly gameRepository: Repository<Game>;
+
   constructor(
     private authService: AuthService,
     private dataSource: DataSource,
@@ -51,7 +55,11 @@ export class AuthController {
     );
     session.user = user;
     session.isLoggedIn = true;
-    return this.userService.getCurrentUserInformation(session);
+    session.isAdmin = user.isAdmin;
+
+    const userInfo = await this.userService.getCurrentUserInformation(session);
+    userInfo.isAdmin = user.isAdmin;
+    return userInfo;
   }
 
   @Delete()
@@ -64,9 +72,23 @@ export class AuthController {
     await this.authService.logout(session);
   }
 
-  @Post('admin-only')
+  @Get('admin-only')
   @UseGuards(RolesGuard)
-  async adminOnlyRoute() {
-    return { message: 'This route is only accessible by the admin' };
+  @ApiOperation({
+    summary: 'Check if the Authenticated User is an Admin',
+    description: 'Gets the Info of the User with a Flag',
+  })
+  @ApiOkResponse({ description: 'Successful operation' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  async adminOnlyRoute(@Session() session: SessionData) {
+    if (session.user.isAdmin === true) {
+      return {
+        admin: session.isAdmin,
+      };
+    } else {
+      return {
+        message: 'This route is only accessible by the admin',
+      };
+    }
   }
 }

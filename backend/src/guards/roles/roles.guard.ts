@@ -9,6 +9,8 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const session: SessionData = request.session;
 
-    return session.user?.isAdmin;
+    if (session && session.isAdmin) {
+      return true;
+    }
   }
 }

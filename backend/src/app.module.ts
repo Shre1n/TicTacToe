@@ -50,8 +50,7 @@ export class AppModule implements OnModuleInit {
     });
 
     if (!adminUser) {
-      const salt = await bcrypt.genSalt();
-      const hashedPassword = await bcrypt.hash('adminPass', salt);
+      const hashedPassword = await bcrypt.hash('adminPass', 10);
 
       const admin = userRepository.create({
         username: 'admin',

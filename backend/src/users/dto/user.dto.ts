@@ -22,9 +22,20 @@ export class UserDto {
   })
   state?: UserState;
 
+  @ApiProperty({
+    description: 'Whether the user is an admin',
+    example: 'false',
+    nullable: true,
+  })
+  isAdmin?: boolean;
+
   public static from(user: User): UserDto {
     const { username, elo, profilePicture } = user;
-    return { username, elo, profilePictureId: profilePicture?.id };
+    return {
+      username,
+      elo: Math.round(elo),
+      profilePictureId: profilePicture?.id,
+    };
   }
 }
 

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { User } from './users.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -17,6 +18,7 @@ import { ProfilePicture } from '../profilePicture/profilePicture.entity';
 import { SessionData } from 'express-session';
 import { GamesService } from '../games/games.service';
 import { QueueService } from '../queue/queue.service';
+import { GameDto } from '../games/dto/game.dto';
 
 @Injectable()
 export class UsersService {
@@ -30,6 +32,19 @@ export class UsersService {
   ) {
     this.usersRepository = this.dataSource.getRepository(User);
     this.gameRepository = this.dataSource.getRepository(Game);
+  }
+
+  async getAllUsers() {
+    return await this.usersRepository.find();
+  }
+
+  async searchUsers(username: string) {
+    const user = await this.findOne(username);
+
+    if (!user) {
+      throw new NotFoundException('User not found!');
+    }
+    return await this.getUserGames(user);
   }
 
   async create(registerDto: RegisterUserDto) {
@@ -52,6 +67,10 @@ export class UsersService {
       where: { username },
       relations: { profilePicture: true },
     });
+  }
+
+  async isAdmin(session: SessionData): Promise<boolean> {
+    return session.user.isAdmin;
   }
 
   async getCurrentUserInformation(session: SessionData) {
@@ -84,6 +103,18 @@ export class UsersService {
     return games.map((g) =>
       MatchDto.from(UserDto.from(g.player1 == user ? g.player2 : g.player1), g),
     );
+  }
+
+  //Admin
+  async getUserGames(user: User) {
+    const games = await this.gameRepository.find({
+      where: [
+        { player1: { id: user.id }, isFinished: true },
+        { player2: { id: user.id }, isFinished: true },
+      ],
+      relations: ['player1', 'player2'],
+    });
+    return games.map((game) => GameDto.from(game));
   }
 
   async getUserProfile(user: User) {
