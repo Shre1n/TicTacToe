@@ -12,12 +12,12 @@
   <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
       <span class="navbar-text">
-        <img src="assets/p1.png" class="profile-img" alt="yourProfile" #yourProfile>
-        {{ yourElo }}
+        <img src="{{ this.tictactoeService.playerPicture }}" class="profile-img" alt="yourProfile" #yourProfile>
+        {{ this.tictactoeService.player?.elo }}
       </span>
       <span class="navbar-text">
-        {{ opponentElo }}
-        <img src="assets/p2.png" class="profile-img justify-content-end" alt="yourProfile" #opponentProfile>
+        {{ this.tictactoeService.opponent?.elo }}
+        <img src="{{ this.tictactoeService.opponentPicture }}" class="profile-img justify-content-end" alt="yourProfile" #opponentProfile>
       </span>
     </div>
   </nav>
@@ -26,8 +26,8 @@
   <section class="container-fluid">
     <div class="d-flex justify-content-center align-items-center">
       <div class="tictactoe-board">
-        @for (cell of cells; let i = $index; track i //change to a unique tracking index){
-        <button class="tictactoe-cell" (click)="makeMove(i)">
+        @for (cell of this.tictactoeService.board; let i = $index; track i //change to a unique tracking index){
+        <button class="tictactoe-cell" (click)="moveMove(i)">
           {{ cell }}
         </button>
         }

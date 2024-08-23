@@ -1,6 +1,8 @@
-import {booleanAttribute, Component} from '@angular/core';
-import {TictactoeService} from "../services/tictactoe.service";
-import {Router} from "@angular/router";
+import {booleanAttribute, Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from "@angular/router";
+import {TictactoeService} from "./services/tictactoe.service";
+import {ReadUserProfilePictureService} from "../services/user/readUserProfilePicture/read-user-profile-picture.service";
+import {MoveDto} from "../services/user/interfaces/MoveDto";
 
 @Component({
   selector: 'app-tic-tac-toe',
@@ -9,31 +11,22 @@ import {Router} from "@angular/router";
   templateUrl: './tic-tac-toe.component.html',
   styleUrl: './tic-tac-toe.component.css'
 })
-export class TicTacToeComponent {
+export class TicTacToeComponent implements OnInit{
 
-  //todo make move and sends to server
-  cells: string[] = Array(9).fill(''); // todo server sends Cells then -> cell track in html can be changed to unique
-  yourElo: number = 0; // Dummy-Elo-Punkte für den Nutzer
-  opponentElo: number = 0; // Dummy-Elo-Punkte für den Gegner
-  gameStatus: string = 'In Progress';
-
-  // private gameId: number;
-
-
-  constructor(private tictactoeService: TictactoeService, private router: Router) {
+  constructor(
+    public tictactoeService: TictactoeService,
+    public readPicture: ReadUserProfilePictureService,
+    private router: ActivatedRoute) {
   }
 
-
-  makeMove(index: number): void {
-    this.tictactoeService.makeAMove(index).subscribe({
-      next: (response) =>{
-        console.log('Move made successfully', response);
-
-        //todo send updated board to server and ask if finished
-      },
-      error: (error) =>{
-        console.error('Error making move', error);
-      }
-    });
+  ngOnInit() {
+    if (this.tictactoeService.board.length === 0){
+      this.tictactoeService.loadFromApi();
+    }
   }
+
+  moveMove(position: number) {
+    this.tictactoeService.makeMove({position});
+  }
+
 }

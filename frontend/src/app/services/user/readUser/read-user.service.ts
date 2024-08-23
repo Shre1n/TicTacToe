@@ -8,7 +8,7 @@ import {ReadUserProfilePictureService} from "../readUserProfilePicture/read-user
 })
 export class ReadUserService {
 
-  username = "";
+  private _username = "";
   elo = 0;
 
   constructor(private http: HttpClient, private readProfilePictureService: ReadUserProfilePictureService) { }
@@ -16,10 +16,14 @@ export class ReadUserService {
 
   readUser(): void {
     this.http.get<UserDto>(`/api/user/me`).subscribe((user: UserDto): void => {
-      this.username = user.username;
+      this._username = user.username;
       this.readProfilePictureService.readProfilePicture(user.profilePictureId)
       this.elo = user.elo;
     })
   }
 
+
+  get username(): string {
+    return this._username;
+  }
 }

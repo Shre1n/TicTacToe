@@ -3,9 +3,9 @@ import {AdminService} from "./services/admin.service";
 import {Router} from "@angular/router";
 import {FormsModule} from "@angular/forms";
 import {GameDto} from "./interfaces/Game/gamesDto";
-import {UserDto} from "./interfaces/Game/User/userDto";
 import {NgClass, NgStyle, NgSwitch} from "@angular/common";
 import {LogoutService} from "../../Auth/logout/services/logout.service";
+import {UserDto} from "../../User/player-profile/player-content/userDto";
 
 @Component({
   selector: 'app-admin-dashboard',
