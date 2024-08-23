@@ -1,0 +1,195 @@
+#wrapper {
+  display: flex;
+  min-width: 100vw;
+  align-items: stretch;
+  position: relative;
+}
+
+#left-sidebar-wrapper {
+  min-height: 100vh;
+  margin-left: -15rem;
+  transition: margin 0.25s ease-out;
+}
+
+#left-sidebar-wrapper .sidebar-heading {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.2rem;
+}
+
+#left-sidebar-wrapper .list-group {
+  width: 15rem;
+}
+
+#wrapper.toggled-left #left-sidebar-wrapper {
+  margin-left: 0;
+}
+
+#page-content-wrapper {
+  width: 100%;
+  padding: 20px;
+}
+
+.transition{
+  transition: margin 0.25s ease-out;
+}
+
+#right-sidebar-wrapper {
+  min-height: 100vh;
+  margin-right: -15rem;
+  display: none;
+}
+
+#right-sidebar-wrapper .sidebar-heading {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.2rem;
+}
+
+#right-sidebar-wrapper .list-group {
+  width: 15rem;
+}
+
+#wrapper.toggled-right #right-sidebar-wrapper {
+  margin-right: 0;
+}
+
+#menu-toggle-right{
+  margin-right: 2rem;
+}
+
+#menu-toggle-left{
+  margin-left: 2rem;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+}
+
+#search{
+  margin-right: 2rem;
+}
+
+#search:hover{
+  background-color: #0056b3;
+  color: white;
+}
+
+.list-group-item {
+  position: relative;
+  cursor: pointer;
+}
+
+.game-details-box {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: none;
+  z-index: 1000;
+  max-width: 200px;
+}
+
+.game-details-box.show {
+  display: block; /* Show when 'show' class is added */
+}
+
+.game-details-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-width: 10px;
+  border-style: solid;
+}
+
+.game-details-box .game-details-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent white transparent transparent; /* Pfeil zeigt nach links */
+  top: 50%; /* Vertikale Zentrierung */
+  right: 100%; /* Positioniert den Pfeil an der linken Kante der Box */
+  transform: translateY(-50%); /* Zentriert den Pfeil vertikal */
+}
+
+.search-results {
+  z-index: 1000;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-results li {
+  padding: 10px;
+  color: black;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.search-results li:last-child {
+  border-bottom: none;
+}
+
+.search-results li:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+
+
+/*Admin Haupseiten Zeug*/
+
+.card {
+  max-width: 400px;
+  margin: auto;
+}
+
+.tic-tac-toe-board {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  margin-bottom: 1rem;
+}
+
+.cell {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  font-size: 2rem;
+}
+
+.icon-x::before {
+  content: 'X';
+  color: #007bff;
+  font-size: 2rem;
+}
+
+.icon-o::before {
+  content: 'O';
+  color: #dc3545;
+  font-size: 2rem;
+}
+
+.game-info p {
+  margin: 0.5rem 0;
+}
+
+.game-info strong {
+  font-weight: bold;
+}
+
+.game-info span {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+

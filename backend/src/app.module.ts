@@ -9,9 +9,10 @@ import * as bcrypt from 'bcryptjs';
 import { RolesGuard } from './guards/roles/roles.guard';
 import { ProfilePicture } from './profilePicture/profilePicture.entity';
 import { AuthModule } from './auth/auth.module';
-import { GameController } from './games/logic/game/game.controller';
-import { GameModule } from './games/logic/game/game.module';
+import { GamesModule } from './games/games.module';
+import { ProfilePictureService } from './profilePicture/profilePicture.service';
 import { Game } from './games/games.entity';
+import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -33,10 +34,11 @@ import { Game } from './games/games.entity';
     }),
     UsersModule,
     AuthModule,
-    GameModule,
+    GamesModule,
+    QueueModule,
   ],
   controllers: [],
-  providers: [RolesGuard],
+  providers: [RolesGuard, ProfilePictureService],
 })
 export class AppModule implements OnModuleInit {
   // Generate an Admin User if no Admin exists
@@ -48,8 +50,7 @@ export class AppModule implements OnModuleInit {
     });
 
     if (!adminUser) {
-      const salt = await bcrypt.genSalt();
-      const hashedPassword = await bcrypt.hash('adminPass', salt);
+      const hashedPassword = await bcrypt.hash('adminPass', 10);
 
       const admin = userRepository.create({
         username: 'admin',
