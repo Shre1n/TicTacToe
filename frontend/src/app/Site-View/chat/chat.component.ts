@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ChatDTO} from "./dto/chat.dto";
 import {ConnectService} from "../../services/connect.service";
 import {FormsModule} from "@angular/forms";
@@ -15,7 +15,7 @@ import {TictactoeService} from "../../tic-tac-toe/services/tictactoe.service";
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
-export class ChatComponent implements OnInit{
+export class ChatComponent implements OnInit, AfterViewChecked{
 
   @ViewChild('chatMessages') chatMessages!: ElementRef;
 
@@ -33,6 +33,11 @@ export class ChatComponent implements OnInit{
   }
 
   ngOnInit() {
+    this.scrollToBottom();
+    this.loadMessages();
+  }
+
+  ngAfterViewChecked() {
     this.scrollToBottom();
   }
 
@@ -52,6 +57,7 @@ export class ChatComponent implements OnInit{
       this.scrollToBottom();
       this.message = '';
     }
+    this.loadMessages();
   }
 
   scrollToBottom() {
