@@ -3,20 +3,16 @@ import { ChatDto } from './dto/chat.dto';
 
 @Injectable()
 export class ChatService {
-  private messages = new Map<number, ChatDto[]>();
+  private messages = new Map<string, ChatDto[]>();
 
   async getMessagesForGame(gameId: number): Promise<ChatDto[]> {
-    console.log('Current messages keys:', Array.from(this.messages.keys()));
-    console.log('Messages for gameId:', gameId, this.messages.get(0));
-    return this.messages.get(0) || [];
+    return this.messages.get(gameId.toString()) || [];
   }
 
   async saveMessage(gameId: number, message: ChatDto) {
-    if (!this.messages.has(gameId)) {
-      this.messages.set(gameId, []);
+    if (!this.messages.has(gameId.toString())) {
+      this.messages.set(gameId.toString(), []);
     }
-    this.messages.get(gameId).push(message);
-    console.log(`Message added to game ${gameId}:`, message);
-    console.log('Current messages:', this.messages.get(gameId));
+    this.messages.get(gameId.toString()).push(message);
   }
 }

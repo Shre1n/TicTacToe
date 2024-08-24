@@ -64,24 +64,26 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @UseGuards(IsSocketLoggedInGuard)
   @SubscribeMessage(ClientSentEvents.sendMessage)
-  handleMessage(
+  async handleMessage(
     @ConnectedSocket() client: Socket,
     @MessageBody() message: ChatDto,
   ) {
     const request = client.request as Request;
     const session = request.session;
 
-    const gameRoom = message.gameId.toString();
-    if (!client.rooms.has(gameRoom)) {
-      throw new WsException(
-        'Invalid game room or User is not part of this game',
-      );
-    }
+    if (await this.gameService.isPlayerInGame(session.user)) {
+      const gameRoom = message.gameId.toString();
+      if (!client.rooms.has(gameRoom)) {
+        throw new WsException(
+          'Invalid game room or User is not part of this game',
+        );
+      }
 
-    this.server.to(gameRoom).emit(ServerSentEvents.receiveMessage, {
-      username: session.user.username,
-      message: message.message,
-    });
+      this.server.to(gameRoom).emit(ServerSentEvents.receiveMessage, {
+        username: session.user.username,
+        message: message.message,
+      });
+    }
   }
 
   @UseGuards(IsSocketLoggedInGuard)

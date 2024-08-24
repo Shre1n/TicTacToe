@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ChatDTO} from "./dto/chat.dto";
 import {ConnectService} from "../../services/connect.service";
 import {FormsModule} from "@angular/forms";
@@ -15,7 +15,7 @@ import {TictactoeService} from "../../tic-tac-toe/services/tictactoe.service";
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
-export class ChatComponent {
+export class ChatComponent{
 
   @ViewChild('chatMessages') chatMessages!: ElementRef;
 
@@ -26,8 +26,8 @@ export class ChatComponent {
   gameId: number = 0;
 
   constructor(protected connectService: ConnectService, private tictactoeService: TictactoeService) {
-    this.gameId = this.tictactoeService.gameId;
-    this.loadMessages();
+
+
 
     this.connectService.receiveMessage = (message) => {
       this.connectService.messages.push(message);
@@ -37,12 +37,14 @@ export class ChatComponent {
 
   toggleChat() {
     this.isChatOpen = !this.isChatOpen;
+    this.loadMessages();
     if (this.isChatOpen) {
       setTimeout(() => this.scrollToBottom(), 0);
     }
   }
 
   sendMessage() {
+    this.gameId = this.tictactoeService.gameId;
     if (this.message.trim()) {
       this.connectService.sendMessage(this.gameId, this.message);
       this.message = '';
@@ -58,7 +60,7 @@ export class ChatComponent {
   }
 
   private loadMessages(){
-    this.connectService.getMessages(this.gameId)
+    this.connectService.getMessages();
   }
 
 }

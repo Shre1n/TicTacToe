@@ -31,7 +31,7 @@ export class TictactoeService {
     private readUser: ReadUserService,
     private http: HttpClient,
     private socketService: SocketService
-    ) { }
+  ) { }
 
   moveMade(update: GameUpdateDto){
     this._isPlayersTurn = update.turn === this.player_turn;
@@ -43,6 +43,7 @@ export class TictactoeService {
     this.readUser.readUser();
     this.http.get<GameDto>(`${this.apiUrl}/game/active`).subscribe({
       next: (response: GameDto) => {
+        window.localStorage.setItem("gameId", `${response.gameId}`);
         this.initGameBoard(response);
       },
       error: err => {

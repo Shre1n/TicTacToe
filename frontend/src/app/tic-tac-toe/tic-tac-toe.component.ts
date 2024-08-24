@@ -4,6 +4,7 @@ import {TictactoeService} from "./services/tictactoe.service";
 import {ReadUserProfilePictureService} from "../services/user/readUserProfilePicture/read-user-profile-picture.service";
 import {MoveDto} from "../services/user/interfaces/MoveDto";
 import {ChatComponent} from "../Site-View/chat/chat.component";
+import {ConnectService} from "../services/connect.service";
 
 @Component({
   selector: 'app-tic-tac-toe',
@@ -19,7 +20,9 @@ export class TicTacToeComponent implements OnInit{
   constructor(
     public tictactoeService: TictactoeService,
     public readPicture: ReadUserProfilePictureService,
-    private router: ActivatedRoute) {
+    private router: ActivatedRoute,
+    private connectService: ConnectService,
+    ) {
   }
 
   ngOnInit() {

@@ -7,6 +7,7 @@ import {GameUpdateDto} from "./user/interfaces/GameUpdateDto";
 import {MatchMakingService} from "../Site-View/match-making/services/match-making.service";
 import {ChatDTO} from "../Site-View/chat/dto/chat.dto";
 import {HttpClient} from "@angular/common/http";
+import {ReadUserService} from "./user/readUser/read-user.service";
 
 @Injectable()
 export class ConnectService {
@@ -15,13 +16,16 @@ export class ConnectService {
 
   messages: ChatDTO[] = [];
 
+  id: number = 0;
+
   constructor(
     private http: HttpClient,
     private socketService: SocketService,
     private tictactoeService: TictactoeService,
     private router: Router,
-    private matchmakingService: MatchMakingService
-    ) {
+    private matchmakingService: MatchMakingService,
+    private readUser: ReadUserService
+  ) {
     this.connect();
   }
 
@@ -36,10 +40,16 @@ export class ConnectService {
     this.socketService.connect();
   }
 
-  getMessages(gameId: number) {
-    this.http.get<ChatDTO[]>(`${this.apiUrl}/chat/messages/${gameId}`).subscribe({
+  getMessages() {
+    const id = window.localStorage.getItem("gameId");
+    if (!id) {
+      console.error('No gameId found in localStorage');
+      return;
+    }
+    this.http.get<ChatDTO[]>(`${this.apiUrl}/chat/messages/${id}`).subscribe({
       next: (messages: ChatDTO[]) => {
         this.messages = messages;
+        console.log('Messages fetched successfully:', messages, id);
       },
       error: (err) => {
         console.error('Failed to fetch messages:', err);
@@ -47,8 +57,22 @@ export class ConnectService {
     })
   }
 
-  sendMessage(gameId: number, text: string) {
-    this.socketService.emit('sendMessage', { gameId, message: text });
+  sendMessage(gameId: number, message: string) {
+
+    this.socketService.emit('sendMessage', { gameId, message });
+    this.id = gameId;
+    const username = this.readUser.username;
+    const body = {gameId, username, message};
+
+    this.http.post<ChatDTO>(`${this.apiUrl}/chat/messages`, body).subscribe({
+      next: (messages: ChatDTO) => {
+        this.messages.push(messages);
+        console.log('Messages send successfully:', this.messages);
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
   }
 
   exception(ex: String){
@@ -73,8 +97,13 @@ export class ConnectService {
   }
 
   gameStarted(game: GameDto){
+    this.id = game.gameId;
     this.tictactoeService.initGameBoard(game);
     this.matchmakingService.changeFoundStatus();
+  }
+
+  leaveQueue(){
+    this.socketService.emit('leaveQueue');
   }
 
 

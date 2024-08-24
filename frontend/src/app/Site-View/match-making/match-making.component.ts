@@ -7,6 +7,7 @@ import {
 import {TictactoeService} from "../../tic-tac-toe/services/tictactoe.service";
 import {MatchMakingService} from "./services/match-making.service";
 import {ReadUserService} from "../../services/user/readUser/read-user.service";
+import {ConnectService} from "../../services/connect.service";
 
 @Component({
   selector: 'app-match-making',
@@ -34,7 +35,8 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
     public readUser: ReadUserService,
     public tictactoeService: TictactoeService,
     public matchmakingService: MatchMakingService,
-    public readProfile: ReadUserProfilePictureService
+    public readProfile: ReadUserProfilePictureService,
+    private connectService: ConnectService
   ) {
   }
 
@@ -89,6 +91,7 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   cancelMatchmaking() {
+    this.connectService.leaveQueue();
     this.router.navigate(['/play-now']);
     console.log('Matchmaking abgebrochen');
   }
