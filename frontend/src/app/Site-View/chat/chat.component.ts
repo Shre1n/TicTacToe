@@ -15,7 +15,7 @@ import {TictactoeService} from "../../tic-tac-toe/services/tictactoe.service";
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
-export class ChatComponent{
+export class ChatComponent implements OnInit{
 
   @ViewChild('chatMessages') chatMessages!: ElementRef;
 
@@ -25,15 +25,17 @@ export class ChatComponent{
 
   gameId: number = 0;
 
-  constructor(protected connectService: ConnectService, private tictactoeService: TictactoeService) {
-
-
-
+  constructor(protected connectService: ConnectService, protected tictactoeService: TictactoeService) {
     this.connectService.receiveMessage = (message) => {
       this.connectService.messages.push(message);
       this.scrollToBottom();
     };
   }
+
+  ngOnInit() {
+    this.scrollToBottom();
+  }
+
 
   toggleChat() {
     this.isChatOpen = !this.isChatOpen;
@@ -47,6 +49,7 @@ export class ChatComponent{
     this.gameId = this.tictactoeService.gameId;
     if (this.message.trim()) {
       this.connectService.sendMessage(this.gameId, this.message);
+      this.scrollToBottom();
       this.message = '';
     }
   }
@@ -63,4 +66,5 @@ export class ChatComponent{
     this.connectService.getMessages();
   }
 
+  protected readonly self = self;
 }

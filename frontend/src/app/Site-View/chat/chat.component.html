@@ -10,9 +10,17 @@
     </div>
     <div class="chat-messages" #chatMessages>
       @for (message of this.connectService.messages; track message.gameId){
-        <div class="chat-message">
-          <strong>{{message.username}}:</strong> {{message.message}}
-        </div>
+        @if (message.username === this.tictactoeService.player?.username){
+          <div class="chat-message">
+            <strong class="self">{{message.username}}:</strong> {{message.message}}
+          </div>
+        }
+        @if (message.username === this.tictactoeService.opponent?.username){
+          <div class="chat-message">
+            <strong class="opponent">{{message.username}}:</strong> {{message.message}}
+          </div>
+        }
+
       }
     </div>
     <div class="chat-input">
