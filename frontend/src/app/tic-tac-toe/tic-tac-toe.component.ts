@@ -3,11 +3,14 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {TictactoeService} from "./services/tictactoe.service";
 import {ReadUserProfilePictureService} from "../services/user/readUserProfilePicture/read-user-profile-picture.service";
 import {MoveDto} from "../services/user/interfaces/MoveDto";
+import {ChatComponent} from "../Site-View/chat/chat.component";
 
 @Component({
   selector: 'app-tic-tac-toe',
   standalone: true,
-  imports: [],
+  imports: [
+    ChatComponent
+  ],
   templateUrl: './tic-tac-toe.component.html',
   styleUrl: './tic-tac-toe.component.css'
 })

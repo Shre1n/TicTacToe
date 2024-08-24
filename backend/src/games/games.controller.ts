@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   NotFoundException,
+  Param,
   Session,
   UseGuards,
 } from '@nestjs/common';
@@ -11,7 +12,6 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { GameDto } from './dto/game.dto';
 import { SessionData } from 'express-session';

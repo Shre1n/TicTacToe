@@ -1,0 +1,29 @@
+<div class="chat-container">
+  <div class="chat-icon" (click)="toggleChat()">
+    <i class="fas fa-comment-dots"></i>
+  </div>
+
+  <div class="chat-box" [class.open]="isChatOpen">
+    <div class="chat-header">
+      <h4>Chat</h4>
+      <button (click)="toggleChat()">Close</button>
+    </div>
+    <div class="chat-messages" #chatMessages>
+      @for (message of this.connectService.messages; track message.gameId){
+        <div class="chat-message">
+          <strong>{{message.username}}:</strong> {{message.message}}
+        </div>
+      }
+    </div>
+    <div class="chat-input">
+      <input
+        type="text"
+        [(ngModel)]="message"
+        (keyup.enter)="sendMessage()"
+        placeholder="Type a message..."
+      />
+      <button (click)="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>
+

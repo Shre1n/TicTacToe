@@ -18,9 +18,9 @@ export class CurrentGamesComponent implements OnInit {
   }
 
   loadGames(): void {
-    this.adminService.getRunningGames().subscribe(games => {
-      this.runningGames = games;
-    });
+    // this.adminService.getRunningGames().subscribe(games => {
+    //   this.runningGames = games;
+    // });
   }
 
   viewGame(gameId: number): void {

@@ -1,5 +1,6 @@
 import {
   ConnectedSocket,
+  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
@@ -21,6 +22,7 @@ import {
 import { GamesService } from '../games/games.service';
 import { PreGameObject } from './preGameObject';
 import { GameDto } from '../games/dto/game.dto';
+import { ChatDto } from '../games/chat/dto/chat.dto';
 
 @WebSocketGateway({ namespace: 'socket' })
 export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -58,6 +60,28 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (activeGame) {
       client.join(activeGame.id.toString());
     }
+  }
+
+  @UseGuards(IsSocketLoggedInGuard)
+  @SubscribeMessage(ClientSentEvents.sendMessage)
+  handleMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() message: ChatDto,
+  ) {
+    const request = client.request as Request;
+    const session = request.session;
+
+    const gameRoom = message.gameId.toString();
+    if (!client.rooms.has(gameRoom)) {
+      throw new WsException(
+        'Invalid game room or User is not part of this game',
+      );
+    }
+
+    this.server.to(gameRoom).emit(ServerSentEvents.receiveMessage, {
+      username: session.user.username,
+      message: message.message,
+    });
   }
 
   @UseGuards(IsSocketLoggedInGuard)

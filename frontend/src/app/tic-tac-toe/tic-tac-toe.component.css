@@ -30,5 +30,12 @@
   background-color: #555;
 }
 
+.chat-wrapper {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
 
 

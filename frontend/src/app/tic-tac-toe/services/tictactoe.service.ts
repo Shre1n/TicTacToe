@@ -16,6 +16,7 @@ export class TictactoeService {
 
   private apiUrl = 'http://localhost:3000/api';
 
+  private _gameId!: number;
   private _board: number[] = [];
   private _player: UserDto | undefined;
   private _opponent: UserDto | undefined;
@@ -53,6 +54,7 @@ export class TictactoeService {
 
   initGameBoard(game: GameDto){
     this._board = game.board;
+    this._gameId = game.gameId;
     if (game.player1.username === this.readUser.username){
       this._player = game.player1;
       this._opponent = game.player2;
@@ -110,5 +112,10 @@ export class TictactoeService {
 
   get opponent(): UserDto | undefined {
     return this._opponent;
+  }
+
+
+  get gameId(): number {
+    return this._gameId;
   }
 }

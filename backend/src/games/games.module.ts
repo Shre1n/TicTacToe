@@ -4,11 +4,13 @@ import { GamesService } from './games.service';
 import { GamesController } from './games.controller';
 import { Game } from './games.entity';
 import { GamesGateway } from './games.gateway';
-import {EloService} from "../elo/elo.service";
+import { EloService } from '../elo/elo.service';
+import { ChatController } from './chat/chat.controller';
+import { ChatService } from './chat/chat.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Game])],
-  providers: [GamesService, GamesGateway, EloService],
-  controllers: [GamesController],
+  providers: [GamesService, GamesGateway, EloService, ChatService],
+  controllers: [GamesController, ChatController],
 })
 export class GamesModule {}
