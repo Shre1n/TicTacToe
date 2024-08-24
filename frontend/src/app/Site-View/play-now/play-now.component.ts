@@ -40,7 +40,11 @@ export class PlayNowComponent implements OnInit{
 
   navMatchMaking(){
     this.connectService.enterQueue();
-    this.router.navigate(['/matchMaking'])
+    this.router.navigate(['/matchMaking']);
+  }
+
+  navTraining(){
+    this.router.navigate(['/train'], {queryParams: {mode: 'training'}});
   }
 
 }

@@ -19,14 +19,31 @@
 </nav>
 
 <section class="container self-margin">
-  <div class="intro-box text-center p-4">
-    <h2>Willkommen bei TicTacToe Online</h2>
-    <p>
-      Treten Sie gegen andere Spieler in einem spannenden TicTacToe-Match an!
-      Nutzen Sie unser Matchmaking-System, um einen Gegner zu finden und spielen Sie direkt los.
-    </p>
-    <button class="btn led-button mt-4" (click)="navMatchMaking()">Jetzt Spielen</button>
+  <div class="box">
+    <div class="row">
+      <h2 class="text-center">Willkommen bei TicTacToe Online</h2>
+      <div class="col-6">
+        <div class="intro-box text-center p-4">
+          <p>
+            Treten Sie gegen andere Spieler in einem spannenden TicTacToe-Match an!
+            Nutzen Sie unser Matchmaking-System, um einen Gegner zu finden und spielen Sie direkt los.
+          </p>
+          <button class="btn led-button mt-4" (click)="navMatchMaking()">Jetzt Spielen</button>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="intro-box text-center p-4">
+          <p>
+            Treten Sie gegen eine KI in einem spannenden TicTacToe-Match an!
+            Bereiten Sie sich darauf vor, gegen andere Spieler zu spielen.
+            Probieren Sie den Übungsmodus, um noch besser zu werden!
+          </p>
+          <button class="btn led-button mt-4" (click)="navTraining()">Zum Training</button>
+        </div>
+      </div>
+    </div>
   </div>
+
 </section>
 
 

@@ -13,6 +13,8 @@ import {MoveDto} from "../services/user/interfaces/MoveDto";
 })
 export class TicTacToeComponent implements OnInit{
 
+  isTrainingMode: boolean = false;
+
   constructor(
     public tictactoeService: TictactoeService,
     public readPicture: ReadUserProfilePictureService,
@@ -20,9 +22,18 @@ export class TicTacToeComponent implements OnInit{
   }
 
   ngOnInit() {
+    if (this.router.queryParams.subscribe(params => {
+      this.isTrainingMode = params['mode'] === 'training';
+      if (this.isTrainingMode) this.setupTrainingMode();
+    }))
+
     if (this.tictactoeService.board.length === 0){
       this.tictactoeService.loadFromApi();
     }
+  }
+
+  setupTrainingMode(){
+
   }
 
   moveMove(position: number) {

@@ -87,6 +87,13 @@ export class TictactoeService {
   }
 
 
+  makeMoveForAi(){
+
+  }
+
+
+
+
   get isPlayersTurn(): boolean {
     return this._isPlayersTurn;
   }

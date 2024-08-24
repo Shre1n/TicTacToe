@@ -7,33 +7,36 @@
 
 
 <body data-bs-theme="dark">
-  <!-- Navigationsleiste -->
+<!-- Navigationsleiste -->
 
-  <nav class="navbar bg-body-tertiary">
-    <div class="container-fluid">
+<nav class="navbar bg-body-tertiary">
+  <div class="container-fluid">
       <span class="navbar-text">
         <img src="{{ this.tictactoeService.playerPicture }}" class="profile-img" alt="yourProfile" #yourProfile>
         {{ this.tictactoeService.player?.elo }}
       </span>
+    @if (!isTrainingMode) {
       <span class="navbar-text">
         {{ this.tictactoeService.opponent?.elo }}
-        <img src="{{ this.tictactoeService.opponentPicture }}" class="profile-img justify-content-end" alt="yourProfile" #opponentProfile>
+        <img src="{{ this.tictactoeService.opponentPicture }}" class="profile-img justify-content-end" alt="yourProfile"
+             #opponentProfile>
       </span>
-    </div>
-  </nav>
+    }
+  </div>
+</nav>
 
 
-  <section class="container-fluid">
-    <div class="d-flex justify-content-center align-items-center">
-      <div class="tictactoe-board">
-        @for (cell of this.tictactoeService.board; let i = $index; track i //change to a unique tracking index){
+<section class="container-fluid">
+  <div class="d-flex justify-content-center align-items-center">
+    <div class="tictactoe-board">
+      @for (cell of this.tictactoeService.board; let i = $index; track i //change to a unique tracking index) {
         <button class="tictactoe-cell" (click)="moveMove(i)">
           {{ cell }}
         </button>
-        }
-      </div>
+      }
     </div>
-  </section>
+  </div>
+</section>
 
 </body>
 </html>

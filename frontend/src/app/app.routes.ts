@@ -12,6 +12,7 @@ import {NotFound404Component} from "./Error-Components/not-found-404/not-found40
 import {AuthGuard} from "./Auth/guard/AuthGuard";
 import {Unauthorized401Component} from "./Error-Components/unauthorized-401/unauthorized-401.component";
 import {TicTacToeComponent} from "./tic-tac-toe/tic-tac-toe.component";
+import {TrainModeComponent} from "./Site-View/train-mode/train-mode.component";
 
 export const routes: Routes = [
   {path: '', component: LoginComponent},
@@ -22,6 +23,7 @@ export const routes: Routes = [
   {path: 'play-now', title:'Play-Now', component: PlayNowComponent, canActivate: [AuthGuard]},
   {path: 'matchMaking', title:'Matchmaking', component: MatchMakingComponent, canActivate: [AuthGuard]},
   {path: 'player-profile', title:'Profile', component: PlayerProfileComponent, canActivate: [AuthGuard]},
+  {path: 'train', title:'Train Mode', component: TrainModeComponent, canActivate: [AuthGuard]},
   {path: 'forbidden', title:'403 - Forbidden', component: Forbidden403Component},
   {path: 'unauthorized', title:'401 - Unauthorized', component: Unauthorized401Component},
   {path: 'NotFound', title: 'Not Found', component: NotFound404Component},
