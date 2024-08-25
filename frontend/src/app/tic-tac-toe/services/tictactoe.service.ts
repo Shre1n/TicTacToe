@@ -16,7 +16,7 @@ export class TictactoeService {
 
   private apiUrl = 'http://localhost:3000/api';
 
-  private _gameId!: number;
+  public _gameId: number = 0;
   private _board: number[] = [];
   private _player: UserDto | undefined;
   private _opponent: UserDto | undefined;
@@ -43,7 +43,7 @@ export class TictactoeService {
     this.readUser.readUser();
     this.http.get<GameDto>(`${this.apiUrl}/game/active`).subscribe({
       next: (response: GameDto) => {
-        window.localStorage.setItem("gameId", `${response.gameId}`);
+        this._gameId = response.gameId;
         this.initGameBoard(response);
       },
       error: err => {
@@ -55,7 +55,6 @@ export class TictactoeService {
 
   initGameBoard(game: GameDto){
     this._board = game.board;
-    this._gameId = game.gameId;
     if (game.player1.username === this.readUser.username){
       this._player = game.player1;
       this._opponent = game.player2;
@@ -89,6 +88,11 @@ export class TictactoeService {
     this.socketService.emit('makeMove', move);
   }
 
+
+  set gameId(value: number) {
+    console.log(value)
+    this._gameId = value;
+  }
 
   get isPlayersTurn(): boolean {
     return this._isPlayersTurn;

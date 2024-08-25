@@ -41,15 +41,13 @@ export class ConnectService {
   }
 
   getMessages() {
-    const id = window.localStorage.getItem("gameId");
+    const id = this.tictactoeService._gameId;
     if (!id) {
-      console.error('No gameId found in localStorage');
       return;
     }
     this.http.get<ChatDTO[]>(`${this.apiUrl}/chat/messages/${id}`).subscribe({
       next: (messages: ChatDTO[]) => {
         this.messages = messages;
-        console.log('Messages fetched successfully:', messages, id);
       },
       error: (err) => {
         console.error('Failed to fetch messages:', err);
@@ -58,16 +56,12 @@ export class ConnectService {
   }
 
   sendMessage(gameId: number, message: string) {
-
-    this.socketService.emit('sendMessage', { gameId, message });
-    this.id = gameId;
     const username = this.readUser.username;
     const body = {gameId, username, message};
 
     this.http.post<ChatDTO>(`${this.apiUrl}/chat/messages`, body).subscribe({
       next: (messages: ChatDTO) => {
         this.messages.push(messages);
-        console.log('Messages send successfully:', this.messages);
       },
       error: (err) => {
         console.error(err);

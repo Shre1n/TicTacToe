@@ -9,7 +9,7 @@
       <button (click)="toggleChat()">Close</button>
     </div>
     <div class="chat-messages" #chatMessages>
-      @for (message of this.connectService.messages; track message.gameId){
+      @for (message of this.connectService.messages; let i = $index; track trackByMinimal(i)){
         @if (message.username === this.tictactoeService.player?.username){
           <div class="chat-message">
             <strong class="self">{{message.username}}:</strong> {{message.message}}

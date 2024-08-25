@@ -39,7 +39,9 @@ export class ChatComponent implements OnInit, AfterViewChecked{
 
   ngAfterViewChecked() {
     this.scrollToBottom();
+    this.loadMessages();
   }
+
 
 
   toggleChat() {
@@ -48,6 +50,10 @@ export class ChatComponent implements OnInit, AfterViewChecked{
     if (this.isChatOpen) {
       setTimeout(() => this.scrollToBottom(), 0);
     }
+  }
+
+  trackByMinimal(index: number): number {
+    return index;
   }
 
   sendMessage() {
@@ -71,6 +77,4 @@ export class ChatComponent implements OnInit, AfterViewChecked{
   private loadMessages(){
     this.connectService.getMessages();
   }
-
-  protected readonly self = self;
 }
