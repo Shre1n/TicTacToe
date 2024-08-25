@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {UserDto} from "../../../User/player-profile/player-content/userDto";
 import {HttpClient} from "@angular/common/http";
 import {ReadUserProfilePictureService} from "../readUserProfilePicture/read-user-profile-picture.service";
+import {Observable, tap} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -14,12 +15,14 @@ export class ReadUserService {
   constructor(private http: HttpClient, private readProfilePictureService: ReadUserProfilePictureService) { }
 
 
-  readUser(): void {
-    this.http.get<UserDto>(`/api/user/me`).subscribe((user: UserDto): void => {
-      this._username = user.username;
-      this.readProfilePictureService.readProfilePicture(user.profilePictureId)
-      this.elo = user.elo;
-    })
+  readUser(): Observable<UserDto> {
+    return this.http.get<UserDto>(`/api/user/me`).pipe(
+      tap((user: UserDto) => {
+        this._username = user.username;
+        this.elo = user.elo;
+        this.readProfilePictureService.readProfilePicture(user.profilePictureId);
+      })
+    );
   }
 
 

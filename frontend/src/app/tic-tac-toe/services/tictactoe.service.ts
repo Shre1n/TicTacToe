@@ -5,7 +5,7 @@ import {UserDto} from "../../User/player-profile/player-content/userDto";
 import {HttpClient} from "@angular/common/http";
 import {SocketService} from "../../services/socket.service";
 import {MoveDto} from "../../services/user/interfaces/MoveDto";
-import {filter} from "rxjs";
+import {catchError, filter, Observable, of, switchMap, tap} from "rxjs";
 import {GameUpdateDto} from "../../services/user/interfaces/GameUpdateDto";
 
 @Injectable({
@@ -39,17 +39,18 @@ export class TictactoeService {
     if (update.isFinished) this._winner = update.winner;
   }
 
-  loadFromApi(){
-    this.readUser.readUser();
-    this.http.get<GameDto>(`${this.apiUrl}/game/active`).subscribe({
-      next: (response: GameDto) => {
+  loadFromApi(): Observable<GameDto| undefined> {
+    return this.readUser.readUser().pipe(
+      switchMap(() => this.http.get<GameDto>(`${this.apiUrl}/game/active`)),
+      tap((response: GameDto) => {
         this._gameId = response.gameId;
         this.initGameBoard(response);
-      },
-      error: err => {
-        console.log(err);
-      }
-    })
+      }),
+      catchError(err => {
+        console.error('Failed to load game:', err);
+        return of(void 0);  // returns empty observable
+      })
+    );
   }
 
 

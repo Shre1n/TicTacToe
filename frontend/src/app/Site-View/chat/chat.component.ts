@@ -68,7 +68,8 @@ export class ChatComponent implements OnInit, AfterViewChecked{
 
   scrollToBottom() {
     try {
-      this.chatMessages.nativeElement.scrollTop = this.chatMessages.nativeElement.scrollHeight;
+      if (this.chatMessages)
+        this.chatMessages.nativeElement.scrollTop = this.chatMessages.nativeElement.scrollHeight;
     } catch (err) {
       console.error('Scroll error:', err);
     }
