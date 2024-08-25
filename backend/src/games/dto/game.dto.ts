@@ -20,6 +20,12 @@ export class GameDto {
   @ApiProperty({ description: `Which player's turn is it currently` })
   turn: 1 | 2;
 
+  @ApiProperty({
+    description:
+      'The player number, that represents the current logged in user. 0 := none; 1 := player1; 2:= player2',
+  })
+  playerIdentity: 0 | 1 | 2;
+
   static from(game: Game): GameDto {
     const board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     for (let i = 0; i < 9; i++) {
@@ -33,6 +39,7 @@ export class GameDto {
       isFinished: game.isFinished,
       board: board,
       winner: game.winningState,
+      playerIdentity: 0,
     };
   }
 }

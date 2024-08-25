@@ -11,7 +11,6 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { GameDto } from './dto/game.dto';
 import { SessionData } from 'express-session';
@@ -35,7 +34,12 @@ export class GamesController {
   async getUserInfo(@Session() session: SessionData): Promise<GameDto> {
     const game = await this.gameService.getActiveGame(session.user);
     if (!game) throw new NotFoundException('Player not in a game');
-    return GameDto.from(game);
+
+    let identity: 0 | 1 | 2 = 0;
+    if (game.player1.id === session.user.id) identity = 1;
+    if (game.player2.id === session.user.id) identity = 2;
+
+    return { ...GameDto.from(game), playerIdentity: identity };
   }
 
   @UseGuards(IsLoggedInGuard)
