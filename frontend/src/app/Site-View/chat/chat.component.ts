@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewChecked, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {ChatDTO} from "./dto/chat.dto";
 import {ConnectService} from "../../services/connect.service";
 import {FormsModule} from "@angular/forms";
@@ -18,6 +18,9 @@ import {TictactoeService} from "../../tic-tac-toe/services/tictactoe.service";
 export class ChatComponent implements OnInit, AfterViewChecked{
 
   @ViewChild('chatMessages') chatMessages!: ElementRef;
+
+  @ViewChild('chatInput')
+  private chatInput!: ElementRef<HTMLInputElement>;
 
   isChatOpen = false;
 
@@ -48,6 +51,7 @@ export class ChatComponent implements OnInit, AfterViewChecked{
     this.isChatOpen = !this.isChatOpen;
     this.loadMessages();
     if (this.isChatOpen) {
+      this.chatInput.nativeElement.focus();
       setTimeout(() => this.scrollToBottom(), 0);
     }
   }
