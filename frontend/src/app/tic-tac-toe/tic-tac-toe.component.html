@@ -26,14 +26,16 @@
   <section class="container-fluid">
     <div class="d-flex justify-content-center align-items-center">
       <div class="tictactoe-board">
-        @for (cell of this.tictactoeService.board; let i = $index; track i //change to a unique tracking index){
-        <button class="tictactoe-cell" (click)="moveMove(i)">
-          {{ cell }}
-        </button>
+        @for (cell of this.tictactoeService.board; let i = $index; track i) {
+          <button class="tictactoe-cell" (click)="moveMove(i)">
+            <i [class]="getIcon(cell)"></i>
+          </button>
         }
       </div>
     </div>
   </section>
+
+
 
 </body>
 </html>

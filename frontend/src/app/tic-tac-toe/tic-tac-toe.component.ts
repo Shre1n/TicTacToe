@@ -29,4 +29,12 @@ export class TicTacToeComponent implements OnInit{
     this.tictactoeService.makeMove({position});
   }
 
+  getIcon(cell: number) : string {
+    if (cell === 1) {
+      return 'fa-solid fa-x';
+    } else if (cell === 2) {
+      return 'fa-solid fa-o';
+    }
+    return '';
+  }
 }
