@@ -30,7 +30,9 @@ export class TictactoeService {
     private readUser: ReadUserService,
     private http: HttpClient,
     private socketService: SocketService
-    ) { }
+    ) {
+    this.socketService.connect();
+  }
 
   moveMade(update: GameUpdateDto){
     this._isPlayersTurn = update.turn === this.player_turn;
