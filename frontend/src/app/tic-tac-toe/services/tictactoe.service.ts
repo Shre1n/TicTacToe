@@ -5,7 +5,6 @@ import {UserDto} from "../../User/player-profile/player-content/userDto";
 import {HttpClient} from "@angular/common/http";
 import {SocketService} from "../../services/socket.service";
 import {MoveDto} from "../../services/user/interfaces/MoveDto";
-import {filter} from "rxjs";
 import {GameUpdateDto} from "../../services/user/interfaces/GameUpdateDto";
 
 @Injectable({
@@ -31,6 +30,8 @@ export class TictactoeService {
     private http: HttpClient,
     private socketService: SocketService
     ) {
+    this.socketService.on('moveMade', (update: GameUpdateDto) => this.moveMade(update));
+    this.socketService.on('exception', (ex: String) => console.log(ex));
     this.socketService.connect();
   }
 
