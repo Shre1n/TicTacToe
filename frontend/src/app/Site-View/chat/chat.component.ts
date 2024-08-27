@@ -51,7 +51,9 @@ export class ChatComponent implements OnInit, AfterViewChecked{
   toggleChat() {
     this.isChatOpen = !this.isChatOpen;
     if (this.isChatOpen) {
-      this.chatInput.nativeElement.focus();
+      setTimeout(() => {
+        this.chatInput.nativeElement.focus();
+      }, 0);
       setTimeout(() => this.scrollToBottom(), 0);
     }
   }
