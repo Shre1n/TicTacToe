@@ -39,11 +39,14 @@ export class TictactoeService {
     if (update.isFinished) this._winner = update.winner;
   }
 
+  getActiveGame(): Observable<GameDto> {
+    return this.http.get<GameDto>(`${this.apiUrl}/game/active`, { withCredentials: true });
+  }
+
   loadFromApi(): Observable<GameDto| undefined> {
     return this.readUser.readUser().pipe(
       switchMap(() => this.http.get<GameDto>(`${this.apiUrl}/game/active`)),
       tap((response: GameDto) => {
-        this._gameId = response.gameId;
         this.initGameBoard(response);
       }),
       catchError(err => {

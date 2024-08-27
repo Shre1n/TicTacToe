@@ -3,8 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Game } from '../games.entity';
 
 export class GameDto {
-  @ApiProperty()
-  gameId: number;
   @ApiProperty({ description: 'The user playing as player 1' })
   player1: UserDto;
   @ApiProperty({ description: 'The user playing as player 2' })
@@ -29,7 +27,6 @@ export class GameDto {
       else if ((game.player2Board & (1 << i)) !== 0) board[i] = 2;
     }
     return {
-      gameId: game.id,
       player1: UserDto.from(game.player1),
       player2: UserDto.from(game.player2),
       turn: game.turn,

@@ -40,33 +40,10 @@ export class ConnectService {
     this.socketService.connect();
   }
 
-  getMessages() {
-    const id = this.tictactoeService._gameId;
-    if (!id) {
-      return;
-    }
-    this.http.get<ChatDTO[]>(`${this.apiUrl}/chat/messages/${id}`).subscribe({
-      next: (messages: ChatDTO[]) => {
-        this.messages = messages;
-      },
-      error: (err) => {
-        console.error('Failed to fetch messages:', err);
-      }
-    })
-  }
-
-  sendMessage(gameId: number, message: string) {
+  sendMessage(message: string) {
     const username = this.readUser.username;
-    const body = {gameId, username, message};
-
-    this.http.post<ChatDTO>(`${this.apiUrl}/chat/messages`, body).subscribe({
-      next: (messages: ChatDTO) => {
-        this.messages.push(messages);
-      },
-      error: (err) => {
-        console.error(err);
-      }
-    });
+    const chatMessage: ChatDTO = { username, message };
+    this.socketService.emit('sendMessage', chatMessage);
   }
 
   exception(ex: String){
@@ -74,7 +51,7 @@ export class ConnectService {
   }
 
   receiveMessage(message: ChatDTO) {
-    console.log('Message received:', message);
+    this.messages.push(message);
   }
 
   enterQueue(){

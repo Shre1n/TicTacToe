@@ -29,27 +29,21 @@ export class ChatComponent implements OnInit, AfterViewChecked{
   gameId: number = 0;
 
   constructor(protected connectService: ConnectService, protected tictactoeService: TictactoeService) {
-    this.connectService.receiveMessage = (message) => {
-      this.connectService.messages.push(message);
-      this.scrollToBottom();
-    };
   }
 
   ngOnInit() {
-    this.scrollToBottom();
     this.loadMessages();
+    this.scrollToBottom();
   }
 
   ngAfterViewChecked() {
     this.scrollToBottom();
-    this.loadMessages();
   }
 
 
 
   toggleChat() {
     this.isChatOpen = !this.isChatOpen;
-    this.loadMessages();
     if (this.isChatOpen) {
       this.chatInput.nativeElement.focus();
       setTimeout(() => this.scrollToBottom(), 0);
@@ -61,13 +55,11 @@ export class ChatComponent implements OnInit, AfterViewChecked{
   }
 
   sendMessage() {
-    this.gameId = this.tictactoeService.gameId;
     if (this.message.trim()) {
-      this.connectService.sendMessage(this.gameId, this.message);
+      this.connectService.sendMessage(this.message);
       this.scrollToBottom();
       this.message = '';
     }
-    this.loadMessages();
   }
 
   scrollToBottom() {
@@ -80,6 +72,9 @@ export class ChatComponent implements OnInit, AfterViewChecked{
   }
 
   private loadMessages(){
-    this.connectService.getMessages();
+    this.connectService.receiveMessage = (message) => {
+      this.connectService.messages.push(message);
+      this.scrollToBottom();
+    };
   }
 }
