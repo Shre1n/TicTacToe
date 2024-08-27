@@ -10,7 +10,6 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  Query,
   Session,
   StreamableFile,
   UploadedFile,

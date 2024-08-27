@@ -1,6 +1,5 @@
 import {
   ConnectedSocket,
-  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
@@ -115,12 +114,19 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
         preGame.player1.id,
         preGame.player2.id,
       );
+
       this.server
         .in([preGame.player1Id, preGame.player2Id])
         .socketsJoin(game.id.toString());
-      this.server
-        .to(game.id.toString())
-        .emit(ServerSentEvents.gameStarted, GameDto.from(game));
+
+      this.server.to(preGame.player1Id).emit(ServerSentEvents.gameStarted, {
+        ...GameDto.from(game),
+        playerIdentity: 1,
+      });
+      this.server.to(preGame.player2Id).emit(ServerSentEvents.gameStarted, {
+        ...GameDto.from(game),
+        playerIdentity: 2,
+      });
     }
   }
 

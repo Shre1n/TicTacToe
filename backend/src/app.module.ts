@@ -13,7 +13,6 @@ import { GamesModule } from './games/games.module';
 import { ProfilePictureService } from './profilePicture/profilePicture.service';
 import { Game } from './games/games.entity';
 import { QueueModule } from './queue/queue.module';
-import { ChatService } from './games/chat/chat.service';
 
 @Module({
   imports: [

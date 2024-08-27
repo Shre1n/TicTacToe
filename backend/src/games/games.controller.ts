@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   NotFoundException,
-  Param,
   Session,
   UseGuards,
 } from '@nestjs/common';
@@ -39,7 +38,12 @@ export class GamesController {
   async getUserInfo(@Session() session: SessionData): Promise<GameDto> {
     const game = await this.gameService.getActiveGame(session.user);
     if (!game) throw new NotFoundException('Player not in a game');
-    const dto = GameDto.from(game);
+
+    let identity: 0 | 1 | 2 = 0;
+    if (game.player1.id === session.user.id) identity = 1;
+    if (game.player2.id === session.user.id) identity = 2;
+
+    const dto = { ...GameDto.from(game), playerIdentity: identity };
     dto.chat = await this.chatService.getMessagesForGame(session.user);
     return dto;
   }
