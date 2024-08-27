@@ -10,7 +10,6 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  Query,
   Session,
   StreamableFile,
   UploadedFile,
@@ -61,18 +60,6 @@ export class UsersController {
     return users.map((x) => UserDto.from(x));
   }
 
-  @UseGuards(RolesGuard)
-  @Get(':username')
-  @ApiParam({ name: 'username' })
-  @ApiOperation({
-    summary: 'Search for a User',
-    description: 'Search for a User, creates a query and returns the result.',
-  })
-  @ApiOkResponse({ description: 'Successful operation', type: [GameDto] })
-  async searchUsers(@Param('username') username: string) {
-    return this.usersService.searchUsers(username);
-  }
-
   @Post()
   @ApiOperation({
     summary: 'Creates a new user',
@@ -120,6 +107,18 @@ export class UsersController {
   @ApiOkResponse({ description: 'Successful operation', type: ProfileDto })
   async getUserProfile(@Session() session: SessionData): Promise<UserDto> {
     return this.usersService.getUserProfile(session.user);
+  }
+
+  @UseGuards(RolesGuard)
+  @Get(':username')
+  @ApiParam({ name: 'username' })
+  @ApiOperation({
+    summary: 'Search for a User',
+    description: 'Search for a User, creates a query and returns the result.',
+  })
+  @ApiOkResponse({ description: 'Successful operation', type: [GameDto] })
+  async searchUsers(@Param('username') username: string) {
+    return this.usersService.searchUsers(username);
   }
 
   @UseGuards(IsLoggedInGuard)

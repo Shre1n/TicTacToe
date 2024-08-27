@@ -26,6 +26,9 @@ export class GameDto {
   })
   playerIdentity: 0 | 1 | 2;
 
+  @ApiProperty({ description: 'Chat from game' })
+  chat: ChatDto[];
+
   static from(game: Game): GameDto {
     const board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     for (let i = 0; i < 9; i++) {
@@ -39,6 +42,7 @@ export class GameDto {
       isFinished: game.isFinished,
       board: board,
       winner: game.winningState,
+      chat: [],
       playerIdentity: 0,
     };
   }

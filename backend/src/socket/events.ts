@@ -7,12 +7,14 @@ export enum ClientSentEvents {
   leaveQueue = 'leaveQueue',
   makeMove = 'makeMove',
   gameFoundAcknowledged = 'gameFoundAcknowledged',
+  sendMessage = 'sendMessage',
 }
 
 export enum ServerSentEvents {
   gameFound = 'gameFound',
   gameStarted = 'gameStarted',
   moveMade = 'moveMade',
+  receiveMessage = 'receiveMessage',
 }
 
 export interface ClientToServerEvents {
@@ -20,10 +22,12 @@ export interface ClientToServerEvents {
   leaveQueue: () => void;
   makeMove: (move: MoveDto) => void;
   gameFoundAcknowledged: () => void;
+  sendMessage: () => void;
 }
 
 export interface ServerToClientEvents {
   gameFound: () => void;
   gameStarted: (game: GameDto) => void;
   moveMade: (update: GameUpdateDto) => void;
+  receiveMessage: () => void;
 }

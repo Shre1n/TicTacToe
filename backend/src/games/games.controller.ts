@@ -16,11 +16,15 @@ import { GameDto } from './dto/game.dto';
 import { SessionData } from 'express-session';
 import { IsLoggedInGuard } from '../guards/is-logged-in/is-logged-in.guard';
 import { Game } from './games.entity';
+import { ChatService } from './chat/chat.service';
 
 @ApiTags('game')
 @Controller('game')
 export class GamesController {
-  constructor(private readonly gameService: GamesService) {}
+  constructor(
+    private readonly gameService: GamesService,
+    private readonly chatService: ChatService,
+  ) {}
 
   @UseGuards(IsLoggedInGuard)
   @Get('active')
@@ -39,7 +43,9 @@ export class GamesController {
     if (game.player1.id === session.user.id) identity = 1;
     if (game.player2.id === session.user.id) identity = 2;
 
-    return { ...GameDto.from(game), playerIdentity: identity };
+    const dto = { ...GameDto.from(game), playerIdentity: identity };
+    dto.chat = await this.chatService.getMessagesForGame(session.user);
+    return dto;
   }
 
   @UseGuards(IsLoggedInGuard)

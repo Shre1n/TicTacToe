@@ -35,9 +35,11 @@ export class GamesService {
   async createGame(player1Id: number, player2Id: number) {
     const player1 = await this.userRepository.findOne({
       where: { id: player1Id },
+      relations: { profilePicture: true },
     });
     const player2 = await this.userRepository.findOne({
       where: { id: player2Id },
+      relations: { profilePicture: true },
     });
 
     if (!player1 || !player2) {
@@ -118,7 +120,12 @@ export class GamesService {
         { player1: { id: player.id }, isFinished: false },
         { player2: { id: player.id }, isFinished: false },
       ],
-      relations: { player1: true, player2: true },
+      relations: [
+        'player1',
+        'player2',
+        'player1.profilePicture',
+        'player2.profilePicture',
+      ],
     });
   }
 
