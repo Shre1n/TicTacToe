@@ -4,6 +4,7 @@ import { QueueObject } from './queueObject';
 import { QueueDto } from './dto/queue.dto';
 import { QueueEntryDto } from './dto/queueEntry.dto';
 import { PreGameObject } from './preGameObject';
+import { Semaphore } from './Semaphore';
 
 @Injectable()
 export class QueueService {
@@ -11,6 +12,7 @@ export class QueueService {
   private readonly acknowledgementTimeout = 30000; //ms => 30s
   // Queue for player searching fo an opponent
   private queue: QueueObject[] = [];
+  private semaphore = new Semaphore(1);
 
   // Queue for two matching player, waiting to confirm their match
   private acknowledgementQueue: PreGameObject[] = [];
@@ -29,10 +31,15 @@ export class QueueService {
    * @param player - user that is checked
    */
   isPlayerInQueue(player: User) {
-    return (
-      this.queue.some((x) => x.player.id === player.id) ||
-      this.isWaitingForAcknowledgement(player)
-    );
+    this.semaphore.acquire();
+    try {
+      return (
+        this.queue.some((x) => x.player.id === player.id) ||
+        this.isWaitingForAcknowledgement(player)
+      );
+    } finally {
+      this.semaphore.release();
+    }
   }
 
   /**
@@ -42,25 +49,30 @@ export class QueueService {
    * @param player - user looking for an opponent
    */
   async findOpponent(player: User): Promise<QueueObject | undefined> {
-    const candidates = this.queue.filter(
-      (x) => Math.abs(x.player.elo - player.elo) <= this.maxEloDifference,
-    );
-
-    // Only 1 matching candidate
-    if (candidates.length == 1) {
-      this.queue = this.queue.filter(
-        (x) => x.player.id !== candidates[0].player.id,
+    await this.semaphore.acquire();
+    try {
+      const candidates = this.queue.filter(
+        (x) => Math.abs(x.player.elo - player.elo) <= this.maxEloDifference,
       );
-      return candidates[0];
+
+      // Only 1 matching candidate
+      if (candidates.length == 1) {
+        this.queue = this.queue.filter(
+          (x) => x.player.id !== candidates[0].player.id,
+        );
+        return candidates[0];
+      }
+
+      // More than one matching candidate
+      if (candidates.length > 1)
+        return candidates.reduce((prev, curr) =>
+          prev && prev.entryTime > curr.entryTime ? prev : curr,
+        );
+
+      return undefined;
+    } finally {
+      this.semaphore.release();
     }
-
-    // More than one matching candidate
-    if (candidates.length > 1)
-      return candidates.reduce((prev, curr) =>
-        prev && prev.entryTime > curr.entryTime ? prev : curr,
-      );
-
-    return undefined;
   }
 
   /**
@@ -68,16 +80,26 @@ export class QueueService {
    * @param player - user that is added to the queue
    * @param sessionId - session ID of the user
    */
-  addPlayer(player: User, sessionId: string) {
-    this.queue.push({ player, entryTime: new Date(), sessionId });
+  async addPlayer(player: User, sessionId: string) {
+    await this.semaphore.acquire();
+    try {
+      this.queue.push({ player, entryTime: new Date(), sessionId });
+    } finally {
+      this.semaphore.release();
+    }
   }
 
   /**
    * Removes a player from the queue
    * @param player - user that is removed
    */
-  removePlayer(player: User) {
-    this.queue = this.queue.filter((x) => x.player.id !== player.id);
+  async removePlayer(player: User) {
+    await this.semaphore.acquire();
+    try {
+      this.queue = this.queue.filter((x) => x.player.id !== player.id);
+    } finally {
+      this.semaphore.release();
+    }
   }
 
   /**
@@ -87,14 +109,19 @@ export class QueueService {
    * and their acknowledgement state
    */
   prepareGame(preGame: PreGameObject) {
-    if (
-      this.isWaitingForAcknowledgement(preGame.player1) ||
-      this.isWaitingForAcknowledgement(preGame.player2)
-    )
-      return false;
+    this.semaphore.acquire();
+    try {
+      if (
+        this.isWaitingForAcknowledgement(preGame.player1) ||
+        this.isWaitingForAcknowledgement(preGame.player2)
+      )
+        return false;
 
-    this.acknowledgementQueue.push(preGame);
-    return true;
+      this.acknowledgementQueue.push(preGame);
+      return true;
+    } finally {
+      this.semaphore.release();
+    }
   }
 
   /**
@@ -124,13 +151,18 @@ export class QueueService {
    * @param player - User the preGame is related to
    */
   removePreGame(player: User) {
-    const preGame = this.acknowledgementQueue.filter(
-      (x) => x.player1.id === player.id || x.player2.id === player.id,
-    )[0];
-    this.acknowledgementQueue = this.acknowledgementQueue.filter(
-      (x) => x.player1.id !== player.id && x.player2.id !== player.id,
-    );
-    return preGame;
+    this.semaphore.acquire();
+    try {
+      const preGame = this.acknowledgementQueue.filter(
+        (x) => x.player1.id === player.id || x.player2.id === player.id,
+      )[0];
+      this.acknowledgementQueue = this.acknowledgementQueue.filter(
+        (x) => x.player1.id !== player.id && x.player2.id !== player.id,
+      );
+      return preGame;
+    } finally {
+      this.semaphore.release();
+    }
   }
 
   /**
@@ -138,12 +170,17 @@ export class QueueService {
    * @param player - User the preGame is related to
    */
   isPreGameAcknowledged(player: User) {
-    return this.acknowledgementQueue.some(
-      (x) =>
-        (x.player1.id === player.id || x.player2.id === player.id) &&
-        x.player1Acknowledged &&
-        x.player2Acknowledged,
-    );
+    this.semaphore.acquire();
+    try {
+      return this.acknowledgementQueue.some(
+        (x) =>
+          (x.player1.id === player.id || x.player2.id === player.id) &&
+          x.player1Acknowledged &&
+          x.player2Acknowledged,
+      );
+    } finally {
+      this.semaphore.release();
+    }
   }
 
   /**
