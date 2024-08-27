@@ -39,7 +39,9 @@ export class GamesController {
   async getUserInfo(@Session() session: SessionData): Promise<GameDto> {
     const game = await this.gameService.getActiveGame(session.user);
     if (!game) throw new NotFoundException('Player not in a game');
-    return GameDto.from(game);
+    const dto = GameDto.from(game);
+    dto.chat = await this.chatService.getMessagesForGame(session.user);
+    return dto;
   }
 
   @UseGuards(IsLoggedInGuard)

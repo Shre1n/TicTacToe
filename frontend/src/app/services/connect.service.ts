@@ -44,6 +44,7 @@ export class ConnectService {
     const username = this.readUser.username;
     const chatMessage: ChatDTO = { username, message };
     this.socketService.emit('sendMessage', chatMessage);
+    return chatMessage;
   }
 
   exception(ex: String){

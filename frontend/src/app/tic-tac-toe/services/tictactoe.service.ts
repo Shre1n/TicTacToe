@@ -114,9 +114,4 @@ export class TictactoeService {
   get opponent(): UserDto | undefined {
     return this._opponent;
   }
-
-
-  get gameId(): number {
-    return this._gameId;
-  }
 }

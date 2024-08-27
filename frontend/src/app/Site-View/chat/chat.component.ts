@@ -34,7 +34,11 @@ export class ChatComponent implements OnInit, AfterViewChecked{
   }
 
   ngOnInit() {
-    this.loadMessages();
+    this.connectService.receiveMessage = (message) => {
+      this.messages.push(message);
+      this.scrollToBottom();
+    };
+
     this.scrollToBottom();
   }
 
@@ -58,7 +62,7 @@ export class ChatComponent implements OnInit, AfterViewChecked{
 
   sendMessage() {
     if (this.message.trim()) {
-      this.connectService.sendMessage(this.message);
+      this.messages.push(this.connectService.sendMessage(this.message));
       this.scrollToBottom();
       this.message = '';
     }
@@ -71,12 +75,5 @@ export class ChatComponent implements OnInit, AfterViewChecked{
     } catch (err) {
       console.error('Scroll error:', err);
     }
-  }
-
-  private loadMessages(){
-    this.connectService.receiveMessage = (message) => {
-      this.connectService.messages.push(message);
-      this.scrollToBottom();
-    };
   }
 }

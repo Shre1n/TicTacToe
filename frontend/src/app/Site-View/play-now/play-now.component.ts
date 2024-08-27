@@ -28,30 +28,10 @@ export class PlayNowComponent implements OnInit{
   }
 
   ngOnInit(){
-    this.readUser.readUser().subscribe({
-      next: (user) => {
-        console.log('User loaded:', user);
-        this.checkForActiveGame();
-      },
-      error: (err) => {
-        console.error('Failed to read user:', err);
-      }
-    });
+    this.readUser.readUser();
   }
 
 
-  checkForActiveGame() {
-    this.tictactoeService.loadFromApi().subscribe({
-      next: () => {
-        if (this.tictactoeService.gameId !== 0) {
-          this.router.navigate(['/tictactoe']);
-        }
-      },
-      error: (err) => {
-        console.error('Failed to load game:', err);
-      }
-    });
-  }
 
   logout(){
     this.logOut.logout();
