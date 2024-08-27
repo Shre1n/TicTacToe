@@ -21,6 +21,6 @@ export class ChatService {
     if (!this.messages.has(game.id.toString())) {
       this.messages.set(game.id.toString(), []);
     }
-    this.messages.get(gameId.toString()).push(message);
+    this.messages.get(game.id.toString()).push(message);
   }
 }

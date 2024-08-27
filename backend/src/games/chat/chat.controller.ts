@@ -18,7 +18,7 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @UseGuards(IsLoggedInGuard)
-  @Get('messages/:gameId')
+  @Get()
   @ApiOkResponse({ description: 'Successful operation', type: [ChatDto] })
   @ApiNotFoundResponse({ description: 'User has no active game' })
   async getMessages(@Session() session: SessionData): Promise<ChatDto[]> {
