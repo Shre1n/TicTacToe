@@ -7,18 +7,18 @@ import {
   WsException,
 } from '@nestjs/websockets';
 import { UseGuards } from '@nestjs/common';
-import { IsSocketLoggedInGuard } from '../../../guards/is-socket-logged-in/is-socket-logged-in.guard';
+import { IsSocketLoggedInGuard } from '../../guards/is-socket-logged-in/is-socket-logged-in.guard';
 import {
   ClientSentEvents,
   ClientToServerEvents,
   ServerSentEvents,
   ServerToClientEvents,
-} from '../../../socket/events';
+} from '../../socket/events';
 import { Server, Socket } from 'socket.io';
-import { ChatDto } from '../dto/chat.dto';
+import { ChatDto } from './dto/chat.dto';
 import { Request } from 'express';
-import { GamesService } from '../../games.service';
-import { ChatService } from '../chat.service';
+import { GamesService } from '../games.service';
+import { ChatService } from './chat.service';
 
 @WebSocketGateway({ namespace: 'socket' })
 export class ChatGateway {
@@ -55,9 +55,12 @@ export class ChatGateway {
         'Invalid game room or User is not part of this game',
       );
 
-    this.server.to(game.id.toString()).emit(ServerSentEvents.receiveMessage, {
-      username: message.username,
-      message: message.message,
-    });
+    this.server
+      .to(game.id.toString())
+      .except(session.id)
+      .emit(ServerSentEvents.receiveMessage, {
+        username: message.username,
+        message: message.message,
+      });
   }
 }

@@ -68,7 +68,6 @@ export class ConnectService {
   }
 
   gameStarted(game: GameDto){
-    this.id = game.gameId;
     this.tictactoeService.initGameBoard(game);
     this.matchmakingService.changeFoundStatus();
   }

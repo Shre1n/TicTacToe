@@ -17,11 +17,15 @@ import { GameDto } from './dto/game.dto';
 import { SessionData } from 'express-session';
 import { IsLoggedInGuard } from '../guards/is-logged-in/is-logged-in.guard';
 import { Game } from './games.entity';
+import { ChatService } from './chat/chat.service';
 
 @ApiTags('game')
 @Controller('game')
 export class GamesController {
-  constructor(private readonly gameService: GamesService) {}
+  constructor(
+    private readonly gameService: GamesService,
+    private readonly chatService: ChatService,
+  ) {}
 
   @UseGuards(IsLoggedInGuard)
   @Get('active')

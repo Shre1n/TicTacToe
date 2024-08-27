@@ -7,6 +7,7 @@ import {SocketService} from "../../services/socket.service";
 import {MoveDto} from "../../services/user/interfaces/MoveDto";
 import {catchError, filter, Observable, of, switchMap, tap} from "rxjs";
 import {GameUpdateDto} from "../../services/user/interfaces/GameUpdateDto";
+import {ChatDTO} from "../../Site-View/chat/dto/chat.dto";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class TictactoeService {
 
   private apiUrl = 'http://localhost:3000/api';
 
-  public _gameId: number = 0;
+  public chat: ChatDTO[] = [];
   private _board: number[] = [];
   private _player: UserDto | undefined;
   private _opponent: UserDto | undefined;
@@ -39,26 +40,22 @@ export class TictactoeService {
     if (update.isFinished) this._winner = update.winner;
   }
 
-  getActiveGame(): Observable<GameDto> {
-    return this.http.get<GameDto>(`${this.apiUrl}/game/active`, { withCredentials: true });
-  }
-
-  loadFromApi(): Observable<GameDto| undefined> {
-    return this.readUser.readUser().pipe(
-      switchMap(() => this.http.get<GameDto>(`${this.apiUrl}/game/active`)),
-      tap((response: GameDto) => {
+  loadFromApi(){
+    this.readUser.readUser();
+    this.http.get<GameDto>(`${this.apiUrl}/game/active`).subscribe({
+      next: (response: GameDto) => {
         this.initGameBoard(response);
-      }),
-      catchError(err => {
-        console.error('Failed to load game:', err);
-        return of(void 0);  // returns empty observable
-      })
-    );
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
   }
 
 
   initGameBoard(game: GameDto){
     this._board = game.board;
+    this.chat = game.chat;
     if (game.player1.username === this.readUser.username){
       this._player = game.player1;
       this._opponent = game.player2;
@@ -92,11 +89,6 @@ export class TictactoeService {
     this.socketService.emit('makeMove', move);
   }
 
-
-  set gameId(value: number) {
-    console.log(value)
-    this._gameId = value;
-  }
 
   get isPlayersTurn(): boolean {
     return this._isPlayersTurn;

@@ -26,9 +26,11 @@ export class ChatComponent implements OnInit, AfterViewChecked{
 
   message: string = '';
 
-  gameId: number = 0;
+  @Input() messages: ChatDTO[] = [];
 
-  constructor(protected connectService: ConnectService, protected tictactoeService: TictactoeService) {
+  constructor(
+    protected connectService: ConnectService,
+    protected tictactoeService: TictactoeService) {
   }
 
   ngOnInit() {

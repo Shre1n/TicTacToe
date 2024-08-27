@@ -7,6 +7,7 @@ import { Game } from './games.entity';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../users/users.entity';
 import { EloService } from '../elo/elo.service';
+import session from 'express-session';
 
 @Injectable()
 export class GamesService {

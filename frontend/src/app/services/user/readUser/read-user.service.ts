@@ -15,14 +15,12 @@ export class ReadUserService {
   constructor(private http: HttpClient, private readProfilePictureService: ReadUserProfilePictureService) { }
 
 
-  readUser(): Observable<UserDto> {
-    return this.http.get<UserDto>(`/api/user/me`).pipe(
-      tap((user: UserDto) => {
-        this._username = user.username;
-        this.elo = user.elo;
-        this.readProfilePictureService.readProfilePicture(user.profilePictureId);
-      })
-    );
+  readUser() {
+    this.http.get<UserDto>(`/api/user/me`).subscribe((user: UserDto): void => {
+      this._username = user.username;
+      this.readProfilePictureService.readProfilePicture(user.profilePictureId)
+      this.elo = user.elo;
+    })
   }
 
 

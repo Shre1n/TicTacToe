@@ -67,6 +67,10 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
+  spectateGame(player: UserDto){
+    //todo: logik machen
+  }
+
   //todo: style it properly. Similar to the left sided translation
 
   toggleRightSidebar() {
@@ -124,7 +128,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   selectGame(game: any, event: MouseEvent) {
-    if (this.selectedGame && this.selectedGame.gameId === game.id) {
+    if (this.selectedGame) {
       this.selectedGame = null;
       const gameDetailsBox = document.querySelector('.game-details-box') as HTMLElement;
       if (gameDetailsBox) {

@@ -28,9 +28,6 @@ export class TicTacToeComponent implements OnInit{
   ngOnInit() {
     if (this.tictactoeService.board.length === 0){
       this.tictactoeService.loadFromApi();
-      this.tictactoeService.getActiveGame().subscribe(game => {
-        console.log(game);
-      })
     }
   }
 
