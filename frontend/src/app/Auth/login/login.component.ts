@@ -4,6 +4,9 @@ import {FormsModule, NgForm} from "@angular/forms";
 import {Router} from "@angular/router";
 import {LoginResponse} from "./interfaces/LoginResponse";
 import {ConnectService} from "../../services/connect.service";
+import {
+  ReadUserProfilePictureService
+} from "../../services/user/readUserProfilePicture/read-user-profile-picture.service";
 
 @Component({
   selector: 'app-login',
@@ -30,10 +33,10 @@ export class LoginComponent{
   constructor(
     private loginService: LoginService,
     private router: Router,
-    private connectService: ConnectService,) {
+    private connectService: ConnectService,
+    private readProfile: ReadUserProfilePictureService,
+    ) {
   }
-
-
 
   onSubmit() {
     this.errors.clear();
@@ -51,6 +54,8 @@ export class LoginComponent{
         next: (response: LoginResponse) => {
           window.localStorage.clear();
           this.loginService.setAuthenticated();
+          this.readProfile.readProfilePicture(response.profilePictureId);
+
           if (response.isAdmin) {
             this.loginService.setAdmin();
             this.router.navigate(['/admin']);

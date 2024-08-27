@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {ConnectService} from "../../services/connect.service";
 import {ReadUserService} from "../../services/user/readUser/read-user.service";
 import {ReadUserProfilePictureService} from "../../services/user/readUserProfilePicture/read-user-profile-picture.service";
 import {LogoutService} from "../../Auth/logout/services/logout.service";
+import {TictactoeService} from "../../tic-tac-toe/services/tictactoe.service";
 
 @Component({
   selector: 'app-play-now',
@@ -20,7 +21,9 @@ export class PlayNowComponent implements OnInit{
     private logOut: LogoutService,
     private connectService: ConnectService,
     public readUser: ReadUserService,
-    public readProfile: ReadUserProfilePictureService) {
+    public readProfile: ReadUserProfilePictureService,
+    private tictactoeService: TictactoeService
+    ) {
 
   }
 
@@ -28,12 +31,13 @@ export class PlayNowComponent implements OnInit{
     this.readUser.readUser();
   }
 
+
+
   logout(){
     this.logOut.logout();
   }
 
   navProfile(){
-    //todo navigate to profile
     this.router.navigate(['/player-profile'])
   }
 

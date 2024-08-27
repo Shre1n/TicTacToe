@@ -11,12 +11,14 @@ import {AdminGuard} from "./Admin/admin-dashboard/guard/adminGuard";
 import {NotFound404Component} from "./Error-Components/not-found-404/not-found404.component";
 import {AuthGuard} from "./Auth/guard/AuthGuard";
 import {Unauthorized401Component} from "./Error-Components/unauthorized-401/unauthorized-401.component";
+import {TicTacToeComponent} from "./tic-tac-toe/tic-tac-toe.component";
 
 export const routes: Routes = [
   {path: '', component: LoginComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'admin', component: AdminDashboardComponent, canActivate: [AdminGuard]},
+  {path: 'tictactoe', component: TicTacToeComponent},
   {path: 'play-now', title:'Play-Now', component: PlayNowComponent, canActivate: [AuthGuard]},
   {path: 'matchMaking', title:'Matchmaking', component: MatchMakingComponent, canActivate: [AuthGuard]},
   {path: 'player-profile', title:'Profile', component: PlayerProfileComponent, canActivate: [AuthGuard]},

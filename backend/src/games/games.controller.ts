@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   NotFoundException,
+  Param,
   Session,
   UseGuards,
 } from '@nestjs/common';
@@ -11,17 +12,20 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { GameDto } from './dto/game.dto';
 import { SessionData } from 'express-session';
 import { IsLoggedInGuard } from '../guards/is-logged-in/is-logged-in.guard';
 import { Game } from './games.entity';
+import { ChatService } from './chat/chat.service';
 
 @ApiTags('game')
 @Controller('game')
 export class GamesController {
-  constructor(private readonly gameService: GamesService) {}
+  constructor(
+    private readonly gameService: GamesService,
+    private readonly chatService: ChatService,
+  ) {}
 
   @UseGuards(IsLoggedInGuard)
   @Get('active')
@@ -35,7 +39,9 @@ export class GamesController {
   async getUserInfo(@Session() session: SessionData): Promise<GameDto> {
     const game = await this.gameService.getActiveGame(session.user);
     if (!game) throw new NotFoundException('Player not in a game');
-    return GameDto.from(game);
+    const dto = GameDto.from(game);
+    dto.chat = await this.chatService.getMessagesForGame(session.user);
+    return dto;
   }
 
   @UseGuards(IsLoggedInGuard)

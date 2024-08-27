@@ -3,9 +3,9 @@ import {AdminService} from "./services/admin.service";
 import {Router} from "@angular/router";
 import {FormsModule} from "@angular/forms";
 import {GameDto} from "./interfaces/Game/gamesDto";
-import {UserDto} from "./interfaces/Game/User/userDto";
 import {NgClass, NgStyle, NgSwitch} from "@angular/common";
 import {LogoutService} from "../../Auth/logout/services/logout.service";
+import {UserDto} from "../../User/player-profile/player-content/userDto";
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -67,6 +67,10 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
+  spectateGame(player: UserDto){
+    //todo: logik machen
+  }
+
   //todo: style it properly. Similar to the left sided translation
 
   toggleRightSidebar() {
@@ -124,7 +128,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   selectGame(game: any, event: MouseEvent) {
-    if (this.selectedGame && this.selectedGame.gameId === game.id) {
+    if (this.selectedGame) {
       this.selectedGame = null;
       const gameDetailsBox = document.querySelector('.game-details-box') as HTMLElement;
       if (gameDetailsBox) {
