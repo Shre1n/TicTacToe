@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import {GameDto} from "../../interfaces/gamesDto";
 import {UserDto} from "../../../User/interfaces/userDto";
-import {HttpClient} from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {SocketService} from "../../../Socket/socket.service";
 import {MoveDto} from "../../interfaces/MoveDto";
 import {GameUpdateDto} from "../../interfaces/GameUpdateDto";
 import {ChatDTO} from "../../chat/dto/chat.dto";
+import { UserService } from '../../../User/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,7 @@ export class TictactoeService {
 
   constructor(
     private http: HttpClient,
+    private userService: UserService,
     private socketService: SocketService
   ) {
     this.socketService.onMoveMade().subscribe((update: GameUpdateDto) => {
@@ -43,7 +45,9 @@ export class TictactoeService {
       next: (response: GameDto) => {
         this.initGameBoard(response);
       },
-      error: err => {
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 404)
+          this.userService.loadUserData();
         console.log(err);
       }
     })

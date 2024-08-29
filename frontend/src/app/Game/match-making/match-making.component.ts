@@ -41,16 +41,18 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     this.socketService.onGameStarted().subscribe((game: GameDto) => {
-      this.found = true;
+      this.tictactoeService.initGameBoard(game);
       setTimeout(() => {
-        this.yourProfile.nativeElement.classList.add('no-shake');
-        this.unfoldSides();
-        this.hideMiddleElements();
+        this.found = true;
         setTimeout(() => {
-          this.tictactoeService.initGameBoard(game);
-          this.userService.setPlaying();
-        }, 1000);
-      }, 3000);
+          this.yourProfile.nativeElement.classList.add('no-shake');
+          this.unfoldSides();
+          this.hideMiddleElements();
+          setTimeout(() => {
+            this.userService.setPlaying();
+          }, 1000);
+        }, 3000);
+      }, 1000);
     });
   }
 

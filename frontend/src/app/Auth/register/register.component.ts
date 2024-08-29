@@ -2,6 +2,8 @@ import {Component, ViewChild} from '@angular/core';
 import {RegisterService} from "./services/register.service";
 import {FormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
+import { UserDto } from '../../User/interfaces/userDto';
+import { UserService } from '../../User/user.service';
 
 @Component({
   selector: 'app-register',
@@ -27,7 +29,7 @@ export class RegisterComponent {
   @ViewChild('_password_confirm')
   private _password_confirm!: any;
 
-  constructor(private registerService: RegisterService, private router: Router) {
+  constructor(private registerService: RegisterService, private userService: UserService, private router: Router) {
   }
 
   onSubmit() {
@@ -51,8 +53,9 @@ export class RegisterComponent {
     if (this.errors.size === 0){
       this.registerService.register(this.username, this.password)
         .subscribe({
-          next: response => {
-            alert('Registrierung erfolgreich!');
+          next: (response: UserDto) => {
+            this.userService.setUserData(response);
+            this.router.navigate([''])
           },
           error: error => {
             if (error.status === 400 && error.error.message === 'Username already exists') {
@@ -76,7 +79,7 @@ export class RegisterComponent {
   }
 
   navLogin() {
-    this.router.navigate(['login'])
+    this.router.navigate([''])
   }
 
 }

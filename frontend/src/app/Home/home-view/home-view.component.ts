@@ -11,5 +11,8 @@ import { LoginComponent } from '../../Auth/login/login.component';
   styleUrl: './home-view.component.css'
 })
 export class HomeViewComponent {
-  constructor(public userService: UserService) {}
+  ready: boolean = false;
+  constructor(public userService: UserService) {
+    userService.userDataLoaded.subscribe(value => {this.ready = value; });
+  }
 }

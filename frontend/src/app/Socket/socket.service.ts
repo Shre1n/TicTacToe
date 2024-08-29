@@ -21,6 +21,7 @@ export class SocketService extends Socket{
   constructor() {
     super(config);
     this.on("gameFound", () => this.emit("gameFoundAcknowledged"));
+    this.on("exception", (err: String) => console.log(err));
   }
 
   enterQueue() {

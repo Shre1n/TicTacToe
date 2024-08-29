@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserDto, UserState } from './interfaces/userDto';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, mergeMap, of } from 'rxjs';
+import { BehaviorSubject, catchError, map, mergeMap, Observable, of } from 'rxjs';
 import { SocketService } from '../Socket/socket.service';
 
 @Injectable({
@@ -9,7 +9,9 @@ import { SocketService } from '../Socket/socket.service';
 })
 export class UserService {
   user?: UserDto | undefined;
-  userDataLoaded: boolean = false;
+
+  private userLoadedSubject = new BehaviorSubject<boolean>(false);
+  userDataLoaded: Observable<boolean> = this.userLoadedSubject.asObservable();
 
   constructor(private http: HttpClient, private socketService: SocketService) { }
 
@@ -24,12 +26,12 @@ export class UserService {
     this.http.get<UserDto>(`/api/user/me`).pipe(this.profilePicturePipe()).subscribe({
       next: (user: UserDto) => {
         this.user = user;
-        this.userDataLoaded = true;
+        this.userLoadedSubject.next(true);
         this.socketService.connect();
       },
       error: (error: HttpErrorResponse) => {
         if (error.status === 401) {
-          this.userDataLoaded = true;
+          this.userLoadedSubject.next(true);
         }
       },
     });
