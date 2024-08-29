@@ -105,7 +105,7 @@ export class UsersController {
       'Gets all relevant profile infos about the current user. The user has to be logged in',
   })
   @ApiOkResponse({ description: 'Successful operation', type: ProfileDto })
-  async getUserProfile(@Session() session: SessionData): Promise<UserDto> {
+  async getUserProfile(@Session() session: SessionData): Promise<ProfileDto> {
     return this.usersService.getUserProfile(session.user);
   }
 

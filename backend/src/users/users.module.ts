@@ -5,19 +5,17 @@ import { User } from './users.entity';
 import { ProfilePicture } from '../profilePicture/profilePicture.entity';
 import { UsersController } from './users.controller';
 import { ProfilePictureService } from '../profilePicture/profilePicture.service';
-import { GamesService } from '../games/games.service';
-import { QueueService } from '../queue/queue.service';
 import { EloService } from '../elo/elo.service';
+import { QueueModule } from '../queue/queue.module';
+import { GamesModule } from '../games/games.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, ProfilePicture])],
-  providers: [
-    UsersService,
-    ProfilePictureService,
-    GamesService,
-    QueueService,
-    EloService,
+  imports: [
+    TypeOrmModule.forFeature([User, ProfilePicture]),
+    QueueModule,
+    GamesModule,
   ],
+  providers: [UsersService, ProfilePictureService, EloService],
   exports: [UsersService],
   controllers: [UsersController],
 })

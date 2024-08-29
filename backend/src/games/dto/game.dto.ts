@@ -1,6 +1,7 @@
 import { UserDto } from '../../users/dto/user.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Game } from '../games.entity';
+import { ChatDto } from '../chat/dto/chat.dto';
 
 export class GameDto {
   @ApiProperty({ description: 'The user playing as player 1' })

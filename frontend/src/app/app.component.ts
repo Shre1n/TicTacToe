@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {LoginComponent} from "./Auth/login/login.component";
+import { UserService } from './User/user.service';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,8 @@ import {LoginComponent} from "./Auth/login/login.component";
 export class AppComponent{
 
 
-  constructor() {
+  constructor(userService: UserService) {
+    userService.loadUserData();
   }
 
 

@@ -1,17 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpResponse} from "@angular/common/http";
-import {UserDto} from "../userDto";
-import {
-  ReadUserProfilePictureService
-} from "../../../../services/user/readUserProfilePicture/read-user-profile-picture.service";
-import {ReadUserService} from "../../../../services/user/readUser/read-user.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlayerContentService {
 
-  constructor(private http: HttpClient, private readUserService: ReadUserService) {
+  constructor(private http: HttpClient) {
   }
 
   onUpload(file: File | null) {
@@ -40,10 +35,5 @@ export class PlayerContentService {
     } else {
       alert('Bitte wähle eine Datei aus!');
     }
-  }
-
-
-  readUser(): void {
-    this.readUserService.readUser();
   }
 }
