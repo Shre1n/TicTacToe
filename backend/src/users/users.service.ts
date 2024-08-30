@@ -129,7 +129,7 @@ export class UsersService {
     const stats = await this.getUserStats(games, user);
     const matches = await this.getMatchHistory(games, user);
 
-    return ProfileDto.from(user, stats, matches);
+    return ProfileDto.from(stats, matches);
   }
 
   async updatePassword(updatePasswordDto: UpdatePasswordDto, user: User) {

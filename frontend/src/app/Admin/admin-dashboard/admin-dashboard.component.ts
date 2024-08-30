@@ -2,10 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {AdminService} from "./services/admin.service";
 import {Router} from "@angular/router";
 import {FormsModule} from "@angular/forms";
-import {GameDto} from "./interfaces/Game/gamesDto";
+import {GameDto} from "../../Game/interfaces/gamesDto";
 import {NgClass, NgStyle, NgSwitch} from "@angular/common";
 import {LogoutService} from "../../Auth/logout/services/logout.service";
-import {UserDto} from "../../User/player-profile/player-content/userDto";
+import {UserDto} from "../../User/interfaces/userDto";
 
 @Component({
   selector: 'app-admin-dashboard',

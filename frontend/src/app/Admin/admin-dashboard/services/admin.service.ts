@@ -1,13 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
-import {QueueDto} from "../interfaces/Queue/queueDto";
-import {LoginService} from "../../../Auth/login/services/login.service";
-import {QueueEntry} from "../interfaces/Queue/queueEntry";
-import {Router} from "@angular/router";
-import {ReadUserService} from "../../../services/user/readUser/read-user.service";
-import {GameDto} from "../interfaces/Game/gamesDto"
-import {UserDto} from "../interfaces/Game/User/userDto";
+import {GameDto} from "../../../Game/interfaces/gamesDto"
+import {UserDto} from '../../../User/interfaces/userDto';
+import { QueueDto } from '../interfaces/queueDto';
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +11,9 @@ export class AdminService {
 
   private apiUrl = 'http://localhost:3000/api';
 
-  matchMakingQueue: QueueEntry | undefined;
+  matchMakingQueue?: QueueDto[];
 
-  runningGames: GameDto[] | undefined;
+  runningGames?: GameDto[];
 
   user: UserDto[] = [];
 
@@ -27,9 +22,6 @@ export class AdminService {
 
   constructor(
     private http : HttpClient,
-    private loginService: LoginService,
-    private router: Router,
-    private readUserService: ReadUserService
   ) { }
 
 
@@ -45,8 +37,8 @@ export class AdminService {
   }
 
   getMatchMakingQueue() {
-    this.http.get<QueueEntry>(`${this.apiUrl}/queue`).subscribe({
-      next: (queue: QueueEntry) => {
+    this.http.get<QueueDto[]>(`${this.apiUrl}/queue`).subscribe({
+      next: (queue: QueueDto[]) => {
         this.matchMakingQueue = queue;
       },
       error: (err) => {

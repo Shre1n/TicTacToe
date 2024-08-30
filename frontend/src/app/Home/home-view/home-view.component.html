@@ -1,0 +1,9 @@
+
+@if (!ready) {
+
+} @else if (userService.user) {
+  <app-play-now></app-play-now>
+}
+@else {
+  <app-login></app-login>
+}

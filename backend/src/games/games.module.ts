@@ -12,5 +12,6 @@ import { ChatGateway } from './chat/chat.gateway';
   imports: [TypeOrmModule.forFeature([Game])],
   providers: [GamesService, GamesGateway, EloService, ChatService, ChatGateway],
   controllers: [GamesController],
+  exports: [GamesService],
 })
 export class GamesModule {}
