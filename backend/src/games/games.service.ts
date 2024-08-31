@@ -7,6 +7,7 @@ import { Game } from './games.entity';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../users/users.entity';
 import { EloService } from '../elo/elo.service';
+import { ChatService } from './chat/chat.service';
 
 @Injectable()
 export class GamesService {
@@ -27,6 +28,7 @@ export class GamesService {
   constructor(
     private dataSource: DataSource,
     private readonly eloService: EloService,
+    private readonly chatService: ChatService,
   ) {
     this.gameRepository = this.dataSource.getRepository(Game);
     this.userRepository = this.dataSource.getRepository(User);
@@ -127,6 +129,10 @@ export class GamesService {
         'player2.profilePicture',
       ],
     });
+  }
+
+  async getGameChat(game: Game) {
+    return this.chatService.getMessagesByGame(game);
   }
 
   async getAllGames(): Promise<Game[]> {

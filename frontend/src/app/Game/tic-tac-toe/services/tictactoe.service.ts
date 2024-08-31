@@ -7,15 +7,12 @@ import {MoveDto} from "../../interfaces/MoveDto";
 import {GameUpdateDto} from "../../interfaces/GameUpdateDto";
 import {ChatDTO} from "../../chat/dto/chat.dto";
 import { UserService } from '../../../User/user.service';
+import { ApiEndpoints } from '../../../api-endpoints';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TictactoeService {
-
-
-  private apiUrl = 'http://localhost:3000/api';
-
   public chat: ChatDTO[] = [];
   private _board: number[] = [];
   private _player: UserDto | undefined;
@@ -41,7 +38,7 @@ export class TictactoeService {
 
 
   loadFromApi(){
-    this.http.get<GameDto>(`${this.apiUrl}/game/active`).subscribe({
+    this.http.get<GameDto>(ApiEndpoints.USERGAME).subscribe({
       next: (response: GameDto) => {
         this.initGameBoard(response);
       },
@@ -72,7 +69,7 @@ export class TictactoeService {
   }
 
   readProfilePicture(id: number, isPlayer: boolean) {
-    this.http.get(`/api/user/avatar/${id}`, {responseType: 'arraybuffer'}).subscribe(buffer => {
+    this.http.get(`${ApiEndpoints.AVATAR}/${id}`, {responseType: 'arraybuffer'}).subscribe(buffer => {
       if (isPlayer){
         this._playerPicture = URL.createObjectURL(new Blob([buffer]));
       } else {

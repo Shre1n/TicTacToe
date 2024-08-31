@@ -53,7 +53,7 @@ export class UsersController {
 
   @UseGuards(RolesGuard)
   @Get()
-  @ApiOperation({ summary: 'Get users from the users' })
+  @ApiOperation({ summary: 'Gets all users' })
   @ApiOkResponse({ description: 'successful operation', type: [UserDto] })
   async getAllUsers() {
     const users = await this.usersService.getAllUsers();
@@ -98,7 +98,7 @@ export class UsersController {
   }
 
   @UseGuards(IsLoggedInGuard)
-  @Get('profile')
+  @Get('me/profile')
   @ApiOperation({
     summary: 'Gets profile information of current user',
     description:
@@ -109,20 +109,8 @@ export class UsersController {
     return this.usersService.getUserProfile(session.user);
   }
 
-  @UseGuards(RolesGuard)
-  @Get(':username')
-  @ApiParam({ name: 'username' })
-  @ApiOperation({
-    summary: 'Search for a User',
-    description: 'Search for a User, creates a query and returns the result.',
-  })
-  @ApiOkResponse({ description: 'Successful operation', type: [GameDto] })
-  async searchUsers(@Param('username') username: string) {
-    return this.usersService.searchUsers(username);
-  }
-
   @UseGuards(IsLoggedInGuard)
-  @Put()
+  @Put('me')
   @ApiOperation({
     summary: 'Updates the password of the current user',
     description: 'The user has to be logged in',
@@ -140,23 +128,21 @@ export class UsersController {
     session.user = await this.usersService.findOne(session.user.username);
   }
 
-  @Get('avatar/:id')
+  @UseGuards(IsLoggedInGuard)
+  @Get('me/game')
   @ApiOperation({
-    summary: 'Gets avatar from id',
-    description: 'Streams avatar with given id',
+    summary: 'Gets the active game of the current user',
+    description:
+      'Gets the game, the user is currently playing in. 404 the user has no game, he is playing in. The user has to be logged in',
   })
-  @ApiParam({ name: 'id', description: 'Avatar ID', example: '1' })
-  @ApiOkResponse()
-  @ApiNotFoundResponse()
-  @Header('Content-Type', 'image/png')
-  async getAvatar(@Param('id', ParseIntPipe) id: number) {
-    const data = await this.profilePictureService.get(id);
-    if (!data) throw new NotFoundException('Avatar not found');
-    return new StreamableFile(data.content);
+  @ApiOkResponse({ description: 'Successful operation', type: GameDto })
+  @ApiNotFoundResponse({ description: 'The is not playing a game' })
+  async getActiveUserGame(@Session() session: SessionData): Promise<GameDto> {
+    return this.usersService.getActiveUserGame(session.user);
   }
 
   @UseGuards(IsLoggedInGuard)
-  @Post('avatar')
+  @Post('me/avatar')
   @UseInterceptors(FileInterceptor('avatar'))
   @ApiOperation({
     summary: 'Sets the user avatar',
@@ -190,5 +176,32 @@ export class UsersController {
       newProfilePicture,
     );
     return await this.usersService.getCurrentUserInformation(session);
+  }
+
+  @Get('avatar/:id')
+  @ApiOperation({
+    summary: 'Gets avatar from id',
+    description: 'Streams avatar with given id',
+  })
+  @ApiParam({ name: 'id', description: 'Avatar ID', example: '1' })
+  @ApiOkResponse()
+  @ApiNotFoundResponse()
+  @Header('Content-Type', 'image/png')
+  async getAvatar(@Param('id', ParseIntPipe) id: number) {
+    const data = await this.profilePictureService.get(id);
+    if (!data) throw new NotFoundException('Avatar not found');
+    return new StreamableFile(data.content);
+  }
+
+  @UseGuards(RolesGuard)
+  @Get(':username')
+  @ApiParam({ name: 'username' })
+  @ApiOperation({
+    summary: 'Search for a User',
+    description: 'Search for a User, creates a query and returns the result.',
+  })
+  @ApiOkResponse({ description: 'Successful operation', type: [GameDto] })
+  async searchUsers(@Param('username') username: string) {
+    return this.usersService.searchUsers(username);
   }
 }

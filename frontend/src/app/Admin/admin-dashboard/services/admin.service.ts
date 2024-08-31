@@ -3,14 +3,12 @@ import {HttpClient} from "@angular/common/http";
 import {GameDto} from "../../../Game/interfaces/gamesDto"
 import {UserDto} from '../../../User/interfaces/userDto';
 import { QueueDto } from '../interfaces/queueDto';
+import { ApiEndpoints } from '../../../api-endpoints';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
-
-  private apiUrl = 'http://localhost:3000/api';
-
   matchMakingQueue?: QueueDto[];
 
   runningGames?: GameDto[];
@@ -26,7 +24,7 @@ export class AdminService {
 
 
   getUsers(){
-    this.http.get<[UserDto]>(`${this.apiUrl}/user`).subscribe({
+    this.http.get<[UserDto]>(ApiEndpoints.USER).subscribe({
       next: (response: [UserDto]) => {
         this.user = response;
       },
@@ -37,7 +35,7 @@ export class AdminService {
   }
 
   getMatchMakingQueue() {
-    this.http.get<QueueDto[]>(`${this.apiUrl}/queue`).subscribe({
+    this.http.get<QueueDto[]>(ApiEndpoints.QUEUE).subscribe({
       next: (queue: QueueDto[]) => {
         this.matchMakingQueue = queue;
       },
@@ -48,7 +46,7 @@ export class AdminService {
   }
 
   getRunningGames() {
-    this.http.get<GameDto[]>(`${this.apiUrl}/game/running`).subscribe({
+    this.http.get<GameDto[]>(ApiEndpoints.GAME).subscribe({
       next: (games: GameDto[]) => {
         this.runningGames = games;
       },
@@ -60,7 +58,7 @@ export class AdminService {
 
   searchUsers(query: string): void {
     if (query.length > 0) {
-      this.http.get<[GameDto]>(`${this.apiUrl}/user/${query}`).subscribe({
+      this.http.get<[GameDto]>(`${ApiEndpoints.USER}/${query}`).subscribe({
           next: (response: [GameDto]) => {
             this.userGames = response;
           },

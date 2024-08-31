@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpResponse} from "@angular/common/http";
+import { ApiEndpoints } from '../../../../api-endpoints';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class PlayerContentService {
       formData.append('avatar', file);
       formData.append('title', 'my nice avatar');
 
-      this.http.post<HttpResponse<any>>('/api/user/avatar', formData, {observe: 'response'}).subscribe({
+      this.http.post<HttpResponse<any>>(ApiEndpoints.USERAVATAR, formData, {observe: 'response'}).subscribe({
         next: (response: HttpResponse<any>) => {
           switch (response.status) {
             case 201:

@@ -69,10 +69,6 @@ export class UsersService {
     });
   }
 
-  async isAdmin(session: SessionData): Promise<boolean> {
-    return session.user.isAdmin;
-  }
-
   async getCurrentUserInformation(session: SessionData) {
     const dto = UserDto.from(session.user);
     dto.state = UserState.Ready;
@@ -103,6 +99,19 @@ export class UsersService {
     return games.map((g) =>
       MatchDto.from(UserDto.from(g.player1 == user ? g.player2 : g.player1), g),
     );
+  }
+
+  async getActiveUserGame(user: User) {
+    const game = await this.gameService.getActiveGame(user);
+    if (!game) throw new NotFoundException('Player not in a game');
+
+    let identity: 0 | 1 | 2 = 0;
+    if (game.player1.id === user.id) identity = 1;
+    if (game.player2.id === user.id) identity = 2;
+
+    const dto = { ...GameDto.from(game), playerIdentity: identity };
+    dto.chat = await this.gameService.getGameChat(game);
+    return dto;
   }
 
   //Admin

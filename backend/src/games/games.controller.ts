@@ -27,29 +27,7 @@ export class GamesController {
   ) {}
 
   @UseGuards(IsLoggedInGuard)
-  @Get('active')
-  @ApiOperation({
-    summary: 'Gets the active game of the current user',
-    description:
-      'Gets the game, the user is currently playing in. 404 the user has no game, he is playing in. The user has to be logged in',
-  })
-  @ApiOkResponse({ description: 'Successful operation', type: GameDto })
-  @ApiNotFoundResponse({ description: 'The is not playing a game' })
-  async getUserInfo(@Session() session: SessionData): Promise<GameDto> {
-    const game = await this.gameService.getActiveGame(session.user);
-    if (!game) throw new NotFoundException('Player not in a game');
-
-    let identity: 0 | 1 | 2 = 0;
-    if (game.player1.id === session.user.id) identity = 1;
-    if (game.player2.id === session.user.id) identity = 2;
-
-    const dto = { ...GameDto.from(game), playerIdentity: identity };
-    dto.chat = await this.chatService.getMessagesForGame(session.user);
-    return dto;
-  }
-
-  @UseGuards(IsLoggedInGuard)
-  @Get('running')
+  @Get()
   @ApiOperation({
     summary: 'Get all games',
     description: 'Returns all games that exist.',
