@@ -8,7 +8,7 @@ import { join } from 'path';
 import { Game } from '../games/games.entity';
 
 @Injectable()
-export class DemodataService {
+export class DemoDataService {
   private readonly userRepository: Repository<User>;
   private readonly profilePictureRepository: Repository<ProfilePicture>;
   private readonly gameRepository: Repository<Game>;
@@ -25,7 +25,6 @@ export class DemodataService {
   }
 
   async generateData() {
-
     const ava1 = this.profilePictureRepository.create({
       content: readFileSync(join(this.basePath, 'Conan.png')),
     });
@@ -37,8 +36,6 @@ export class DemodataService {
     });
 
     await this.profilePictureRepository.save([ava1, ava2, ava3]);
-
-
 
     const admin = this.userRepository.create({
       username: 'admin',
@@ -64,12 +61,11 @@ export class DemodataService {
 
     await this.userRepository.save([admin, user1, user2, user3]);
 
-
     const game1 = this.gameRepository.create({
       player1: user1,
       player2: user2,
-      player1Board: 1<<0 | 1<<1 | 1<<2,
-      player2Board: 1<<3 | 1<<7 | 1<<5,
+      player1Board: (1 << 0) | (1 << 1) | (1 << 2),
+      player2Board: (1 << 3) | (1 << 7) | (1 << 5),
       winningState: 'p1',
       isFinished: true,
       createdAt: new Date(1725190725609),
@@ -80,8 +76,8 @@ export class DemodataService {
     const game2 = this.gameRepository.create({
       player1: user1,
       player2: user3,
-      player1Board: 1<<0 | 1<<4 | 1<<8,
-      player2Board: 1<<3 | 1<<1 | 1<<5,
+      player1Board: (1 << 0) | (1 << 4) | (1 << 8),
+      player2Board: (1 << 3) | (1 << 1) | (1 << 5),
       winningState: 'p1',
       isFinished: true,
       createdAt: new Date(1725190728609),
@@ -92,8 +88,8 @@ export class DemodataService {
     const game3 = this.gameRepository.create({
       player1: user1,
       player2: user2,
-      player1Board: 1<<0 | 1<<2 | 1<<3 | 1<<8 | 1<<7,
-      player2Board: 1<<1 | 1<<4 | 1<<5 | 1<<6,
+      player1Board: (1 << 0) | (1 << 2) | (1 << 3) | (1 << 8) | (1 << 7),
+      player2Board: (1 << 1) | (1 << 4) | (1 << 5) | (1 << 6),
       winningState: 'draw',
       isFinished: true,
       createdAt: new Date(1725190735609),
@@ -104,8 +100,8 @@ export class DemodataService {
     const game4 = this.gameRepository.create({
       player1: user3,
       player2: user2,
-      player1Board: 1<<4 | 1<<8 | 1<<2 | 1<<6,
-      player2Board: 1<<0 | 1<<1 | 1<<5,
+      player1Board: (1 << 4) | (1 << 8) | (1 << 2) | (1 << 6),
+      player2Board: (1 << 0) | (1 << 1) | (1 << 5),
       winningState: 'p1',
       isFinished: true,
       createdAt: new Date(1725190625609),
@@ -116,8 +112,8 @@ export class DemodataService {
     const game5 = this.gameRepository.create({
       player1: user2,
       player2: user1,
-      player1Board: 1<<0 | 1<<1 | 1<<5,
-      player2Board: 1<<4 | 1<<8 | 1<<2 | 1<<6,
+      player1Board: (1 << 0) | (1 << 1) | (1 << 5),
+      player2Board: (1 << 4) | (1 << 8) | (1 << 2) | (1 << 6),
       winningState: 'p2',
       isFinished: true,
       createdAt: new Date(1725190425609),
@@ -129,6 +125,6 @@ export class DemodataService {
   }
 
   async dataExists() {
-    return await this.userRepository.existsBy({username: 'admin'});
+    return await this.userRepository.existsBy({ username: 'admin' });
   }
 }

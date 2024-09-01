@@ -4,8 +4,6 @@ import { User } from './users/users.entity';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { UsersModule } from './users/users.module';
-import { DataSource } from 'typeorm';
-import * as bcrypt from 'bcryptjs';
 import { RolesGuard } from './guards/roles/roles.guard';
 import { ProfilePicture } from './profilePicture/profilePicture.entity';
 import { AuthModule } from './auth/auth.module';
@@ -13,7 +11,7 @@ import { GamesModule } from './games/games.module';
 import { ProfilePictureService } from './profilePicture/profilePicture.service';
 import { Game } from './games/games.entity';
 import { QueueModule } from './queue/queue.module';
-import { DemodataService } from './demodata/demodata.service';
+import { DemoDataService } from './demodata/demo-data.service';
 
 @Module({
   imports: [
@@ -39,13 +37,12 @@ import { DemodataService } from './demodata/demodata.service';
     QueueModule,
   ],
   controllers: [],
-  providers: [RolesGuard, ProfilePictureService, DemodataService],
+  providers: [RolesGuard, ProfilePictureService, DemoDataService],
 })
 export class AppModule implements OnModuleInit {
-  constructor(private readonly demoDataService: DemodataService) {}
+  constructor(private readonly demoDataService: DemoDataService) {}
   async onModuleInit() {
-    if (!await this.demoDataService.dataExists())
+    if (!(await this.demoDataService.dataExists()))
       await this.demoDataService.generateData();
-
   }
 }
