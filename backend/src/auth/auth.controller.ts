@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Post,
-  Req,
-  Res,
-  Session,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Post, Session } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
 import {
@@ -18,7 +8,6 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { RolesGuard } from '../guards/roles/roles.guard';
 import { SessionData } from 'express-session';
 import { UsersService } from '../users/users.service';
 import { UserDto } from '../users/dto/user.dto';
@@ -70,25 +59,5 @@ export class AuthController {
   @ApiOkResponse({ description: 'Successful operation' })
   async logout(@Session() session: SessionData) {
     await this.authService.logout(session);
-  }
-
-  @Get('admin-only')
-  @UseGuards(RolesGuard)
-  @ApiOperation({
-    summary: 'Check if the Authenticated User is an Admin',
-    description: 'Gets the Info of the User with a Flag',
-  })
-  @ApiOkResponse({ description: 'Successful operation' })
-  @ApiForbiddenResponse({ description: 'Forbidden' })
-  async adminOnlyRoute(@Session() session: SessionData) {
-    if (session.user.isAdmin === true) {
-      return {
-        admin: session.isAdmin,
-      };
-    } else {
-      return {
-        message: 'This route is only accessible by the admin',
-      };
-    }
   }
 }

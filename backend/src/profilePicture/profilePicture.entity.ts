@@ -10,13 +10,6 @@ export class ProfilePicture {
   })
   id: number;
 
-  @Column({ type: 'varchar', length: 255 })
-  @ApiProperty({
-    description: 'The title of the profile picture',
-    example: 'Profile Image',
-  })
-  title: string;
-
   @Column({
     type: 'blob',
   })

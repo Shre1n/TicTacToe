@@ -27,6 +27,14 @@ export class GameDto {
   })
   playerIdentity: 0 | 1 | 2;
 
+  @ApiProperty({ description: 'The date and time when the game was created' })
+  createdAt: Date;
+
+  @ApiProperty({
+    description: 'How long the game lasted in ms',
+  })
+  duration: number;
+
   @ApiProperty({ description: 'Chat from game' })
   chat: ChatDto[];
 
@@ -45,6 +53,8 @@ export class GameDto {
       winner: game.winningState,
       chat: [],
       playerIdentity: 0,
+      createdAt: game.createdAt,
+      duration: game.duration,
     };
   }
 }

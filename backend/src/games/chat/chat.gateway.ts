@@ -47,13 +47,13 @@ export class ChatGateway {
       throw new WsException('User not found');
     }
 
-    await this.chatService.saveMessage(user, message);
-
     const game = await this.gameService.getActiveGame(session.user);
     if (!game)
       throw new WsException(
         'Invalid game room or User is not part of this game',
       );
+
+    await this.chatService.saveMessage(game, message);
 
     this.server
       .to(game.id.toString())

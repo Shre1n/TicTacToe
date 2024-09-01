@@ -7,6 +7,7 @@ import { Game } from './games.entity';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../users/users.entity';
 import { EloService } from '../elo/elo.service';
+import { ChatService } from './chat/chat.service';
 
 @Injectable()
 export class GamesService {
@@ -27,6 +28,7 @@ export class GamesService {
   constructor(
     private dataSource: DataSource,
     private readonly eloService: EloService,
+    private readonly chatService: ChatService,
   ) {
     this.gameRepository = this.dataSource.getRepository(Game);
     this.userRepository = this.dataSource.getRepository(User);
@@ -78,7 +80,10 @@ export class GamesService {
       game.turn = 1;
     }
 
-    if (this.checkWinner(game)) await this.updateElo(game);
+    if (this.checkWinner(game)) {
+      await this.updateElo(game);
+      game.duration = Date.now() - game.createdAt.getTime();
+    }
 
     return await this.gameRepository.save(game);
   }
@@ -129,6 +134,10 @@ export class GamesService {
     });
   }
 
+  async getGameChat(game: Game) {
+    return this.chatService.getMessagesByGame(game);
+  }
+
   async getAllGames(): Promise<Game[]> {
     return await this.gameRepository.find({
       where: { isFinished: false },
@@ -137,7 +146,7 @@ export class GamesService {
         id: true,
         player1Board: false,
         player2Board: false,
-        gameTime: true,
+        duration: true,
         turn: false,
         isFinished: false,
         createdAt: false,
