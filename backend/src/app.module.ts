@@ -13,6 +13,7 @@ import { GamesModule } from './games/games.module';
 import { ProfilePictureService } from './profilePicture/profilePicture.service';
 import { Game } from './games/games.entity';
 import { QueueModule } from './queue/queue.module';
+import { DemodataService } from './demodata/demodata.service';
 
 @Module({
   imports: [
@@ -38,31 +39,13 @@ import { QueueModule } from './queue/queue.module';
     QueueModule,
   ],
   controllers: [],
-  providers: [RolesGuard, ProfilePictureService],
+  providers: [RolesGuard, ProfilePictureService, DemodataService],
 })
 export class AppModule implements OnModuleInit {
-  // Generate an Admin User if no Admin exists
-  constructor(private dataSource: DataSource) {}
+  constructor(private readonly demoDataService: DemodataService) {}
   async onModuleInit() {
-    const userRepository = this.dataSource.getRepository(User);
-    const adminUser = await userRepository.findOne({
-      where: { username: 'admin' },
-    });
+    if (!await this.demoDataService.dataExists())
+      await this.demoDataService.generateData();
 
-    if (!adminUser) {
-      const hashedPassword = await bcrypt.hash('adminPass', 10);
-
-      const admin = userRepository.create({
-        username: 'admin',
-        password: hashedPassword,
-        isAdmin: true,
-        elo: 80000,
-        createdAt: new Date(),
-      });
-      await userRepository.save(admin);
-      console.log('Admin created', admin);
-    } else {
-      console.log('Admin already exists!');
-    }
   }
 }

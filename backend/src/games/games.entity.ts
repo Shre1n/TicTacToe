@@ -46,7 +46,7 @@ export class Game {
   })
   player2Board: number;
 
-  @Column({ type: 'long', default: 0 })
+  @Column({ type: 'integer', default: 0 })
   @ApiProperty({
     description: 'How long the game lasted in ms',
     example: '1:00:00',

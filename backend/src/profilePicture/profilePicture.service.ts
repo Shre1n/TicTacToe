@@ -15,13 +15,12 @@ export class ProfilePictureService {
     return await this.profilePictureRepository.findOneBy({ id });
   }
 
-  async save(title: string, profilePicture: Express.Multer.File, user: User) {
+  async save(profilePicture: Express.Multer.File, user: User) {
     const newProfilePicture = user.profilePicture
       ? await this.profilePictureRepository.findOneBy({
           id: user.profilePicture.id,
         })
       : new ProfilePicture();
-    newProfilePicture.title = title;
     newProfilePicture.content = profilePicture.buffer;
     await this.profilePictureRepository.save(newProfilePicture);
 

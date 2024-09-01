@@ -157,7 +157,6 @@ export class UsersController {
   @ApiUnprocessableEntityResponse({ description: 'Invalid File' })
   async setAvatar(
     @Session() session: SessionData,
-    @Body() data: FileUploadDto,
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({ fileType: 'jpg|jpeg|png|webp' })
@@ -167,7 +166,6 @@ export class UsersController {
     avatar: Express.Multer.File,
   ) {
     const newProfilePicture = await this.profilePictureService.save(
-      data.title,
       avatar,
       session.user,
     );
