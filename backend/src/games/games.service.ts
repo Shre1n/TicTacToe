@@ -80,7 +80,10 @@ export class GamesService {
       game.turn = 1;
     }
 
-    if (this.checkWinner(game)) await this.updateElo(game);
+    if (this.checkWinner(game)) {
+      await this.updateElo(game);
+      game.duration = Date.now() - game.createdAt.getTime();
+    }
 
     return await this.gameRepository.save(game);
   }
@@ -143,7 +146,7 @@ export class GamesService {
         id: true,
         player1Board: false,
         player2Board: false,
-        gameTime: true,
+        duration: true,
         turn: false,
         isFinished: false,
         createdAt: false,
