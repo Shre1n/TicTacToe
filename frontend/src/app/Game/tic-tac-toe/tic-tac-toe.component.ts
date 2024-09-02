@@ -28,4 +28,7 @@ export class TicTacToeComponent implements OnInit{
     this.tictactoeService.makeMove({position});
   }
 
+  giveUp(){
+    this.tictactoeService.giveUp();
+  }
 }

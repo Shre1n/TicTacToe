@@ -4,6 +4,7 @@
         <img src="{{ this.tictactoeService.playerPicture }}" class="profile-img" alt="yourProfile" #yourProfile>
         {{ this.tictactoeService.player?.elo }}
       </span>
+    <button class="btn btn-danger" (click)="giveUp()">Give Up</button>
     <span class="navbar-text">
         {{ this.tictactoeService.opponent?.elo }}
       <img src="{{ this.tictactoeService.opponentPicture }}" class="profile-img justify-content-end" alt="yourProfile"

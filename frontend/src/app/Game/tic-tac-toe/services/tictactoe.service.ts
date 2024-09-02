@@ -34,6 +34,11 @@ export class TictactoeService {
       this._board = update.board;
       if (update.isFinished) this._winner = update.winner;
     });
+    this.socketService.onGiveup().subscribe(() => {
+      console.log("Giveup");
+      //TODO: alert schön machen get back to home oder so (für den anderen spieler )
+      this._isPlayersTurn = false
+    })
   }
 
 
@@ -87,6 +92,12 @@ export class TictactoeService {
     this.socketService.makeMove(move);
   }
 
+  giveUp (){
+    if (this._winner !== "") return;
+    this._isPlayersTurn = false;
+    this.socketService.giveUp();
+    //TODO alert gameoverscreen , naviergiert auf startseite
+  }
 
   get isPlayersTurn(): boolean {
     return this._isPlayersTurn;

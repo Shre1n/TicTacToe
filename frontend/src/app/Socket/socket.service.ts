@@ -36,6 +36,10 @@ export class SocketService extends Socket{
     this.emit("makeMove", move);
   }
 
+  giveUp (){
+    this.emit("sendGiveUp");
+  }
+
   sendMessage(message: ChatDTO) {
     this.emit("sendMessage", message);
   }
@@ -46,6 +50,10 @@ export class SocketService extends Socket{
 
   onMoveMade() {
     return this.fromEvent<GameUpdateDto>("moveMade");
+  }
+
+  onGiveup (){
+    return this.fromEvent("receiveGiveUp");
   }
 
   onReceiveMessage() {
