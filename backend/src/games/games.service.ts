@@ -8,6 +8,7 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from '../users/users.entity';
 import { EloService } from '../elo/elo.service';
 import { ChatService } from './chat/chat.service';
+import session from 'express-session';
 
 @Injectable()
 export class GamesService {
@@ -53,6 +54,20 @@ export class GamesService {
     game.player2 = player2;
     game.turn = Math.random() < 0.5 ? 1 : 2;
     return await this.gameRepository.save(game);
+  }
+
+  async giveUp(game: Game, playerId: number): Promise<Game> {
+    if (game.player1.id === playerId) {
+      game.winningState = 'p2';
+      game.isFinished = true;
+    } else {
+      game.winningState = 'p1';
+      game.isFinished = true;
+    }
+    await this.updateElo(game);
+    game.duration = Date.now() - game.createdAt.getTime();
+    await this.gameRepository.save(game);
+    return game;
   }
 
   async makeAMove(

@@ -47,7 +47,7 @@ export class GamesGateway {
     const session = request.session;
 
     const activeGame = await this.gameService.getActiveGame(session.user);
-    if (!activeGame || activeGame.isFinished) {
+    if (!activeGame) {
       throw new NotFoundException('Invalid game or game already finished');
     }
 
@@ -60,6 +60,25 @@ export class GamesGateway {
     this.server
       .to(game.id.toString())
       .emit(ServerSentEvents.moveMade, GameUpdateDto.from(game, data.position));
+
+    if (game.isFinished) this.server.socketsLeave(game.id.toString());
+  }
+
+  @UseGuards(IsSocketLoggedInGuard)
+  @SubscribeMessage(ClientSentEvents.sendGiveUp)
+  async handleGiveUp(@ConnectedSocket() client: Socket) {
+    const request = client.request as Request;
+    const session = request.session;
+
+    const activeGame = await this.gameService.getActiveGame(session.user);
+
+    if (!activeGame) {
+      throw new NotFoundException('Invalid game or game already finished');
+    }
+    const game = await this.gameService.giveUp(activeGame, session.user.id);
+    client.broadcast
+      .to(game.id.toString())
+      .emit(ServerSentEvents.receiveGiveUp);
 
     if (game.isFinished) this.server.socketsLeave(game.id.toString());
   }
