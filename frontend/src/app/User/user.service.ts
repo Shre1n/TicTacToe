@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserDto, UserState } from './interfaces/userDto';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, catchError, map, mergeMap, Observable, of } from 'rxjs';
+import { BehaviorSubject, map, mergeMap, Observable, of } from 'rxjs';
 import { SocketService } from '../Socket/socket.service';
 import { ApiEndpoints } from '../api-endpoints';
 
