@@ -54,7 +54,7 @@ export class Game {
   player1EloGain: number;
 
   @ApiProperty({
-    description: 'Tracks how much elo player1 gained through the game',
+    description: 'Tracks how much elo player2 gained through the game',
     example: 0,
   })
   @Column({ type: 'integer', default: 0 })
