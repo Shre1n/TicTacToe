@@ -13,7 +13,7 @@ export class AdminGuard implements CanActivate {
 
   canActivate() {
     if (this.userService.isAdmin()) {
-      return true;
+      return of(true);
     }
     return this.userService.isAuthenticated().pipe(
       map((response: Response) => {
