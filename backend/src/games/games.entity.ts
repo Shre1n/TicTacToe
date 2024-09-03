@@ -48,6 +48,20 @@ export class Game {
 
   @Column({ type: 'integer', default: 0 })
   @ApiProperty({
+    description: 'Tracks how much elo player1 gained through the game',
+    example: 0,
+  })
+  player1EloGain: number;
+
+  @ApiProperty({
+    description: 'Tracks how much elo player1 gained through the game',
+    example: 0,
+  })
+  @Column({ type: 'integer', default: 0 })
+  player2EloGain: number;
+
+  @Column({ type: 'integer', default: 0 })
+  @ApiProperty({
     description: 'How long the game lasted in ms',
     example: '1:00:00',
   })
