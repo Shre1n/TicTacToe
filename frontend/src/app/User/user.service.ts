@@ -39,11 +39,11 @@ export class UserService {
   }
 
   isAuthenticated() {
-    return this.http.get<Response>(ApiEndpoints.ME).pipe(map((response: Response) => response.ok), catchError((_) => of(false)));
+    return this.http.get<Response>(ApiEndpoints.ME);
   }
 
   isAdmin() {
-    return this.isAuthenticated() && this.user?.isAdmin;
+    return this.user?.isAdmin;
   }
 
   getUserState() {
