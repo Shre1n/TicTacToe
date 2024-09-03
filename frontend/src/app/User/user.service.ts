@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserDto, UserState } from './interfaces/userDto';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, catchError, map, mergeMap, Observable, of } from 'rxjs';
+import { BehaviorSubject, map, mergeMap, Observable, of } from 'rxjs';
 import { SocketService } from '../Socket/socket.service';
 import { ApiEndpoints } from '../api-endpoints';
 
@@ -39,11 +39,11 @@ export class UserService {
   }
 
   isAuthenticated() {
-    return this.http.get<Response>(ApiEndpoints.ME).pipe(map((response: Response) => response.ok), catchError((_) => of(false)));
+    return this.http.get<Response>(ApiEndpoints.ME);
   }
 
   isAdmin() {
-    return this.isAuthenticated() && this.user?.isAdmin;
+    return this.user?.isAdmin;
   }
 
   getUserState() {
