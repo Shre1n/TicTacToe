@@ -1,18 +1,31 @@
 <nav class="navbar bg-body-tertiary">
-  <div class="container-fluid">
-      <span class="navbar-text">
-        <img src="{{ this.tictactoeService.playerPicture }}" class="profile-img" alt="yourProfile" #yourProfile>
-        {{ this.tictactoeService.player?.elo }}
-      </span>
-    <button class="btn btn-danger" (click)="giveUp()">Give Up</button>
-    <span class="navbar-text">
-        {{ this.tictactoeService.opponent?.elo }}
-      <img src="{{ this.tictactoeService.opponentPicture }}" class="profile-img justify-content-end" alt="yourProfile"
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <!-- Player Info (Left) -->
+    <span class="navbar-text d-flex align-items-center">
+      <img src="{{ this.tictactoeService.playerPicture }}" class="profile-img me-2" alt="yourProfile" #yourProfile>
+      <div class="user-info">
+        <div class="userElo">{{ this.tictactoeService.player?.elo }} Elo</div>
+        <div class="userName">{{ this.tictactoeService.player?.username }}</div>
+      </div>
+    </span>
+
+    <!-- Give Up Button (Center) -->
+    <button class="btn btn-danger-led" (click)="giveUp()">Give Up</button>
+
+
+    <!-- Opponent Info (Right) -->
+    <span class="navbar-text d-flex align-items-center">
+      <div class="user-info text-end me-2">
+        <div class="userElo">{{ this.tictactoeService.opponent?.elo }} Elo</div>
+        <div class="userName">{{ this.tictactoeService.opponent?.username }}</div>
+      </div>
+      <img src="{{ this.tictactoeService.opponentPicture }}" class="profile-img" alt="opponentProfile"
            #opponentProfile>
-      </span>
+    </span>
   </div>
 </nav>
 
+<br>
 
 <section class="container-fluid">
   <div class="d-flex justify-content-center align-items-center">

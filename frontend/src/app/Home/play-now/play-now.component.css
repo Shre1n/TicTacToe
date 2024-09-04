@@ -12,6 +12,50 @@
   padding: 1rem 2rem;
 }
 
+/* Gamepad icon styling with a glowing effect */
+.gamepad-icon {
+  font-size: 2rem; /* Adjust the size as needed */
+  color: #00ff7f; /* Main color for the icon */
+  text-shadow:
+    0 0 5px #00ff7f,
+    0 0 10px #00ff7f,
+    0 0 15px #00ff7f,
+    0 0 20px #00ff7f,
+    0 0 25px #00ff7f,
+    0 0 30px #00ff7f,
+    0 0 35px #00ff7f;
+}
+
+
+.gamepad-icon:hover {
+  color: #00cc66; /* Slightly different shade of green on hover, if desired */
+  text-shadow:
+    0 0 5px #00ff7f,
+    0 0 8px #00ff7f,
+    0 0 8px #00ff7f,
+    0 0 12px #00ff7f; /* Slightly more intense glowing effect on hover */
+}
+
+
+.gamepad-icon {
+  font-size: 3rem;
+  color: #1a1a1a; /* Adjust color as needed */
+}
+
+.btn i.fa-right-from-bracket {
+  font-size: 1.5rem;
+  color: #dc3545;
+}
+
+.btn:hover i.fa-right-from-bracket {
+  color: #c82333;
+}
+
+.navbar {
+  padding: 1rem;
+}
+
+
 .profile-img {
   max-height: 7vh;
   border-radius: 50%;
@@ -24,7 +68,7 @@
 }
 
 .userName {
-  font-size: 1em;
+  font-size: 1.5rem;
   font-weight: bold;
   background: linear-gradient(90deg, #69dbc9, rgb(116, 166, 158));
   -webkit-background-clip: text;
@@ -36,7 +80,7 @@
 }
 
 .userElo {
-  font-size: 0.5em;
+  font-size: 1rem;
   color: #4bc589;
   justify-content: end;
   font-family: 'Roboto', sans-serif;

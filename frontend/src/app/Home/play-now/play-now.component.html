@@ -1,22 +1,29 @@
 <nav class="navbar bg-body-tertiary">
   <div class="container-fluid d-flex justify-content-between">
-    <!-- Logout Button -->
-    <button class="btn p-0 d-flex align-items-center" (click)="logout()">
-      <i class="fas fa-door-open"></i>
-    </button>
-
-    <!-- User Info and Profile Picture -->
+    <!-- Gamepad Icon and Back Button (Left) -->
     <div class="d-flex align-items-center">
-      <button class="btn p-0 d-flex align-items-center" (click)="navProfile()">
-        <div class="user-info me-4">
+      <i class="fa-solid fa-gamepad gamepad-icon"></i>
+    </div>
+
+    <!-- User Info, Profile Picture, and Logout Button (Right) -->
+    <div class="d-flex align-items-center">
+      <button class="btn p-0 d-flex align-items-center me-3" (click)="navProfile()">
+        <div class="user-info me-3 text-end">
           <div class="userName">{{ this.userService.user?.username }}</div>
           <div class="userElo">{{ this.userService.user?.elo }} Elo</div>
         </div>
         <img src="{{this.userService.user?.profilePictureUrl}}" class="profile-img" alt="yourProfile">
       </button>
+
+      <button class="btn p-1 d-flex flex-column align-items-center" (click)="logout()">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Logout</span>
+      </button>
     </div>
   </div>
 </nav>
+
+
 
 <section class="container self-margin">
   <div class="intro-box text-center p-4">
