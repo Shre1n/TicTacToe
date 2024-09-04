@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
-import { GameDto } from '../Game/interfaces/gamesDto';
 import { GameUpdateDto } from '../Game/interfaces/GameUpdateDto';
 import { ChatDTO } from '../Game/chat/dto/chat.dto';
 import { MoveDto } from '../Game/interfaces/MoveDto';
+import { MatchUpDto } from '../Game/interfaces/MatchUpDto';
 
 const config: SocketIoConfig = {
   url: 'http://localhost:3000/socket',
@@ -41,7 +41,7 @@ export class SocketService extends Socket{
   }
 
   onGameStarted() {
-    return this.fromEvent<GameDto>("gameStarted");
+    return this.fromEvent<MatchUpDto>("gameStarted");
   }
 
   onMoveMade() {

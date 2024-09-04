@@ -10,12 +10,12 @@
     </div>
     <div class="chat-messages" #chatMessages>
       @for (message of this.messages; let i = $index; track trackByMinimal(i)){
-        @if (message.username === this.tictactoeService.player?.username){
+        @if (message.username === this.tictactoeService.getPlayer(this.id)?.username){
           <div class="chat-message">
             <strong class="self">{{message.username}}:</strong> {{message.message}}
           </div>
         }
-        @if (message.username === this.tictactoeService.opponent?.username){
+        @if (message.username === this.tictactoeService.getOpponent(this.id)?.username){
           <div class="chat-message">
             <strong class="opponent">{{message.username}}:</strong> {{message.message}}
           </div>

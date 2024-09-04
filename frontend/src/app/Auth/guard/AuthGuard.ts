@@ -14,7 +14,7 @@ export class AuthGuard implements CanActivate {
   canActivate() {
     return this.userService.isAuthenticated().pipe(
       map((response: Response) => {
-        if (response.ok)
+        if (response)
           return true;
         this.router.navigate(['/unauthorized']);
         return false;

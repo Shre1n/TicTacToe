@@ -51,7 +51,11 @@ export class GamesController {
   ): Promise<GameDto> {
     const game = await this.gameService.getGameById(id);
 
-    if (!game || this.gameService.getPlayerIdentity(game, session.user) === 0)
+    if (
+      !game ||
+      game.isFinished ||
+      this.gameService.getPlayerIdentity(game, session.user) === 0
+    )
       throw new NotFoundException('Invalid game id');
 
     return await this.gameService.gameToFullDto(game, session.user);

@@ -20,7 +20,7 @@ import {
 } from '../socket/events';
 import { GamesService } from '../games/games.service';
 import { PreGameObject } from './preGameObject';
-import { GameDto } from '../games/dto/game.dto';
+import { UserDto } from '../users/dto/user.dto';
 
 @WebSocketGateway({ namespace: 'socket' })
 export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -83,7 +83,7 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const opponent = await this.queueService.findOpponent(session.user);
     if (!opponent) {
       this.queueService.addPlayer(session.user, session.id);
-      return true;
+      return;
     }
 
     // Prepare a game and wait for both player to acknowledge the match
@@ -101,7 +101,6 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     this.server.to(session.id).emit(ServerSentEvents.gameFound);
     this.server.to(opponent.sessionId).emit(ServerSentEvents.gameFound);
-    return true;
   }
 
   @UseGuards(IsSocketLoggedInGuard)
@@ -128,12 +127,12 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
         .socketsJoin(game.id.toString());
 
       this.server.to(preGame.player1Id).emit(ServerSentEvents.gameStarted, {
-        ...GameDto.from(game),
-        playerIdentity: 1,
+        opponent: UserDto.from(game.player2),
+        gameId: game.id,
       });
       this.server.to(preGame.player2Id).emit(ServerSentEvents.gameStarted, {
-        ...GameDto.from(game),
-        playerIdentity: 2,
+        opponent: UserDto.from(game.player1),
+        gameId: game.id,
       });
     }
   }
