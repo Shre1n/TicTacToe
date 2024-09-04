@@ -135,10 +135,12 @@ export class UsersController {
     description:
       'Gets the game, the user is currently playing in. 404 the user has no game, he is playing in. The user has to be logged in',
   })
-  @ApiOkResponse({ description: 'Successful operation', type: GameDto })
+  @ApiOkResponse({ description: 'Successful operation', type: [GameDto] })
   @ApiNotFoundResponse({ description: 'The is not playing a game' })
-  async getActiveUserGame(@Session() session: SessionData): Promise<GameDto> {
-    return this.usersService.getActiveUserGame(session.user);
+  async getActiveUserGames(
+    @Session() session: SessionData,
+  ): Promise<GameDto[]> {
+    return await this.usersService.getActiveUserGames(session.user);
   }
 
   @UseGuards(IsLoggedInGuard)

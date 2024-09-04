@@ -8,6 +8,7 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from '../users/users.entity';
 import { EloService } from '../elo/elo.service';
 import { ChatService } from './chat/chat.service';
+import { GameDto } from './dto/game.dto';
 
 @Injectable()
 export class GamesService {
@@ -119,8 +120,26 @@ export class GamesService {
     });
   }
 
-  async getActiveGame(player: User) {
+  async getGameById(id: number) {
     return await this.gameRepository.findOne({
+      where: { id },
+      relations: [
+        'player1',
+        'player2',
+        'player1.profilePicture',
+        'player2.profilePicture',
+      ],
+    });
+  }
+
+  async gameToFullDto(game: Game, user: User) {
+    const chat = await this.getGameChat(game);
+    const playerIdentity: 0 | 1 | 2 = this.getPlayerIdentity(game, user);
+    return { ...GameDto.from(game), playerIdentity, chat };
+  }
+
+  async getActiveGamesByPlayer(player: User) {
+    return await this.gameRepository.find({
       where: [
         { player1: { id: player.id }, isFinished: false },
         { player2: { id: player.id }, isFinished: false },
@@ -138,7 +157,13 @@ export class GamesService {
     return this.chatService.getMessagesByGame(game);
   }
 
-  async getAllGames(): Promise<Game[]> {
+  getPlayerIdentity(game: Game, user: User) {
+    const isPlayer1 = game.player1.id == user.id;
+    const isPlayer2 = game.player2.id == user.id;
+    return isPlayer1 ? 1 : isPlayer2 ? 2 : 0;
+  }
+
+  async getActiveGames(): Promise<Game[]> {
     return await this.gameRepository.find({
       where: { isFinished: false },
       relations: ['player1', 'player2'],
@@ -161,6 +186,15 @@ export class GamesService {
         winningState: false,
       },
     });
+  }
+
+  isWinner(game: Game, user: User) {
+    const userAsPlayer1IsWinning =
+      game.player1 === user && game.winningState === 'p1';
+    const userAsPlayer2IsWinning =
+      game.player2 === user && game.winningState === 'p2';
+
+    return userAsPlayer1IsWinning || userAsPlayer2IsWinning;
   }
 
   async updateElo(game: Game): Promise<Game> {

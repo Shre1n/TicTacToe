@@ -29,6 +29,8 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
     ServerToClientEvents
   >();
 
+  private readonly max_games: number = 20;
+
   constructor(
     private readonly queueService: QueueService,
     private readonly gameService: GamesService,
@@ -54,9 +56,11 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     client.join(session.id);
 
-    const activeGame = await this.gameService.getActiveGame(session.user);
-    if (activeGame) {
-      client.join(activeGame.id.toString());
+    const activeGames = await this.gameService.getActiveGamesByPlayer(
+      session.user,
+    );
+    if (activeGames?.length > 0) {
+      activeGames.forEach((game) => client.join(game.id.toString()));
     }
   }
 
@@ -69,14 +73,17 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // Check if the player can enter the queue
     if (this.queueService.isPlayerInQueue(session.user))
       throw new WsException('Player already in queue.');
-    if (await this.gameService.isPlayerInGame(session.user))
-      throw new WsException('Player already in game.');
 
+    const userGames = await this.gameService.getActiveGamesByPlayer(
+      session.user,
+    );
+    if (userGames.length > this.max_games)
+      throw new WsException('Too many games.');
     // Try to find an opponent; Add the player to queue and return if none is found
     const opponent = await this.queueService.findOpponent(session.user);
     if (!opponent) {
       this.queueService.addPlayer(session.user, session.id);
-      return;
+      return true;
     }
 
     // Prepare a game and wait for both player to acknowledge the match
@@ -94,6 +101,7 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     this.server.to(session.id).emit(ServerSentEvents.gameFound);
     this.server.to(opponent.sessionId).emit(ServerSentEvents.gameFound);
+    return true;
   }
 
   @UseGuards(IsSocketLoggedInGuard)

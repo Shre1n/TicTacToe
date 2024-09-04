@@ -1,6 +1,7 @@
 import { Game } from '../games.entity';
 
 export class GameUpdateDto {
+  id: number;
   board: number[];
   position: number;
   turn: number;
@@ -14,6 +15,7 @@ export class GameUpdateDto {
       else if ((game.player2Board & (1 << i)) !== 0) board[i] = 2;
     }
     return {
+      id: game.id,
       turn: game.turn,
       isFinished: game.isFinished,
       board: board,
