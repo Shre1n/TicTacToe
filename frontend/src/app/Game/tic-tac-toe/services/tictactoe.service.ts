@@ -1,115 +1,93 @@
 import { Injectable } from '@angular/core';
-import {GameDto} from "../../interfaces/gamesDto";
-import {UserDto} from "../../../User/interfaces/userDto";
+import { GameDto } from "../../interfaces/gamesDto";
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import {SocketService} from "../../../Socket/socket.service";
-import {MoveDto} from "../../interfaces/MoveDto";
-import {GameUpdateDto} from "../../interfaces/GameUpdateDto";
-import {ChatDTO} from "../../chat/dto/chat.dto";
-import { UserService } from '../../../User/user.service';
+import { SocketService } from "../../../Socket/socket.service";
+import { MoveDto } from "../../interfaces/MoveDto";
+import { GameUpdateDto } from "../../interfaces/GameUpdateDto";
 import { ApiEndpoints } from '../../../api-endpoints';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TictactoeService {
-  public chat: ChatDTO[] = [];
-  private _board: number[] = [];
-  private _player: UserDto | undefined;
-  private _opponent: UserDto | undefined;
-  private _playerPicture: string = "";
-  private _opponentPicture : string = "";
-  private player_turn: number = 0;
-  private _isPlayersTurn: boolean = false;
-  private _winner: string = "";
+  public games: Map<number, GameDto> = new Map();
 
 
   constructor(
     private http: HttpClient,
-    private userService: UserService,
+    private router: Router,
     private socketService: SocketService
   ) {
     this.socketService.onMoveMade().subscribe((update: GameUpdateDto) => {
-      this._isPlayersTurn = update.turn === this.player_turn;
-      this._board = update.board;
-      if (update.isFinished) this._winner = update.winner;
+      const game = this.games.get(update.id);
+      if (!game) return;
+
+      game.turn = update.turn;
+      game.board = update.board;
+      if (update.isFinished) {
+        game.winner = update.winner;
+        game.isFinished = update.isFinished;
+      }
     });
   }
 
 
-  loadFromApi(){
-    this.http.get<GameDto>(ApiEndpoints.USERGAME).subscribe({
+  loadFromApi(id: number){
+    this.http.get<GameDto>(`${ApiEndpoints.GAME}/${id}`).subscribe({
       next: (response: GameDto) => {
         this.initGameBoard(response);
       },
       error: (err: HttpErrorResponse) => {
         if (err.status === 404)
-          this.userService.loadUserData();
-        console.log(err);
+          this.router.navigate(['NotFound']);
+
       }
     })
   }
 
-
   initGameBoard(game: GameDto){
-    this._board = game.board;
-    this.chat = game.chat;
-    if (game.playerIdentity === 1){
-      this._player = game.player1;
-      this._opponent = game.player2;
-      this.player_turn = 1;
-    } else {
-      this._player = game.player2;
-      this._opponent = game.player1;
-      this.player_turn = 2;
-    }
-    this._isPlayersTurn = game.turn === this.player_turn;
-    this.readProfilePicture(this._player.profilePictureId, true);
-    this.readProfilePicture(this._opponent.profilePictureId, false);
+    this.games.set(game.id, game);
+    this.readProfilePictures(game);
   }
 
-  readProfilePicture(id: number, isPlayer: boolean) {
-    this.http.get(`${ApiEndpoints.AVATAR}/${id}`, {responseType: 'arraybuffer'}).subscribe(buffer => {
-      if (isPlayer){
-        this._playerPicture = URL.createObjectURL(new Blob([buffer]));
-      } else {
-        this._opponentPicture = URL.createObjectURL(new Blob([buffer]));
-      }
+  readProfilePictures(game: GameDto) {
+    this.http.get(`${ApiEndpoints.AVATAR}/${game.player1.profilePictureId}`, {responseType: 'arraybuffer'}).subscribe(buffer => {
+      this.games.get(game.id)!.player1.profilePictureUrl = URL.createObjectURL(new Blob([buffer]));
+    });
+    this.http.get(`${ApiEndpoints.AVATAR}/${game.player2.profilePictureId}`, {responseType: 'arraybuffer'}).subscribe(buffer => {
+      this.games.get(game.id)!.player2.profilePictureUrl = URL.createObjectURL(new Blob([buffer]));
     });
   }
 
   makeMove(move: MoveDto){
-    if (this._winner !== "") return;
-    if (!this._isPlayersTurn) return;
-    if (this._board[move.position] !== 0) return;
-    this._isPlayersTurn = false;
-    this._board[move.position] = this.player_turn;
+    const game = this.games.get(move.id);
+    if (!game || game.isFinished) return;
+    if (!this.isPlayerTurn(game)) return;
+    if (game.board[move.position] !== 0) return;
+
+    game.turn = game.playerIdentity === 1 ? 2 : 1;
+    game.board[move.position] = game.playerIdentity;
     this.socketService.makeMove(move);
   }
 
+  getPlayer(id: number) {
+    const game = this.games.get(id);
+    if (!game) return null;
 
-  get isPlayersTurn(): boolean {
-    return this._isPlayersTurn;
+    if (game.playerIdentity === 1) return game.player1;
+    else return game.player2;
   }
 
-  get playerPicture(): string {
-    return this._playerPicture;
+  getOpponent(id: number) {
+    const game = this.games.get(id);
+    if (!game) return null;
+
+    if (game.playerIdentity === 1) return game.player2;
+    else return game.player1;
   }
 
-  get opponentPicture(): string {
-    return this._opponentPicture;
-  }
-
-  get board(): number[] {
-    return this._board;
-  }
-
-
-  get player(): UserDto | undefined {
-    return this._player;
-  }
-
-  get opponent(): UserDto | undefined {
-    return this._opponent;
+  isPlayerTurn(game: GameDto): boolean {
+    return game.turn === game.playerIdentity;
   }
 }

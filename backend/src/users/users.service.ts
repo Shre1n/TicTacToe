@@ -82,13 +82,9 @@ export class UsersService {
 
   async getUserStats(games: Game[], user: User) {
     const stats = new UserStatsDto();
-    stats.wins = games.filter(
-      (g) =>
-        (g.player1 === user && g.winningState == 'p1') ||
-        (g.player2 === user && g.winningState == 'p2'),
-    ).length;
+    stats.wins = games.filter((g) => this.gameService.isWinner(g, user)).length;
 
-    stats.draws = games.filter((g) => g.winningState == 'draw').length;
+    stats.draws = games.filter((g) => g.winningState === 'draw').length;
 
     stats.loses = games.length - stats.wins - stats.draws;
 
@@ -101,17 +97,17 @@ export class UsersService {
     );
   }
 
-  async getActiveUserGame(user: User) {
-    const game = await this.gameService.getActiveGame(user);
-    if (!game) throw new NotFoundException('Player not in a game');
+  async getActiveUserGames(user: User): Promise<GameDto[]> {
+    const games = await this.gameService.getActiveGamesByPlayer(user);
+    if (!games || games.length < 1)
+      throw new NotFoundException('Player not in a game');
 
-    let identity: 0 | 1 | 2 = 0;
-    if (game.player1.id === user.id) identity = 1;
-    if (game.player2.id === user.id) identity = 2;
+    const gamesAsDto = [];
+    for (const game of games) {
+      gamesAsDto.push(await this.gameService.gameToFullDto(game, user));
+    }
 
-    const dto = { ...GameDto.from(game), playerIdentity: identity };
-    dto.chat = await this.gameService.getGameChat(game);
-    return dto;
+    return gamesAsDto;
   }
 
   //Admin

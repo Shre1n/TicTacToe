@@ -1,12 +1,12 @@
 <nav class="navbar bg-body-tertiary">
   <div class="container-fluid">
       <span class="navbar-text">
-        <img src="{{ this.tictactoeService.playerPicture }}" class="profile-img" alt="yourProfile" #yourProfile>
-        {{ this.tictactoeService.player?.elo }}
+        <img src="{{ this.tictactoeService.getPlayer(this.id)?.profilePictureUrl }}" class="profile-img" alt="yourProfile" #yourProfile>
+        {{ this.tictactoeService.getPlayer(this.id)?.elo }}
       </span>
     <span class="navbar-text">
-        {{ this.tictactoeService.opponent?.elo }}
-      <img src="{{ this.tictactoeService.opponentPicture }}" class="profile-img justify-content-end" alt="yourProfile"
+        {{ this.tictactoeService.getOpponent(this.id)?.elo }}
+      <img src="{{ this.tictactoeService.getOpponent(this.id)?.profilePictureUrl }}" class="profile-img justify-content-end" alt="yourProfile"
            #opponentProfile>
       </span>
   </div>
@@ -16,7 +16,7 @@
 <section class="container-fluid">
   <div class="d-flex justify-content-center align-items-center">
     <div class="tictactoe-board">
-      @for (cell of this.tictactoeService.board; let i = $index; track i //change to a unique tracking index) {
+      @for (cell of this.tictactoeService.games.get(this.id)?.board || []; let i = $index; track i //change to a unique tracking index) {
         <button class="tictactoe-cell" (click)="moveMove(i)">
           {{ cell }}
         </button>
@@ -26,7 +26,7 @@
 </section>
 
 <div class="chat-wrapper">
-  <app-chat [messages]="this.tictactoeService.chat"></app-chat>
+  <app-chat [id]="this.id" [messages]="this.tictactoeService.games.get(this.id)?.chat || []"></app-chat>
 </div>
 
 

@@ -26,6 +26,7 @@ export class ChatComponent implements OnInit, AfterViewChecked{
   message: string = '';
 
   @Input() messages: ChatDTO[] = [];
+  @Input() id: number = -1;
 
   constructor(
     protected socketService: SocketService,
@@ -63,8 +64,10 @@ export class ChatComponent implements OnInit, AfterViewChecked{
   }
 
   sendMessage() {
+    if (this.id === -1) return;
+
     if (this.message.trim()) {
-      const message = { username: this.userService.user?.username ?? "unknown", message: this.message };
+      const message = { gameId: this.id, username: this.userService.user?.username ?? "unknown", message: this.message };
       this.messages.push(message);
       this.socketService.sendMessage(message);
       this.scrollToBottom();

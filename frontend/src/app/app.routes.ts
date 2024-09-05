@@ -10,12 +10,14 @@ import {AuthGuard} from "./Auth/guard/AuthGuard";
 import {Unauthorized401Component} from "./Error-Components/unauthorized-401/unauthorized-401.component";
 import { HomeViewComponent } from './Home/home-view/home-view.component';
 import { GameViewComponent } from './Game/game-view/game-view.component';
+import { TicTacToeComponent } from './Game/tic-tac-toe/tic-tac-toe.component';
 
 export const routes: Routes = [
   {path: '', component: HomeViewComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'admin', title: 'Admin Dashboard', component: AdminDashboardComponent, canActivate: [AdminGuard]},
   {path: 'game', title: 'Game', component: GameViewComponent, canActivate: [AuthGuard]},
+  {path: 'game/:id', title: 'Game', component: TicTacToeComponent, canActivate: [AuthGuard]},
   {path: 'profile', title:'Profile', component: PlayerProfileComponent, canActivate: [AuthGuard]},
   {path: 'forbidden', title:'403 - Forbidden', component: Forbidden403Component},
   {path: 'unauthorized', title:'401 - Unauthorized', component: Unauthorized401Component},

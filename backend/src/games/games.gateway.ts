@@ -46,9 +46,13 @@ export class GamesGateway {
     const request = client.request as Request;
     const session = request.session;
 
-    const activeGame = await this.gameService.getActiveGame(session.user);
-    if (!activeGame) {
-      throw new NotFoundException('Invalid game or game already finished');
+    const activeGame = await this.gameService.getGameById(data.id);
+    if (
+      !activeGame ||
+      activeGame.isFinished ||
+      this.gameService.getPlayerIdentity(activeGame, session.user) === 0
+    ) {
+      throw new NotFoundException('Invalid game id');
     }
 
     const game = await this.gameService.makeAMove(
