@@ -9,11 +9,11 @@ import { ApiEndpoints } from '../../../api-endpoints';
   providedIn: 'root'
 })
 export class AdminService {
-  matchMakingQueue?: QueueDto[];
+  matchMakingQueue: QueueDto[] = [];
 
-  runningGames?: GameDto[];
+  runningGames: GameDto[] = [];
 
-  user: UserDto[] = [];
+  users: UserDto[] = [];
 
   userGames: GameDto[] = []
 
@@ -26,18 +26,18 @@ export class AdminService {
   getUsers(){
     this.http.get<[UserDto]>(ApiEndpoints.USER).subscribe({
       next: (response: [UserDto]) => {
-        this.user = response;
+        this.users = response;
       },
       error: (err)=> {
-        console.log(err);
+        console.error(err);
     }
     });
   }
 
   getMatchMakingQueue() {
-    this.http.get<QueueDto[]>(ApiEndpoints.QUEUE).subscribe({
-      next: (queue: QueueDto[]) => {
-        this.matchMakingQueue = queue;
+    this.http.get<{ queueEntries: QueueDto[] }>(ApiEndpoints.QUEUE).subscribe({
+      next: (queue: { queueEntries: QueueDto[] }) => {
+        this.matchMakingQueue = queue.queueEntries;
       },
       error: (err) => {
         console.error('Failed to fetch queue:', err);
@@ -45,7 +45,7 @@ export class AdminService {
     });
   }
 
-  getRunningGames() {
+  getRunningGames(): void {
     this.http.get<GameDto[]>(ApiEndpoints.GAME).subscribe({
       next: (games: GameDto[]) => {
         this.runningGames = games;
@@ -58,7 +58,7 @@ export class AdminService {
 
   searchUsers(query: string): void {
     if (query.length > 0) {
-      this.http.get<[GameDto]>(`${ApiEndpoints.USER}/${query}`).subscribe({
+      this.http.get<[GameDto]>(`${ApiEndpoints.USER}/${query}/game`).subscribe({
           next: (response: [GameDto]) => {
             this.userGames = response;
           },

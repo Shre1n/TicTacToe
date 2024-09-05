@@ -95,7 +95,9 @@ export class UsersController {
   @ApiOkResponse({ description: 'Successful operation', type: UserDto })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   async getUserInfo(@Session() session: SessionData): Promise<UserDto> {
-    return this.usersService.getCurrentUserInformation(session);
+    const user: UserDto = await this.usersService.getCurrentUserInformation(session);
+    user.isAdmin = session.user.isAdmin;
+    return user;
   }
 
   @UseGuards(IsLoggedInGuard)

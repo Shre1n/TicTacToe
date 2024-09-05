@@ -1,0 +1,19 @@
+<div class="tic-tac-toe-board d-flex flex-column">
+  @for (row of [0, 1, 2]; track row) {
+    <div>
+      <div class="row d-flex justify-content-center">
+        @for (col of [0, 1, 2]; track col) {
+          <div class="cell">
+            <div>
+              @if (board[col * 3 + row] === 1) {
+                <i class="icon-x"></i>
+              } @else if (board[col * 3 + row] === 2) {
+                <i class="icon-o"></i>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
