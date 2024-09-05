@@ -149,5 +149,6 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const session = request.session;
 
     this.queueService.removePlayer(session.user);
+    this.server.to('admin').emit(ServerSentEvents.queueUpdated);
   }
 }
