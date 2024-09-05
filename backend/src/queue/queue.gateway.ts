@@ -56,7 +56,7 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     client.join(session.id);
 
-    if (session.user.isAdmin) client.join("admin");
+    if (session.user.isAdmin) client.join('admin');
 
     const activeGames = await this.gameService.getActiveGamesByPlayer(
       session.user,
@@ -85,7 +85,7 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const opponent = await this.queueService.findOpponent(session.user);
     if (!opponent) {
       this.queueService.addPlayer(session.user, session.id);
-      this.server.to("admin").emit(ServerSentEvents.queueUpdated);
+      this.server.to('admin').emit(ServerSentEvents.queueUpdated);
       return;
     }
 
@@ -102,7 +102,7 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
       );
     this.queueService.removePlayer(opponent.player);
 
-    this.server.to("admin").emit(ServerSentEvents.queueUpdated);
+    this.server.to('admin').emit(ServerSentEvents.queueUpdated);
     this.server.to(session.id).emit(ServerSentEvents.gameFound);
     this.server.to(opponent.sessionId).emit(ServerSentEvents.gameFound);
   }
@@ -138,7 +138,7 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
         opponent: UserDto.from(game.player1),
         gameId: game.id,
       });
-      this.server.to("admin").emit(ServerSentEvents.runningGamesUpdated);
+      this.server.to('admin').emit(ServerSentEvents.runningGamesUpdated);
     }
   }
 
