@@ -197,7 +197,7 @@ export class UsersController {
   }
 
   @UseGuards(RolesGuard)
-  @Get(':username/profile')
+  @Get(':username')
   @ApiOperation({
     summary: 'Gets profile information of user with given name',
     description: 'Gets all relevant profile infos about the user.',
@@ -205,22 +205,10 @@ export class UsersController {
   @ApiNotFoundResponse({ description: 'User not found' })
   @ApiOkResponse({ description: 'Successful operation', type: ProfileDto })
   async getUserProfileByUsername(
-    @Param(':username') username: string,
+    @Param('username') username: string,
   ): Promise<ProfileDto> {
     const user: User = await this.usersService.findOne(username);
     if (!user) throw new NotFoundException('User not found');
     return this.usersService.getUserProfile(user);
-  }
-
-  @UseGuards(RolesGuard)
-  @Get(':username/game')
-  @ApiParam({ name: 'username' })
-  @ApiOperation({
-    summary: 'Search for a User',
-    description: 'Search for a User, creates a query and returns the result.',
-  })
-  @ApiOkResponse({ description: 'Successful operation', type: [GameDto] })
-  async searchUsers(@Param('username') username: string) {
-    return this.usersService.searchUsers(username);
   }
 }

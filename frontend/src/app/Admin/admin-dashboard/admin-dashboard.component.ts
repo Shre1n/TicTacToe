@@ -9,6 +9,7 @@ import {UserDto} from "../../User/interfaces/userDto";
 import { CurrentGamesComponent } from './current-games/current-games.component';
 import { TttBoardComponent } from './ttt-board/ttt-board.component';
 import { WaitingPlayersComponent } from './waiting-players/waiting-players.component';
+import { GameResult } from '../../Game/interfaces/matchDto';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -146,4 +147,5 @@ export class AdminDashboardComponent implements OnInit {
   }
 
 
+  protected readonly GameResult = GameResult;
 }

@@ -41,18 +41,13 @@ export class GameDto {
   chat: ChatDto[];
 
   static from(game: Game): GameDto {
-    const board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-    for (let i = 0; i < 9; i++) {
-      if ((game.player1Board & (1 << i)) !== 0) board[i] = 1;
-      else if ((game.player2Board & (1 << i)) !== 0) board[i] = 2;
-    }
     return {
       id: game.id,
       player1: UserDto.from(game.player1),
       player2: UserDto.from(game.player2),
       turn: game.turn,
       isFinished: game.isFinished,
-      board: board,
+      board: game.board(),
       winner: game.winningState,
       chat: [],
       playerIdentity: 0,

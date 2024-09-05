@@ -4,6 +4,10 @@ import {GameDto} from "../../../Game/interfaces/gamesDto"
 import {UserDto} from '../../../User/interfaces/userDto';
 import { QueueDto } from '../interfaces/queueDto';
 import { ApiEndpoints } from '../../../api-endpoints';
+import { ProfileDto } from '../../../User/player-profile/interfaces/profile.dto';
+import { SocketService } from '../../../Socket/socket.service';
+import { UserStatsDto } from '../../../User/player-profile/interfaces/user-stats.dto';
+import { MatchDto } from '../../../Game/interfaces/matchDto';
 
 @Injectable({
   providedIn: 'root'
@@ -15,12 +19,22 @@ export class AdminService {
 
   users: UserDto[] = [];
 
-  userGames: GameDto[] = []
+  userGames: MatchDto[] = []
+
+  userStats?: UserStatsDto;
 
 
   constructor(
     private http : HttpClient,
-  ) { }
+    private socketService: SocketService,
+  ) {
+    socketService.onQueueUpdated().subscribe(() => {
+      this.getMatchMakingQueue();
+    });
+    socketService.onRunningGamesUpdated().subscribe(() => {
+      this.getRunningGames();
+    });
+  }
 
 
   getUsers(){
@@ -58,9 +72,10 @@ export class AdminService {
 
   searchUsers(query: string): void {
     if (query.length > 0) {
-      this.http.get<[GameDto]>(`${ApiEndpoints.USER}/${query}/game`).subscribe({
-          next: (response: [GameDto]) => {
-            this.userGames = response;
+      this.http.get<ProfileDto>(`${ApiEndpoints.USER}/${query}`).subscribe({
+          next: (response: ProfileDto) => {
+            this.userGames = response.matchHistory;
+            this.userStats = response.stats;
           },
           error: (err) => {
             console.error('Search failed:', err);

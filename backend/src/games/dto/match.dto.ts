@@ -4,10 +4,22 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class MatchDto {
   @ApiProperty({
+    description: 'The the user',
+    example: 'john_doe',
+  })
+  player: UserDto;
+
+  @ApiProperty({
     description: 'The opponent of the user',
     example: 'james_smith',
   })
   opponent: UserDto;
+
+  @ApiProperty({ description: 'The final Board Layout' })
+  board: number[];
+
+  @ApiProperty({ description: 'The players identity on the board' })
+  playerIdentity: 1 | 2;
 
   @ApiProperty({
     description: 'The outcome of the game',
@@ -28,20 +40,22 @@ export class MatchDto {
   })
   eloGain: number;
 
-  static from(opponent: UserDto, game: Game): MatchDto {
-    const { duration, createdAt, winningState } = game;
+  static from(player: UserDto, opponent: UserDto, game: Game): MatchDto {
     let outcome = GameResult.Self;
     if (
-      (winningState === 'p1' && game.player1.username === opponent.username) ||
-      (winningState === 'p2' && game.player2.username === opponent.username)
+      (game.winningState === 'p1' && game.player1.username === opponent.username) ||
+      (game.winningState === 'p2' && game.player2.username === opponent.username)
     )
       outcome = GameResult.Opponent;
-    else if (winningState === 'draw') outcome = GameResult.Draw;
+    else if (game.winningState === 'draw') outcome = GameResult.Draw;
 
     return {
+      board: game.board(),
+      player,
+      playerIdentity: game.player1.username === player.username ? 1 : 2,
       opponent,
-      duration: duration,
-      createdAt,
+      duration: game.duration,
+      createdAt: game.createdAt,
       outcome,
       eloGain:
         game.player1.username === opponent.username
