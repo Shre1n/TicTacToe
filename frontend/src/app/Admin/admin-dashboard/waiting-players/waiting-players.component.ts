@@ -14,13 +14,6 @@ export class WaitingPlayersComponent implements OnInit {
   constructor(private adminService: AdminService) {}
 
   ngOnInit(): void {
-    this.loadQueue();
-  }
-
-  loadQueue(): void {
-    this.adminService.getMatchMakingQueue().subscribe(queue => {
-      this.matchMakingQueue = queue;
-    });
   }
 
   toggleQueue(): void {
