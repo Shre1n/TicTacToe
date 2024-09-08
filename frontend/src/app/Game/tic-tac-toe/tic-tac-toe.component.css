@@ -123,6 +123,13 @@
   right: 20px;
   z-index: 1000;
 }
+.back {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+  font-size: 3rem;
+}
 
 
 

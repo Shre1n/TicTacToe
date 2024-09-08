@@ -1,3 +1,20 @@
+<nav class="navbar bg-body-tertiary">
+  <div class="container-fluid d-flex justify-content-between">
+    <!-- Gamepad Icon and Back Button (Left) -->
+    <div class="d-flex align-items-center">
+      <i class="fa-solid fa-gamepad gamepad-icon"></i>
+    </div>
+
+    <!-- User Info, Profile Picture, and Logout Button (Right) -->
+    <div class="d-flex align-items-center">
+      <button class="btn p-0 d-flex align-items-center ms-3" (click)="back()">
+        <i class="fa-solid fa-left-long me-2"></i>
+        <span>Home</span>
+      </button>
+
+    </div>
+  </div>
+</nav>
 <div class="matchmaking-container">
   <div class="left-side" id="left-side" #leftSide>
     <img src="{{ this.userService.user?.profilePictureUrl }}" alt="Your Profile" class="profile-img your-profile-img" #yourProfile>

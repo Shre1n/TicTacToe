@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {TictactoeService} from "./services/tictactoe.service";
 import {ChatComponent} from "../chat/chat.component";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-tic-tac-toe',
@@ -15,6 +16,7 @@ export class TicTacToeComponent implements OnInit{
 
   constructor(
     public tictactoeService: TictactoeService,
+    private router: Router,
     ) {
   }
 
@@ -30,5 +32,9 @@ export class TicTacToeComponent implements OnInit{
 
   giveUp(){
     this.tictactoeService.giveUp();
+  }
+
+  back(){
+    this.router.navigate(['/']);
   }
 }

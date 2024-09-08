@@ -5,6 +5,7 @@ import {TictactoeService} from "../tic-tac-toe/services/tictactoe.service";
 import { UserService } from '../../User/user.service';
 import { SocketService } from '../../Socket/socket.service';
 import { GameDto } from '../interfaces/gamesDto';
+import {LogoutService} from "../../Auth/logout/services/logout.service";
 
 @Component({
   selector: 'app-match-making',
@@ -29,6 +30,7 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private router: Router,
+    private logOut: LogoutService,
     public userService: UserService,
     public tictactoeService: TictactoeService,
     private socketService: SocketService
@@ -91,4 +93,10 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
     this.router.navigate(['']);
     console.log('Matchmaking abgebrochen');
   }
+
+
+  back(){
+    this.router.navigate(['/']);
+  }
+
 }

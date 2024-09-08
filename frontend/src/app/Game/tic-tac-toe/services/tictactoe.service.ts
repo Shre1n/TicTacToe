@@ -100,12 +100,15 @@ export class TictactoeService {
     if (this._winner !== "") return;
     this._isPlayersTurn = false;
     this.socketService.giveUp();
+    this.userService.setReady();
     alert('You have given up!');
     this.router.navigate(['']);
   }
 
   private showGameOverAlert() {
-    if (this._winner === this.player_turn.toString()) {
+    if (this._winner === "draw")
+      alert('is draw!');
+    else if (this._winner === "p1") {
       alert('Congratulations, you won!');
     } else {
       alert('You lost. Better luck next time!');
