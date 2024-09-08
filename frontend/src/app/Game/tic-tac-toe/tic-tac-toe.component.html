@@ -2,7 +2,11 @@
   <div class="container-fluid d-flex justify-content-between align-items-center">
     <!-- Player Info (Left) -->
     <span class="navbar-text d-flex align-items-center">
-      <img src="{{ this.tictactoeService.playerPicture }}" class="profile-img me-2" alt="yourProfile" #yourProfile>
+      @if (this.tictactoeService.playerPicture){
+        <img src="{{ this.tictactoeService.playerPicture }}" class="profile-img me-2" alt="yourProfile" #yourProfile>
+      } @else {
+        <img src="./assets/steve.jpeg" class="profile-img me-2" alt="yourProfile" #yourProfile>
+      }
       <div class="user-info">
         <div class="userElo">{{ this.tictactoeService.player?.elo }} Elo</div>
         <div class="userName">{{ this.tictactoeService.player?.username }}</div>

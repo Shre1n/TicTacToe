@@ -12,36 +12,6 @@
   padding: 1rem 2rem;
 }
 
-/* Gamepad icon styling with a glowing effect */
-.gamepad-icon {
-  font-size: 2rem; /* Adjust the size as needed */
-  color: #00ff7f; /* Main color for the icon */
-  text-shadow:
-    0 0 5px #00ff7f,
-    0 0 10px #00ff7f,
-    0 0 15px #00ff7f,
-    0 0 20px #00ff7f,
-    0 0 25px #00ff7f,
-    0 0 30px #00ff7f,
-    0 0 35px #00ff7f;
-}
-
-
-.gamepad-icon:hover {
-  color: #00cc66; /* Slightly different shade of green on hover, if desired */
-  text-shadow:
-    0 0 5px #00ff7f,
-    0 0 8px #00ff7f,
-    0 0 8px #00ff7f,
-    0 0 12px #00ff7f; /* Slightly more intense glowing effect on hover */
-}
-
-
-.gamepad-icon {
-  font-size: 3rem;
-  color: #1a1a1a; /* Adjust color as needed */
-}
-
 .btn i.fa-right-from-bracket {
   font-size: 1.5rem;
   color: #dc3545;

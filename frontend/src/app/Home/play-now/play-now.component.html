@@ -1,8 +1,13 @@
 <nav class="navbar bg-body-tertiary">
   <div class="container-fluid d-flex justify-content-between">
     <!-- Gamepad Icon and Back Button (Left) -->
+    @if (UserState.Ready){}
     <div class="d-flex align-items-center">
-      <i class="fa-solid fa-gamepad gamepad-icon"></i>
+      <i class="fa-solid fa-gamepad gamepad-icon"  [ngClass]="{
+           'icon-ready': userService.getUserState() === UserState.Ready,
+           'icon-waiting': userService.getUserState() === UserState.Waiting,
+           'icon-playing': userService.getUserState() === UserState.Playing
+         }"></i>
     </div>
 
     <!-- User Info, Profile Picture, and Logout Button (Right) -->

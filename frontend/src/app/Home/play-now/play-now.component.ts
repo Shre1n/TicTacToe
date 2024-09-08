@@ -4,11 +4,14 @@ import { LogoutService } from '../../Auth/logout/services/logout.service';
 import { UserService } from '../../User/user.service';
 import { UserState } from '../../User/interfaces/userDto';
 import { SocketService } from '../../Socket/socket.service';
+import {NgClass} from "@angular/common";
 
 @Component({
   selector: 'app-play-now',
   standalone: true,
-  imports: [],
+  imports: [
+    NgClass
+  ],
   templateUrl: './play-now.component.html',
   styleUrl: './play-now.component.css'
 })
@@ -38,5 +41,7 @@ export class PlayNowComponent {
     }
     this.router.navigate(['/game']);
   }
+
+  protected readonly UserState = UserState;
 
 }
