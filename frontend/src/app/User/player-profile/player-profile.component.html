@@ -11,13 +11,6 @@
 
     <!-- User Info, Profile Picture, and Logout Button (Right) -->
     <div class="d-flex align-items-center">
-      <button class="btn p-0 d-flex align-items-center me-3" (click)="navProfile()">
-        <div class="user-info me-3 text-end">
-          <div class="userName">{{ this.userService.user?.username }}</div>
-          <div class="userElo">{{ this.userService.user?.elo }} Elo</div>
-        </div>
-        <img src="{{this.userService.user?.profilePictureUrl}}" class="profile-img" alt="yourProfile">
-      </button>
 
       <button class="btn p-1 d-flex flex-column align-items-center" (click)="logout()">
         <i class="fa-solid fa-right-from-bracket"></i>
