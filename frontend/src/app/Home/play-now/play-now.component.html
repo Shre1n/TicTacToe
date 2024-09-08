@@ -12,7 +12,11 @@
           <div class="userName">{{ this.userService.user?.username }}</div>
           <div class="userElo">{{ this.userService.user?.elo }} Elo</div>
         </div>
-        <img src="{{this.userService.user?.profilePictureUrl}}" class="profile-img" alt="yourProfile">
+        @if(this.userService.user?.profilePictureUrl) {
+          <img src="{{this.userService.user?.profilePictureUrl}}" class="profile-img" alt="yourProfile">
+        }@else {
+          <img src="./assets/steve.jpeg" class="profile-img" alt="yourProfile">
+        }
       </button>
 
       <button class="btn p-1 d-flex flex-column align-items-center" (click)="logout()">
