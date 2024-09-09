@@ -5,6 +5,93 @@
   border: 5px solid #fff;
 }
 
+.userName {
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: linear-gradient(90deg, #69dbc9, rgb(116, 166, 158));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  letter-spacing: 0.05em;
+  font-family: 'Roboto', sans-serif;
+  padding: 0.2em 0.5em;
+}
+
+.userElo {
+  font-size: 1rem;
+  color: #4bc589;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Base LED button style */
+.led-button {
+  background-color: #000000; /* Dark background for LED effect */
+  color: #fff;
+  border: 2px solid #ff0000; /* Red border */
+  padding: 20px 40px;
+  font-size: 1.5em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 40px #ff0000; /* Red glowing effect */
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+/* LED button hover effect */
+.led-button:before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.5), transparent); /* Red glowing effect */
+  transform: rotate(45deg);
+  transition: all 0.5s ease-in-out;
+}
+
+.led-button:hover:before {
+  left: 100%;
+  transition: all 0.5s ease-in-out;
+}
+
+/* Specific style for red LED button */
+.btn-danger-led {
+  background-color: #000000; /* Dark background for LED effect */
+  color: #fff;
+  border: 2px solid #ff0000; /* Red border */
+  padding: 20px 40px;
+  font-size: 1.5em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 40px #ff0000; /* Red glowing effect */
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-danger-led:before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.5), transparent); /* Red glowing effect */
+  transform: rotate(45deg);
+  transition: all 0.5s ease-in-out;
+}
+
+.btn-danger-led:hover:before {
+  left: 100%;
+  transition: all 0.5s ease-in-out;
+}
+
 
 .tictactoe-board {
   display: grid;
@@ -35,6 +122,13 @@
   bottom: 20px;
   right: 20px;
   z-index: 1000;
+}
+.back {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+  font-size: 3rem;
 }
 
 

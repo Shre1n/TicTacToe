@@ -1,1 +1,35 @@
-/* You can add global styles to this file, and also import other style files */
+/* Common styles for the gamepad icon */
+.gamepad-icon {
+  font-size: 3rem;
+  text-shadow: 0 0 5px currentColor;
+}
+
+/* Green for Ready state */
+.icon-ready {
+  color: black; /* Green */
+  text-shadow:
+    0 0 5px #00ff7f,
+    0 0 10px #00ff7f,
+    0 0 15px #00ff7f,
+    0 0 20px #00ff7f;
+}
+
+/* Yellow for Waiting state */
+.icon-waiting {
+  color: black; /* Yellow */
+  text-shadow:
+    0 0 5px #ffff00,
+    0 0 10px #ffff00,
+    0 0 15px #ffff00,
+    0 0 20px #ffff00;
+}
+
+/* Red for Playing state */
+.icon-playing {
+  color: black; /* Red */
+  text-shadow:
+    0 0 5px #ff0000,
+    0 0 10px #ff0000,
+    0 0 15px #ff0000,
+    0 0 20px #ff0000;
+}

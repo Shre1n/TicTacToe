@@ -3,7 +3,6 @@ import {ChatDTO} from "../chat/dto/chat.dto";
 
 
 export interface GameDto {
-  id: number;
   board: number[];
   player1: UserDto;
   player2: UserDto;

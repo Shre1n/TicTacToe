@@ -1,7 +1,6 @@
 import { Game } from '../games.entity';
 
 export class GameUpdateDto {
-  id: number;
   board: number[];
   position: number;
   turn: number;
@@ -10,7 +9,6 @@ export class GameUpdateDto {
 
   static from(game: Game, position: number): GameUpdateDto {
     return {
-      id: game.id,
       turn: game.turn,
       isFinished: game.isFinished,
       board: game.board(),

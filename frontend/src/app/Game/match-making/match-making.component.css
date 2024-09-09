@@ -4,6 +4,25 @@
   width: 100vw;
   font-family: Arial, sans-serif;
 }
+.user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: right;
+}
+
+.gamepad-icon {
+  font-size: 3rem;
+  color: #1a1a1a; /* Adjust color as needed */
+}
+
+.userElo {
+  font-size: 1rem; /* Slightly increased for readability */
+  color: #4bc589;
+  font-family: 'Roboto', sans-serif;
+}
+
+
 
 .left-side, .right-side {
   flex: 1;

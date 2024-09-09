@@ -15,7 +15,7 @@ export class AdminGuard implements CanActivate {
   canActivate() {
     return this.userService.isAuthenticated().pipe(
       map((response: UserDto) => {
-        if (response && response.isAdmin)
+        if (response?.isAdmin)
           return true;
         else if (response)
           this.router.navigate(['/forbidden']);

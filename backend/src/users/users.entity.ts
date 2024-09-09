@@ -5,10 +5,8 @@ import {
   OneToOne,
   JoinColumn,
   CreateDateColumn,
-  OneToMany,
 } from 'typeorm';
 import { ProfilePicture } from '../profilePicture/profilePicture.entity';
-import { Game } from '../games/games.entity';
 
 @Entity()
 export class User {

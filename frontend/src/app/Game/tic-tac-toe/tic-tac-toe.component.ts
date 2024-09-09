@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {TictactoeService} from "./services/tictactoe.service";
 import {ChatComponent} from "../chat/chat.component";
-import { ActivatedRoute } from '@angular/router';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-tic-tac-toe',
@@ -13,16 +13,26 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './tic-tac-toe.component.css'
 })
 export class TicTacToeComponent implements OnInit{
-  public id: number = 0;
-  constructor(public tictactoeService: TictactoeService, private route: ActivatedRoute) {}
+  constructor(
+    public tictactoeService: TictactoeService,
+    private router: Router,
+    ) {
+  }
+
 
   ngOnInit() {
-    this.id = Number(this.route.snapshot.paramMap.get('id'));
-    this.tictactoeService.loadFromApi(this.id);
+    this.tictactoeService.loadFromApi();
   }
 
   moveMove(position: number) {
-    this.tictactoeService.makeMove({id: this.id ,position});
+    this.tictactoeService.makeMove({position});
   }
 
+  giveUp(){
+    this.tictactoeService.giveUp();
+  }
+
+  back(){
+    this.router.navigate(['/']);
+  }
 }

@@ -1,6 +1,23 @@
+<nav class="navbar bg-body-tertiary">
+  <div class="container-fluid d-flex justify-content-between">
+    <div class="d-flex align-items-center">
+      <button class="btn p-0 d-flex align-items-center ms-3" (click)="back()">
+        <i class="fa-solid fa-left-long me-2"></i>
+        <span>Home</span>
+      </button>
+    </div>
+    <!-- Gamepad Icon and Back Button (Left) -->
+    <div class="d-flex align-items-center">
+      <app-status-indikator></app-status-indikator>
+    </div>
+
+    <!-- User Info, Profile Picture, and Logout Button (Right) -->
+
+  </div>
+</nav>
 <div class="matchmaking-container">
   <div class="left-side" id="left-side" #leftSide>
-    <img src="{{ this.userService.user?.profilePictureUrl }}" alt="Your Profile" class="profile-img your-profile-img" #yourProfile>
+      <img src="{{ this.userService.user?.profilePictureUrl ?? './assets/steve.jpeg'}}" alt="Your Profile" class="profile-img your-profile-img" #yourProfile>
   </div>
   <div class="middle" #middle>
     <div class="timer">{{ formattedTime }}</div>
@@ -10,7 +27,7 @@
 
   <div class="right-side" id="right-side" #rightSide>
     @if (this.found){
-    <img src="{{ this.opponent?.profilePictureUrl }}" alt="Opponent Profile" class="profile-img opponent-profile-img" #opponentProfile>
+    <img src="{{ this.opponent?.profilePictureUrl ?? './assets/steve.jpeg'  }}" alt="Opponent Profile" class="profile-img opponent-profile-img" #opponentProfile>
     }
   </div>
 

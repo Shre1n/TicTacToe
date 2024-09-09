@@ -56,6 +56,19 @@ export class GamesService {
     return await this.gameRepository.save(game);
   }
 
+  async giveUp(game: Game, playerId: number): Promise<Game> {
+    if (game.player1.id === playerId) {
+      game.winningState = 'p2';
+      game.isFinished = true;
+    } else {
+      game.winningState = 'p1';
+      game.isFinished = true;
+    }
+    game = await this.updateElo(game);
+    game.duration = Date.now() - game.createdAt.getTime();
+    return await this.gameRepository.save(game);
+  }
+
   async makeAMove(
     game: Game,
     playerId: number,
@@ -120,9 +133,12 @@ export class GamesService {
     });
   }
 
-  async getGameById(id: number) {
+  async getActiveGame(player: User) {
     return await this.gameRepository.findOne({
-      where: { id },
+      where: [
+        { player1: { id: player.id }, isFinished: false },
+        { player2: { id: player.id }, isFinished: false },
+      ],
       relations: [
         'player1',
         'player2',
@@ -136,21 +152,6 @@ export class GamesService {
     const chat = await this.getGameChat(game);
     const playerIdentity: 0 | 1 | 2 = this.getPlayerIdentity(game, user);
     return { ...GameDto.from(game), playerIdentity, chat };
-  }
-
-  async getActiveGamesByPlayer(player: User) {
-    return await this.gameRepository.find({
-      where: [
-        { player1: { id: player.id }, isFinished: false },
-        { player2: { id: player.id }, isFinished: false },
-      ],
-      relations: [
-        'player1',
-        'player2',
-        'player1.profilePicture',
-        'player2.profilePicture',
-      ],
-    });
   }
 
   async getFinishedGamesByPlayer(player: User) {
