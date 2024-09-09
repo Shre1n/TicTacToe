@@ -41,8 +41,8 @@ export class ChatGateway {
     const request = client.request as Request;
     const session = request.session;
 
-    const game = await this.gameService.getGameById(message.gameId);
-    if (!game || this.gameService.getPlayerIdentity(game, session.user) === 0)
+    const game = await this.gameService.getActiveGame(session.user);
+    if (!game)
       throw new WsException(
         'Invalid game room or User is not part of this game',
       );

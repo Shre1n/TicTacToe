@@ -4,7 +4,7 @@ import { Socket, SocketIoConfig } from 'ngx-socket-io';
 import { GameUpdateDto } from '../Game/interfaces/GameUpdateDto';
 import { ChatDTO } from '../Game/chat/dto/chat.dto';
 import { MoveDto } from '../Game/interfaces/MoveDto';
-import { MatchUpDto } from '../Game/interfaces/MatchUpDto';
+import { UserDto } from '../User/interfaces/userDto';
 
 const config: SocketIoConfig = {
   url: 'http://localhost:3000/socket',
@@ -36,8 +36,8 @@ export class SocketService extends Socket{
     this.emit("makeMove", move);
   }
 
-  giveUp (id: number){
-    this.emit("sendGiveUp", id);
+  giveUp (){
+    this.emit("sendGiveUp");
   }
 
   sendMessage(message: ChatDTO) {
@@ -45,7 +45,7 @@ export class SocketService extends Socket{
   }
 
   onGameStarted() {
-    return this.fromEvent<MatchUpDto>("gameStarted");
+    return this.fromEvent<UserDto>("gameStarted");
   }
 
   onMoveMade() {
@@ -53,7 +53,7 @@ export class SocketService extends Socket{
   }
 
   onGiveup (){
-    return this.fromEvent<number>("receiveGiveUp");
+    return this.fromEvent("receiveGiveUp");
   }
 
   onReceiveMessage() {

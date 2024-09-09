@@ -1,5 +1,4 @@
 export interface GameUpdateDto {
-  id: number;
   board: number[];
   position: number;
   turn: number;

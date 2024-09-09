@@ -82,9 +82,11 @@ export class UsersService {
 
   async getUserStats(games: Game[], user: User) {
     const stats = new UserStatsDto();
-    stats.wins = games.filter((g) => this.gameService.isWinner(g, user)).length;
+    stats.wins = games.filter((game) =>
+      this.gameService.isWinner(game, user),
+    ).length;
 
-    stats.draws = games.filter((g) => g.winningState === 'draw').length;
+    stats.draws = games.filter((game) => game.winningState === 'draw').length;
 
     stats.loses = games.length - stats.wins - stats.draws;
 
@@ -97,17 +99,11 @@ export class UsersService {
     );
   }
 
-  async getActiveUserGames(user: User): Promise<GameDto[]> {
-    const games = await this.gameService.getActiveGamesByPlayer(user);
-    if (!games || games.length < 1)
-      throw new NotFoundException('Player not in a game');
+  async getActiveUserGame(user: User): Promise<GameDto> {
+    const game = await this.gameService.getActiveGame(user);
+    if (!game) throw new NotFoundException('Player not in a game');
 
-    const gamesAsDto = [];
-    for (const game of games) {
-      gamesAsDto.push(await this.gameService.gameToFullDto(game, user));
-    }
-
-    return gamesAsDto;
+    return await this.gameService.gameToFullDto(game, user);
   }
 
   //Admin

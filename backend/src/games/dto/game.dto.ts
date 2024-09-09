@@ -4,8 +4,6 @@ import { Game } from '../games.entity';
 import { ChatDto } from '../chat/dto/chat.dto';
 
 export class GameDto {
-  @ApiProperty({ description: 'A unique identifier for the game' })
-  id: number;
   @ApiProperty({ description: 'The user playing as player 1' })
   player1: UserDto;
   @ApiProperty({ description: 'The user playing as player 2' })
@@ -47,7 +45,6 @@ export class GameDto {
       else if ((game.player2Board & (1 << i)) !== 0) board[i] = 2;
     }
     return {
-      id: game.id,
       player1: UserDto.from(game.player1),
       player2: UserDto.from(game.player2),
       turn: game.turn,

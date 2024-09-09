@@ -46,13 +46,9 @@ export class GamesGateway {
     const request = client.request as Request;
     const session = request.session;
 
-    const activeGame = await this.gameService.getGameById(data.id);
-    if (
-      !activeGame ||
-      activeGame.isFinished ||
-      this.gameService.getPlayerIdentity(activeGame, session.user) === 0
-    ) {
-      throw new NotFoundException('Invalid game id');
+    const activeGame = await this.gameService.getActiveGame(session.user);
+    if (!activeGame) {
+      throw new NotFoundException('User is not in a game');
     }
 
     const game = await this.gameService.makeAMove(
@@ -71,14 +67,11 @@ export class GamesGateway {
 
   @UseGuards(IsSocketLoggedInGuard)
   @SubscribeMessage(ClientSentEvents.sendGiveUp)
-  async handleGiveUp(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() id: number,
-  ) {
+  async handleGiveUp(@ConnectedSocket() client: Socket) {
     const request = client.request as Request;
     const session = request.session;
 
-    const activeGame = await this.gameService.getGameById(id);
+    const activeGame = await this.gameService.getActiveGame(session.user);
 
     if (!activeGame) {
       throw new NotFoundException('Invalid game or game already finished');
@@ -86,7 +79,7 @@ export class GamesGateway {
     const game = await this.gameService.giveUp(activeGame, session.user.id);
     client.broadcast
       .to(game.id.toString())
-      .emit(ServerSentEvents.receiveGiveUp, game.id);
+      .emit(ServerSentEvents.receiveGiveUp);
 
     if (game.isFinished)
       setTimeout(() => this.server.socketsLeave(game.id.toString()), 600000);

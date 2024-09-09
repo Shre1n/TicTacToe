@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class TictactoeService {
-  public games: Map<number, GameDto> = new Map();
+  public game?: GameDto;
 
   constructor(
     private http: HttpClient,
@@ -21,23 +21,21 @@ export class TictactoeService {
     private socketService: SocketService
   ) {
     this.socketService.onMoveMade().subscribe((update: GameUpdateDto) => {
-      const game = this.games.get(update.id);
-      if (!game) return;
+      if (!this.game) return;
 
-      game.turn = update.turn;
-      game.board = update.board;
+      this.game.turn = update.turn;
+      this.game.board = update.board;
       if (update.isFinished) {
-        game.winner = update.winner;
-        game.isFinished = update.isFinished;
-        this.showGameOverAlert(update.id);
+        this.game.winner = update.winner;
+        this.game.isFinished = update.isFinished;
+        this.showGameOverAlert();
       }
     });
 
-    this.socketService.onGiveup().subscribe((id: number) => {
-      const game = this.games.get(id);
-      if (!game) return;
+    this.socketService.onGiveup().subscribe(() => {
+      if (!this.game) return;
 
-      game.turn = 0;
+      this.game.turn = 0;
       alert('The other player has given up!');
       this.router.navigate(['']);
     });
@@ -45,8 +43,8 @@ export class TictactoeService {
 
 
 
-  loadFromApi(id: number){
-    this.http.get<GameDto>(`${ApiEndpoints.GAME}/${id}`).subscribe({
+  loadFromApi(){
+    this.http.get<GameDto>(`${ApiEndpoints.USERGAME}`).subscribe({
       next: (response: GameDto) => {
         this.initGameBoard(response);
       },
@@ -59,48 +57,44 @@ export class TictactoeService {
   }
 
   initGameBoard(game: GameDto){
-    this.games.set(game.id, game);
+    this.game = game;
     this.readProfilePictures(game);
   }
 
   readProfilePictures(game: GameDto) {
     this.http.get(`${ApiEndpoints.AVATAR}/${game.player1.profilePictureId}`, {responseType: 'arraybuffer'}).subscribe(buffer => {
-      this.games.get(game.id)!.player1.profilePictureUrl = URL.createObjectURL(new Blob([buffer]));
+      this.game!.player1.profilePictureUrl = URL.createObjectURL(new Blob([buffer]));
     });
     this.http.get(`${ApiEndpoints.AVATAR}/${game.player2.profilePictureId}`, {responseType: 'arraybuffer'}).subscribe(buffer => {
-      this.games.get(game.id)!.player2.profilePictureUrl = URL.createObjectURL(new Blob([buffer]));
+      this.game!.player2.profilePictureUrl = URL.createObjectURL(new Blob([buffer]));
     });
   }
 
   makeMove(move: MoveDto){
-    const game = this.games.get(move.id);
-    if (!game || game.isFinished) return;
-    if (!this.isPlayerTurn(game)) return;
-    if (game.board[move.position] !== 0) return;
+    if (!this.game || this.game.isFinished) return;
+    if (!this.isPlayerTurn()) return;
+    if (this.game.board[move.position] !== 0) return;
 
-    game.turn = game.playerIdentity === 1 ? 2 : 1;
-    game.board[move.position] = game.playerIdentity;
+    this.game.turn = this.game.playerIdentity === 1 ? 2 : 1;
+    this.game.board[move.position] = this.game.playerIdentity;
     this.socketService.makeMove(move);
   }
 
-  giveUp(id: number) {
-    const game = this.games.get(id);
-    if (!game || game.isFinished) return;
+  giveUp() {
+    if (!this.game || this.game.isFinished) return;
 
-    game.turn = 0;
-    this.socketService.giveUp(id);
-    this.userService.setReady();
+    this.game.turn = 0;
+    this.socketService.giveUp();
     alert('You have given up!');
     this.router.navigate(['']);
   }
 
-  showGameOverAlert(id: number) {
-    const game = this.games.get(id);
-    if (!game || game.isFinished) return;
+  showGameOverAlert() {
+    if (!this.game || this.game.isFinished) return;
 
-    if (game.winner === "draw")
+    if (this.game.winner === "draw")
       alert('is draw!');
-    else if (game.winner === "p1") {
+    else if (this.game.winner === "p1") {
       alert('Congratulations, you won!');
     } else {
       alert('You lost. Better luck next time!');
@@ -108,23 +102,21 @@ export class TictactoeService {
     this.router.navigate(['']);
   }
 
-  getPlayer(id: number) {
-    const game = this.games.get(id);
-    if (!game) return null;
+  getPlayer() {
+    if (!this.game) return null;
 
-    if (game.playerIdentity === 1) return game.player1;
-    else return game.player2;
+    if (this.game.playerIdentity === 1) return this.game.player1;
+    else return this.game.player2;
   }
 
-  getOpponent(id: number) {
-    const game = this.games.get(id);
-    if (!game) return null;
+  getOpponent() {
+    if (!this.game) return null;
 
-    if (game.playerIdentity === 1) return game.player2;
-    else return game.player1;
+    if (this.game.playerIdentity === 1) return this.game.player2;
+    else return this.game.player1;
   }
 
-  isPlayerTurn(game: GameDto): boolean {
-    return game.turn === game.playerIdentity;
+  isPlayerTurn(): boolean {
+    return this.game !== undefined && this.game.turn === this.game.playerIdentity;
   }
 }

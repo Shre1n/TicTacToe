@@ -29,8 +29,6 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
     ServerToClientEvents
   >();
 
-  private readonly max_games: number = 20;
-
   constructor(
     private readonly queueService: QueueService,
     private readonly gameService: GamesService,
@@ -56,12 +54,8 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     client.join(session.id);
 
-    const activeGames = await this.gameService.getActiveGamesByPlayer(
-      session.user,
-    );
-    if (activeGames?.length > 0) {
-      activeGames.forEach((game) => client.join(game.id.toString()));
-    }
+    const activeGame = await this.gameService.getActiveGame(session.user);
+    if (activeGame) client.join(activeGame.id.toString());
   }
 
   @UseGuards(IsSocketLoggedInGuard)
@@ -74,11 +68,9 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (this.queueService.isPlayerInQueue(session.user))
       throw new WsException('Player already in queue.');
 
-    const userGames = await this.gameService.getActiveGamesByPlayer(
-      session.user,
-    );
-    if (userGames.length > this.max_games)
-      throw new WsException('Too many games.');
+    if (await this.gameService.isPlayerInGame(session.user))
+      throw new WsException('Player already in game.');
+
     // Try to find an opponent; Add the player to queue and return if none is found
     const opponent = await this.queueService.findOpponent(session.user);
     if (!opponent) {
@@ -128,11 +120,9 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       this.server.to(preGame.player1Id).emit(ServerSentEvents.gameStarted, {
         opponent: UserDto.from(game.player2),
-        gameId: game.id,
       });
       this.server.to(preGame.player2Id).emit(ServerSentEvents.gameStarted, {
         opponent: UserDto.from(game.player1),
-        gameId: game.id,
       });
     }
   }

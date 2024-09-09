@@ -3,11 +3,8 @@ import {Router} from "@angular/router";
 import {NgOptimizedImage} from "@angular/common";
 import { UserService } from '../../User/user.service';
 import { SocketService } from '../../Socket/socket.service';
-import {LogoutService} from "../../Auth/logout/services/logout.service";
 import {StatusIndikatorComponent} from "../../User/status-indikator/status-indikator.component";
 import { UserDto } from '../../User/interfaces/userDto';
-import { MatchUpDto } from '../interfaces/MatchUpDto';
-import { MatchMakingService } from './match-making.service';
 
 @Component({
   selector: 'app-match-making',
@@ -34,9 +31,7 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private router: Router,
-    private logOut: LogoutService,
     public userService: UserService,
-    public matchMakingService: MatchMakingService,
     private socketService: SocketService
   ) {
   }
@@ -46,8 +41,8 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.socketService.onGameStarted().pipe(this.matchMakingService.profilePicturePipe()).subscribe((matchUp: MatchUpDto) => {
-      this.opponent = matchUp.opponent;
+    this.socketService.onGameStarted().pipe(this.userService.profilePicturePipe()).subscribe((opponent: UserDto) => {
+      this.opponent = opponent;
       setTimeout(() => {
         this.found = true;
         setTimeout(() => {
@@ -56,7 +51,7 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
           this.hideMiddleElements();
           setTimeout(() => {
             this.userService.setPlaying();
-            this.router.navigate(['/game', matchUp.gameId]);
+            this.router.navigate(['/game']);
           }, 1000);
         }, 3000);
       }, 1000);

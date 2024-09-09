@@ -3,7 +3,7 @@ export enum ApiEndpoints {
   USER = 'api/user',
   ME = 'api/user/me',
   USERPROFILE = 'api/user/me/profile',
-  USERGAMES = 'api/user/me/game',
+  USERGAME = 'api/user/me/game',
   USERAVATAR = 'api/user/me/avatar',
   AVATAR = 'api/user/avatar',
   QUEUE = 'api/queue',
