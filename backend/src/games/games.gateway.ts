@@ -61,7 +61,8 @@ export class GamesGateway {
       .to(game.id.toString())
       .emit(ServerSentEvents.moveMade, GameUpdateDto.from(game, data.position));
 
-    if (game.isFinished) this.server.socketsLeave(game.id.toString());
+    if (game.isFinished)
+      setTimeout(() => this.server.socketsLeave(game.id.toString()), 600000);
   }
 
   @UseGuards(IsSocketLoggedInGuard)

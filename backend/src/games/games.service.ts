@@ -95,7 +95,7 @@ export class GamesService {
     }
 
     if (this.checkWinner(game)) {
-      await this.updateElo(game);
+      game = await this.updateElo(game);
       game.duration = Date.now() - game.createdAt.getTime();
     }
 
@@ -177,46 +177,50 @@ export class GamesService {
     });
   }
 
-  async updateElo(game: Game) {
+  async updateElo(game: Game): Promise<Game> {
     switch (game.winningState) {
       case 'p1':
-        game.player1.elo = this.eloService.calculate(
+        game.player1EloGain = this.eloService.calculate(
           game.player1,
           game.player2,
           1,
         );
-        game.player2.elo = this.eloService.calculate(
+        game.player2EloGain = this.eloService.calculate(
           game.player2,
           game.player1,
           0,
         );
         break;
       case 'p2':
-        game.player1.elo = this.eloService.calculate(
+        game.player1EloGain = this.eloService.calculate(
           game.player1,
           game.player2,
           0,
         );
-        game.player2.elo = this.eloService.calculate(
+        game.player2EloGain = this.eloService.calculate(
           game.player2,
           game.player1,
           1,
         );
         break;
       case 'draw':
-        game.player1.elo = this.eloService.calculate(
+        game.player1EloGain = this.eloService.calculate(
           game.player1,
           game.player2,
           0.5,
         );
-        game.player2.elo = this.eloService.calculate(
+        game.player2EloGain = this.eloService.calculate(
           game.player2,
           game.player1,
           0.5,
         );
         break;
     }
+    game.player1.elo += game.player1EloGain;
+    game.player2.elo += game.player2EloGain;
+
     await this.userRepository.save(game.player1);
     await this.userRepository.save(game.player2);
+    return game;
   }
 }
