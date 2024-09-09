@@ -2,14 +2,18 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
-  ElementRef,
+  ElementRef, EventEmitter,
   Input,
   OnChanges,
-  OnInit,
+  OnInit, Output,
   SimpleChanges,
   ViewChild
 } from '@angular/core';
 import {NgClass, NgStyle} from "@angular/common";
+import {ToastType} from "./toaster.types";
+import {Toast} from "./interfaces/toaster.interface";
+import {TictactoeService} from "../../Game/tic-tac-toe/services/tictactoe.service";
+import {ToastService} from "./services/toast.service";
 
 @Component({
   selector: 'app-toast-menu',
@@ -23,15 +27,17 @@ import {NgClass, NgStyle} from "@angular/common";
 })
 export class ToastMenuComponent implements AfterViewInit, OnChanges{
 
-  @Input() defined_header: string | undefined;
-  @Input() message: string | undefined;
-  @Input() type: 'success' | 'warning' | 'error' = 'success';
+  @Input() toast!: Toast;
+  @Input() i!: number;
+  toastTypes: ToastType = 'success';
 
-  @ViewChild('toast', { static: false }) toastElement!: ElementRef;
+  @ViewChild('toaster', { static: false }) toastElement!: ElementRef;
   @ViewChild('image', { static: false }) imageElement!: ElementRef;
 
+  @Output() remove = new EventEmitter<number>();
+
   private bootstrapToast: any;
-  private readonly defaultDelay = 3000;
+  private readonly defaultDelay: number | undefined;
   backgroundColor: string = '#28a745'; // Default to green
 
   iconMap = new Map<string, string>([
@@ -40,7 +46,13 @@ export class ToastMenuComponent implements AfterViewInit, OnChanges{
     ['error', 'fa-solid fa-circle-exclamation']
   ]);
 
-  constructor(private cdr: ChangeDetectorRef) {}
+
+
+  constructor(private cdr: ChangeDetectorRef, private toastService: ToastService) {
+    this.defaultDelay = this.toastService.delay;
+  }
+
+
 
   ngAfterViewInit(): void {
     if (this.toastElement) {
@@ -70,7 +82,7 @@ export class ToastMenuComponent implements AfterViewInit, OnChanges{
   }
 
   private updateToastType() {
-    switch (this.type) {
+    switch (this.toastTypes) {
       case 'success':
         this.backgroundColor = '#28a745'; // Green
         break;
@@ -84,4 +96,7 @@ export class ToastMenuComponent implements AfterViewInit, OnChanges{
         this.backgroundColor = '#343a40'; // Default color
     }
   }
+
+
+
 }
