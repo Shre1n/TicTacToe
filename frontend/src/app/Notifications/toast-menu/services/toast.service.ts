@@ -10,7 +10,6 @@ export class ToastService {
 
   private _subject: BehaviorSubject<Toast | null>;
   readonly toast$: Observable<Toast>;
-  private _delay?: number = 0;
 
 
 
@@ -21,12 +20,6 @@ export class ToastService {
   }
 
   show(type: ToastType,title: string, body: string, delay?: number) {
-    this._delay = delay;
     this._subject.next({ type, title, body, delay});
-  }
-
-
-  get delay(): number | undefined {
-    return this._delay;
   }
 }

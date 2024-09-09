@@ -37,7 +37,7 @@ export class ToastMenuComponent implements AfterViewInit, OnChanges{
   @Output() remove = new EventEmitter<number>();
 
   private bootstrapToast: any;
-  private readonly defaultDelay: number | undefined;
+  private readonly defaultDelay = 3000;
   backgroundColor: string = '#28a745'; // Default to green
 
   iconMap = new Map<string, string>([
@@ -48,9 +48,7 @@ export class ToastMenuComponent implements AfterViewInit, OnChanges{
 
 
 
-  constructor(private cdr: ChangeDetectorRef, private toastService: ToastService) {
-    this.defaultDelay = this.toastService.delay;
-  }
+  constructor(private cdr: ChangeDetectorRef) {}
 
 
 
