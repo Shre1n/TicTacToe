@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {AdminService} from "../services/admin.service";
+import { GameDto } from '../../../Game/interfaces/gamesDto';
 
 @Component({
   selector: 'app-current-games',
@@ -8,27 +9,18 @@ import {AdminService} from "../services/admin.service";
   templateUrl: './current-games.component.html',
   styleUrl: './current-games.component.css'
 })
-export class CurrentGamesComponent implements OnInit {
-  runningGames: { id: number; player1: string; player2: string }[] = [];
+export class CurrentGamesComponent {
+  @Output() onGameSelected = new EventEmitter<{ game: GameDto, event: MouseEvent }>();
 
-  constructor(private adminService: AdminService) {}
+  constructor(public adminService: AdminService) {}
 
-  ngOnInit(): void {
-    this.loadGames();
-  }
-
-  loadGames(): void {
-    // this.adminService.getRunningGames().subscribe(games => {
-    //   this.runningGames = games;
-    // });
-  }
 
   viewGame(gameId: number): void {
     // Implementiere die Logik zum Anzeigen des Spiels
     console.log('View game with ID:', gameId);
   }
 
-  toggleGames(): void {
-    // Implementiere die Logik zum Umschalten der Ansicht
+  selectGame(game: GameDto, event: MouseEvent){
+    this.onGameSelected.emit({game, event});
   }
 }

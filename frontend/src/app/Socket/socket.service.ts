@@ -59,4 +59,12 @@ export class SocketService extends Socket{
   onReceiveMessage() {
     return this.fromEvent<ChatDTO>("receiveMessage");
   }
+
+  onQueueUpdated() {
+    return this.fromEvent("queueUpdated");
+  }
+
+  onRunningGamesUpdated() {
+    return this.fromEvent("runningGamesUpdated");
+  }
 }

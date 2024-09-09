@@ -54,6 +54,8 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     client.join(session.id);
 
+    if (session.user.isAdmin) client.join('admin');
+
     const activeGame = await this.gameService.getActiveGame(session.user);
     if (activeGame) client.join(activeGame.id.toString());
   }
@@ -75,11 +77,11 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const opponent = await this.queueService.findOpponent(session.user);
     if (!opponent) {
       this.queueService.addPlayer(session.user, session.id);
+      this.server.to('admin').emit(ServerSentEvents.queueUpdated);
       return;
     }
 
     // Prepare a game and wait for both player to acknowledge the match
-    this.queueService.removePlayer(opponent.player);
     const preGame = new PreGameObject(
       session.user,
       opponent.player,
@@ -90,7 +92,9 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
       throw new WsException(
         'One of the players is already waiting for acknowledgement.',
       );
+    this.queueService.removePlayer(opponent.player);
 
+    this.server.to('admin').emit(ServerSentEvents.queueUpdated);
     this.server.to(session.id).emit(ServerSentEvents.gameFound);
     this.server.to(opponent.sessionId).emit(ServerSentEvents.gameFound);
   }
@@ -124,6 +128,7 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.server.to(preGame.player2Id).emit(ServerSentEvents.gameStarted, {
         opponent: UserDto.from(game.player1),
       });
+      this.server.to('admin').emit(ServerSentEvents.runningGamesUpdated);
     }
   }
 
@@ -134,5 +139,6 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const session = request.session;
 
     this.queueService.removePlayer(session.user);
+    this.server.to('admin').emit(ServerSentEvents.queueUpdated);
   }
 }

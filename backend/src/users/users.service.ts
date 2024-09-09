@@ -23,7 +23,6 @@ import { GameDto } from '../games/dto/game.dto';
 @Injectable()
 export class UsersService {
   private readonly usersRepository: Repository<User>;
-  private readonly gameRepository: Repository<Game>;
 
   constructor(
     private dataSource: DataSource,
@@ -31,20 +30,10 @@ export class UsersService {
     private queueService: QueueService,
   ) {
     this.usersRepository = this.dataSource.getRepository(User);
-    this.gameRepository = this.dataSource.getRepository(Game);
   }
 
   async getAllUsers() {
     return await this.usersRepository.find();
-  }
-
-  async searchUsers(username: string) {
-    const user = await this.findOne(username);
-
-    if (!user) {
-      throw new NotFoundException('User not found!');
-    }
-    return await this.getUserGames(user);
   }
 
   async create(registerDto: RegisterUserDto) {
@@ -64,7 +53,7 @@ export class UsersService {
 
   async findOne(username: string) {
     return await this.usersRepository.findOne({
-      where: { username },
+      where: { username: username ?? "" },
       relations: { profilePicture: true },
     });
   }
@@ -95,7 +84,7 @@ export class UsersService {
 
   async getMatchHistory(games: Game[], user: User) {
     return games.map((g) =>
-      MatchDto.from(UserDto.from(g.player1 == user ? g.player2 : g.player1), g),
+      MatchDto.from(UserDto.from(user), UserDto.from(g.player1.username === user.username ? g.player2 : g.player1), g),
     );
   }
 
@@ -106,26 +95,8 @@ export class UsersService {
     return await this.gameService.gameToFullDto(game, user);
   }
 
-  //Admin
-  async getUserGames(user: User) {
-    const games = await this.gameRepository.find({
-      where: [
-        { player1: { id: user.id }, isFinished: true },
-        { player2: { id: user.id }, isFinished: true },
-      ],
-      relations: ['player1', 'player2'],
-    });
-    return games.map((game) => GameDto.from(game));
-  }
-
   async getUserProfile(user: User) {
-    const games = await this.gameRepository.find({
-      where: [
-        { player1: user, isFinished: true },
-        { player2: user, isFinished: true },
-      ],
-      relations: { player1: true, player2: true },
-    });
+    const games = await this.gameService.getFinishedGamesByPlayer(user);
 
     const stats = await this.getUserStats(games, user);
     const matches = await this.getMatchHistory(games, user);
