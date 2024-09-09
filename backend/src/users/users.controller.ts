@@ -42,6 +42,7 @@ import { FileUploadDto } from '../profilePicture/dto/fileUploadDto';
 import { ProfilePictureService } from '../profilePicture/profilePicture.service';
 import { RolesGuard } from '../guards/roles/roles.guard';
 import { GameDto } from '../games/dto/game.dto';
+import { User } from './users.entity';
 
 @ApiTags('user')
 @Controller('user')
@@ -85,7 +86,7 @@ export class UsersController {
   }
 
   @UseGuards(IsLoggedInGuard)
-  @Get('me')
+  @Get('@me')
   @ApiOperation({
     summary: 'Gets the current user',
     description:
@@ -94,11 +95,13 @@ export class UsersController {
   @ApiOkResponse({ description: 'Successful operation', type: UserDto })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   async getUserInfo(@Session() session: SessionData): Promise<UserDto> {
-    return this.usersService.getCurrentUserInformation(session);
+    const user: UserDto = await this.usersService.getCurrentUserInformation(session);
+    user.isAdmin = session.user.isAdmin;
+    return user;
   }
 
   @UseGuards(IsLoggedInGuard)
-  @Get('me/profile')
+  @Get('@me/profile')
   @ApiOperation({
     summary: 'Gets profile information of current user',
     description:
@@ -110,7 +113,7 @@ export class UsersController {
   }
 
   @UseGuards(IsLoggedInGuard)
-  @Put('me')
+  @Put('@me')
   @ApiOperation({
     summary: 'Updates the password of the current user',
     description: 'The user has to be logged in',
@@ -129,7 +132,7 @@ export class UsersController {
   }
 
   @UseGuards(IsLoggedInGuard)
-  @Get('me/game')
+  @Get('@me/game')
   @ApiOperation({
     summary: 'Gets the active game of the current user',
     description:
@@ -142,7 +145,7 @@ export class UsersController {
   }
 
   @UseGuards(IsLoggedInGuard)
-  @Post('me/avatar')
+  @Post('@me/avatar')
   @UseInterceptors(FileInterceptor('avatar'))
   @ApiOperation({
     summary: 'Sets the user avatar',
@@ -193,13 +196,17 @@ export class UsersController {
 
   @UseGuards(RolesGuard)
   @Get(':username')
-  @ApiParam({ name: 'username' })
   @ApiOperation({
-    summary: 'Search for a User',
-    description: 'Search for a User, creates a query and returns the result.',
+    summary: 'Gets profile information of user with given name',
+    description: 'Gets all relevant profile infos about the user.',
   })
-  @ApiOkResponse({ description: 'Successful operation', type: [GameDto] })
-  async searchUsers(@Param('username') username: string) {
-    return this.usersService.searchUsers(username);
+  @ApiNotFoundResponse({ description: 'User not found' })
+  @ApiOkResponse({ description: 'Successful operation', type: ProfileDto })
+  async getUserProfileByUsername(
+    @Param('username') username: string,
+  ): Promise<ProfileDto> {
+    const user: User = await this.usersService.findOne(username);
+    if (!user) throw new NotFoundException('User not found');
+    return this.usersService.getUserProfile(user);
   }
 }

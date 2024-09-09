@@ -18,6 +18,8 @@ export enum ServerSentEvents {
   moveMade = 'moveMade',
   receiveMessage = 'receiveMessage',
   receiveGiveUp = 'receiveGiveUp',
+  queueUpdated = 'queueUpdated',
+  runningGamesUpdated = 'runningGamesUpdated',
 }
 
 export interface ClientToServerEvents {
@@ -35,4 +37,6 @@ export interface ServerToClientEvents {
   gameStarted: (opponent: UserDto) => void;
   moveMade: (update: GameUpdateDto) => void;
   receiveMessage: () => void;
+  queueUpdated: () => void;
+  runningGamesUpdated: () => void;
 }

@@ -154,6 +154,21 @@ export class GamesService {
     return { ...GameDto.from(game), playerIdentity, chat };
   }
 
+  async getFinishedGamesByPlayer(player: User) {
+    return await this.gameRepository.find({
+      where: [
+        { player1: { id: player.id }, isFinished: true },
+        { player2: { id: player.id }, isFinished: true },
+      ],
+      relations: [
+        'player1',
+        'player2',
+        'player1.profilePicture',
+        'player2.profilePicture',
+      ],
+    });
+  }
+
   async getGameChat(game: Game) {
     return this.chatService.getMessagesByGame(game);
   }
