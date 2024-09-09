@@ -36,6 +36,7 @@ export class TictactoeService {
       if (update.isFinished) {
         this._winner = update.winner;
         this.showGameOverAlert();
+        this.userService.setReady();
       }
     });
 
