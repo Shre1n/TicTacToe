@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {CanActivate, Router} from '@angular/router';
 import { UserService } from '../../../User/user.service';
 import { catchError, map, of } from 'rxjs';
+import { UserDto } from '../../../User/interfaces/userDto';
 @Injectable({
   providedIn: 'root',
 })
@@ -16,8 +17,8 @@ export class AdminGuard implements CanActivate {
       return of(true);
     }
     return this.userService.isAuthenticated().pipe(
-      map((response: Response) => {
-        if (response.ok)
+      map((response: UserDto) => {
+        if (response)
           this.router.navigate(['/forbidden']);
         else
           this.router.navigate(['/unauthorized'])

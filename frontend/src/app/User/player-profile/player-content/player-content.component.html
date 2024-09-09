@@ -1,29 +1,29 @@
 <div class="tab-content">
   <div class="tab-pane fade active show" id="account-general">
-    <div class="card-body media align-items-center">
-      <img src="{{this.userService.user?.profilePictureUrl}}" alt="yourProfilePicture"
-           class="d-block ui-w-80">
-      <div class="media-body ml-4">
-        <label class="btn btn-outline-primary">
-          Upload new photo
-          <input type="file" (change)="selectedFile($event)" class="account-settings-fileinput">
-        </label> &nbsp;
-        <div class="text-light small mt-1">Allowed jpg|jpeg|png|webp.</div>
+      <div class="card-body media align-items-center bilder">
+        <img src="{{this.userService.user?.profilePictureUrl ?? './assets/steve.jpeg'}}" alt="yourProfilePicture"
+             class="d-block ui-w-80 profile-img">
+        <div class="media-body ml-4">
+          <label class="btn btn-outline-primary">
+            Upload new photo
+            <input type="file" (change)="selectedFile($event)" class="account-settings-fileinput">
+          </label> &nbsp;
+          <div class="text-light small mt-1">Allowed jpg | jpeg | png | webp.</div>
+        </div>
       </div>
     </div>
 
     <hr class="border-light m-0">
     <div class="card-body">
       <div class="form-group">
-        <label class="form-label"> Dein Nutzername</label>
+        <label class="form-label">Your Name: </label>
         <input type="text" class="form-control mb-1" value='{{this.userService.user?.username}}'>
       </div>
     </div>
-
-    <div class="tab-pane fade show" id="account-info">
+    <div id="account-info">
       <div class="card-body pb-2">
         <div class="form-group">
-          <label class="form-label">{{ this.userService.user?.elo }} </label>
+          <label class="form-label"> Your Elo-Points: {{ this.userService.user?.elo }}</label>
         </div>
       </div>
     </div>
@@ -36,6 +36,6 @@
       <button type="button" class="btn btn-default">Cancel</button>
     </div>
   </div>
-</div>
+
 
 
