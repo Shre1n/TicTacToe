@@ -56,6 +56,20 @@ export class GamesService {
     return await this.gameRepository.save(game);
   }
 
+  async giveUp(game: Game, playerId: number): Promise<Game> {
+    if (game.player1.id === playerId) {
+      game.winningState = 'p2';
+      game.isFinished = true;
+    } else {
+      game.winningState = 'p1';
+      game.isFinished = true;
+    }
+    game = await this.updateElo(game);
+    game.duration = Date.now() - game.createdAt.getTime();
+    await this.gameRepository.save(game);
+    return game;
+  }
+
   async makeAMove(
     game: Game,
     playerId: number,

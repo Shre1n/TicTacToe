@@ -39,7 +39,7 @@ export class UserService {
   }
 
   isAuthenticated() {
-    return this.http.get<Response>(ApiEndpoints.ME);
+    return this.http.get<UserDto>(ApiEndpoints.ME);
   }
 
   isAdmin() {

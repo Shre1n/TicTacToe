@@ -1,0 +1,5 @@
+<i class="fa-solid fa-gamepad gamepad-icon "  (click)="navMatchMaking()" [ngClass]="{
+           'icon-ready': userService.getUserState() === UserState.Ready,
+           'icon-waiting': userService.getUserState() === UserState.Waiting,
+           'icon-playing': userService.getUserState() === UserState.Playing
+         }" ></i>

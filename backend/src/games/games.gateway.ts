@@ -68,4 +68,27 @@ export class GamesGateway {
     if (game.isFinished)
       setTimeout(() => this.server.socketsLeave(game.id.toString()), 600000);
   }
+
+  @UseGuards(IsSocketLoggedInGuard)
+  @SubscribeMessage(ClientSentEvents.sendGiveUp)
+  async handleGiveUp(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() id: number,
+  ) {
+    const request = client.request as Request;
+    const session = request.session;
+
+    const activeGame = await this.gameService.getGameById(id);
+
+    if (!activeGame) {
+      throw new NotFoundException('Invalid game or game already finished');
+    }
+    const game = await this.gameService.giveUp(activeGame, session.user.id);
+    client.broadcast
+      .to(game.id.toString())
+      .emit(ServerSentEvents.receiveGiveUp, game.id);
+
+    if (game.isFinished)
+      setTimeout(() => this.server.socketsLeave(game.id.toString()), 600000);
+  }
 }
