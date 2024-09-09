@@ -6,13 +6,15 @@ import { UserState } from '../../User/interfaces/userDto';
 import { SocketService } from '../../Socket/socket.service';
 import {NgClass} from "@angular/common";
 import {StatusIndikatorComponent} from "../../User/status-indikator/status-indikator.component";
+import {ToastMenuComponent} from "../../Notifications/toast-menu/toast-menu.component";
 
 @Component({
   selector: 'app-play-now',
   standalone: true,
   imports: [
     NgClass,
-    StatusIndikatorComponent
+    StatusIndikatorComponent,
+    ToastMenuComponent
   ],
   templateUrl: './play-now.component.html',
   styleUrl: './play-now.component.css'
