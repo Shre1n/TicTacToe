@@ -16,14 +16,20 @@ export class MatchDto {
   })
   outcome: GameResult;
 
-  @ApiProperty({ description: 'The length of the game' })
-  gameTime: Date;
+  @ApiProperty({ description: 'The length of the game in ms' })
+  duration: number;
 
   @ApiProperty({ description: 'The start time of the game' })
   createdAt: Date;
 
+  @ApiProperty({
+    description: 'Tracks how much elo the user gained through the game',
+    example: 0,
+  })
+  eloGain: number;
+
   static from(opponent: UserDto, game: Game): MatchDto {
-    const { gameTime, createdAt, winningState } = game;
+    const { duration, createdAt, winningState } = game;
     let outcome = GameResult.Self;
     if (
       (winningState === 'p1' && game.player1.username === opponent.username) ||
@@ -32,7 +38,16 @@ export class MatchDto {
       outcome = GameResult.Opponent;
     else if (winningState === 'draw') outcome = GameResult.Draw;
 
-    return { opponent, gameTime, createdAt, outcome };
+    return {
+      opponent,
+      duration: duration,
+      createdAt,
+      outcome,
+      eloGain:
+        game.player1.username === opponent.username
+          ? game.player2EloGain
+          : game.player1EloGain,
+    };
   }
 }
 

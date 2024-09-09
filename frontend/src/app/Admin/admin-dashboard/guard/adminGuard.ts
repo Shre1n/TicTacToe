@@ -1,24 +1,32 @@
 import {Injectable} from '@angular/core';
 import {CanActivate, Router} from '@angular/router';
-import {LoginService} from "../../../Auth/login/services/login.service";
+import { UserService } from '../../../User/user.service';
+import { catchError, map, of } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
 export class AdminGuard implements CanActivate {
   constructor(
     private router: Router,
-    private loginService: LoginService) {
+    private userService: UserService) {
   }
 
   canActivate() {
-    if (this.loginService.isAdmin) {
-      return true;
-    } else if (!this.loginService.isAuthenticated) {
-      this.router.navigate(['/unauthorized']);
-      return false;
-    } else {
-      this.router.navigate(['/forbidden']);
-      return false;
+    if (this.userService.isAdmin()) {
+      return of(true);
     }
+    return this.userService.isAuthenticated().pipe(
+      map((response: Response) => {
+        if (response.ok)
+          this.router.navigate(['/forbidden']);
+        else
+          this.router.navigate(['/unauthorized'])
+        return false;
+      }),
+      catchError((_) => {
+        this.router.navigate(['/unauthorized']);
+        return of(false);
+      })
+    );
   }
 }

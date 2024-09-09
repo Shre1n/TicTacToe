@@ -4,7 +4,7 @@ import { QueueService } from './queue.service';
 import { RolesGuard } from '../guards/roles/roles.guard';
 import { QueueDto } from './dto/queue.dto';
 
-@ApiTags('matchmaking')
+@ApiTags('game')
 @Controller('queue')
 export class QueueController {
   constructor(private readonly queueService: QueueService) {}

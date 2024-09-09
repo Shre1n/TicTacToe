@@ -10,7 +10,6 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  Query,
   Session,
   StreamableFile,
   UploadedFile,
@@ -54,7 +53,7 @@ export class UsersController {
 
   @UseGuards(RolesGuard)
   @Get()
-  @ApiOperation({ summary: 'Get users from the users' })
+  @ApiOperation({ summary: 'Gets all users' })
   @ApiOkResponse({ description: 'successful operation', type: [UserDto] })
   async getAllUsers() {
     const users = await this.usersService.getAllUsers();
@@ -99,31 +98,19 @@ export class UsersController {
   }
 
   @UseGuards(IsLoggedInGuard)
-  @Get('profile')
+  @Get('me/profile')
   @ApiOperation({
     summary: 'Gets profile information of current user',
     description:
       'Gets all relevant profile infos about the current user. The user has to be logged in',
   })
   @ApiOkResponse({ description: 'Successful operation', type: ProfileDto })
-  async getUserProfile(@Session() session: SessionData): Promise<UserDto> {
+  async getUserProfile(@Session() session: SessionData): Promise<ProfileDto> {
     return this.usersService.getUserProfile(session.user);
   }
 
-  @UseGuards(RolesGuard)
-  @Get(':username')
-  @ApiParam({ name: 'username' })
-  @ApiOperation({
-    summary: 'Search for a User',
-    description: 'Search for a User, creates a query and returns the result.',
-  })
-  @ApiOkResponse({ description: 'Successful operation', type: [GameDto] })
-  async searchUsers(@Param('username') username: string) {
-    return this.usersService.searchUsers(username);
-  }
-
   @UseGuards(IsLoggedInGuard)
-  @Put()
+  @Put('me')
   @ApiOperation({
     summary: 'Updates the password of the current user',
     description: 'The user has to be logged in',
@@ -141,6 +128,54 @@ export class UsersController {
     session.user = await this.usersService.findOne(session.user.username);
   }
 
+  @UseGuards(IsLoggedInGuard)
+  @Get('me/game')
+  @ApiOperation({
+    summary: 'Gets the active game of the current user',
+    description:
+      'Gets the game, the user is currently playing in. 404 the user has no game, he is playing in. The user has to be logged in',
+  })
+  @ApiOkResponse({ description: 'Successful operation', type: GameDto })
+  @ApiNotFoundResponse({ description: 'The is not playing a game' })
+  async getActiveUserGame(@Session() session: SessionData): Promise<GameDto> {
+    return this.usersService.getActiveUserGame(session.user);
+  }
+
+  @UseGuards(IsLoggedInGuard)
+  @Post('me/avatar')
+  @UseInterceptors(FileInterceptor('avatar'))
+  @ApiOperation({
+    summary: 'Sets the user avatar',
+    description: 'Sets the user avatar. The user has to be logged in',
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Avatar',
+    type: FileUploadDto,
+  })
+  @ApiCreatedResponse({ description: 'Successful operation', type: UserDto })
+  @ApiUnprocessableEntityResponse({ description: 'Invalid File' })
+  async setAvatar(
+    @Session() session: SessionData,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({ fileType: 'jpg|jpeg|png|webp' })
+        .addMaxSizeValidator({ maxSize: 1024 * 1000 })
+        .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }),
+    )
+    avatar: Express.Multer.File,
+  ) {
+    const newProfilePicture = await this.profilePictureService.save(
+      avatar,
+      session.user,
+    );
+    session.user = await this.usersService.updateAvatar(
+      session.user,
+      newProfilePicture,
+    );
+    return await this.usersService.getCurrentUserInformation(session);
+  }
+
   @Get('avatar/:id')
   @ApiOperation({
     summary: 'Gets avatar from id',
@@ -156,40 +191,15 @@ export class UsersController {
     return new StreamableFile(data.content);
   }
 
-  @UseGuards(IsLoggedInGuard)
-  @Post('avatar')
-  @UseInterceptors(FileInterceptor('avatar'))
+  @UseGuards(RolesGuard)
+  @Get(':username')
+  @ApiParam({ name: 'username' })
   @ApiOperation({
-    summary: 'Sets the user avatar',
-    description: 'Sets the user avatar. The user has to be logged in',
+    summary: 'Search for a User',
+    description: 'Search for a User, creates a query and returns the result.',
   })
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    description: 'Avatar',
-    type: FileUploadDto,
-  })
-  @ApiCreatedResponse({ description: 'Successful operation', type: UserDto })
-  @ApiUnprocessableEntityResponse({ description: 'Invalid File' })
-  async setAvatar(
-    @Session() session: SessionData,
-    @Body() data: FileUploadDto,
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({ fileType: 'jpg|jpeg|png|webp' })
-        .addMaxSizeValidator({ maxSize: 1024 * 1000 })
-        .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }),
-    )
-    avatar: Express.Multer.File,
-  ) {
-    const newProfilePicture = await this.profilePictureService.save(
-      data.title,
-      avatar,
-      session.user,
-    );
-    session.user = await this.usersService.updateAvatar(
-      session.user,
-      newProfilePicture,
-    );
-    return await this.usersService.getCurrentUserInformation(session);
+  @ApiOkResponse({ description: 'Successful operation', type: [GameDto] })
+  async searchUsers(@Param('username') username: string) {
+    return this.usersService.searchUsers(username);
   }
 }

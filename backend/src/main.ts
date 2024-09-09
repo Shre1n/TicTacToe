@@ -26,13 +26,16 @@ async function bootstrap() {
     .setTitle('TicTacToe API')
     .setDescription('The TicTacToe API description')
     .setVersion('1.0')
+    .addTag('auth', 'all endpoints for authentication')
+    .addTag('user', 'all endpoints for user information')
+    .addTag('game', 'all endpoints for game or queue information')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
   await app.listen(3000);
 }
-bootstrap();
+bootstrap().catch(console.error);
 
 declare module 'express-session' {
   interface SessionData extends session.Session {

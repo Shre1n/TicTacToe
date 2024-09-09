@@ -1,12 +1,10 @@
-import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {LoginService} from "./services/login.service";
-import {FormsModule, NgForm} from "@angular/forms";
+import {FormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
-import {LoginResponse} from "./interfaces/LoginResponse";
-import {ConnectService} from "../../services/connect.service";
-import {
-  ReadUserProfilePictureService
-} from "../../services/user/readUserProfilePicture/read-user-profile-picture.service";
+import { UserService } from '../../User/user.service';
+import { UserDto } from '../../User/interfaces/userDto';
+import { SocketService } from '../../Socket/socket.service';
 
 @Component({
   selector: 'app-login',
@@ -33,8 +31,8 @@ export class LoginComponent{
   constructor(
     private loginService: LoginService,
     private router: Router,
-    private connectService: ConnectService,
-    private readProfile: ReadUserProfilePictureService,
+    private socketService: SocketService,
+    private userService: UserService,
     ) {
   }
 
@@ -50,19 +48,13 @@ export class LoginComponent{
 
 
     if (this.errors.size === 0) {
-      this.loginService.login(this.username, this.password).subscribe({
-        next: (response: LoginResponse) => {
-          window.localStorage.clear();
-          this.loginService.setAuthenticated();
-          this.readProfile.readProfilePicture(response.profilePictureId);
-
+      this.loginService.login(this.username, this.password).pipe(this.userService.profilePicturePipe()).subscribe({
+        next: (response: UserDto) => {
+          this.userService.setUserData(response)
           if (response.isAdmin) {
-            this.loginService.setAdmin();
             this.router.navigate(['/admin']);
-          } else {
-            this.router.navigate(['/play-now']);
           }
-          this.connectService.connect();
+          this.socketService.connect();
           //todo show user the success
         },
         error: error => {

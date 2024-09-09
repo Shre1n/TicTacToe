@@ -1,0 +1,11 @@
+@switch (userService.getUserState()) {
+  @case(UserState.Ready) {
+    <p>Not in a Game</p>
+  }
+  @case(UserState.Waiting) {
+    <app-match-making></app-match-making>
+  }
+  @case(UserState.Playing) {
+    <app-tic-tac-toe></app-tic-tac-toe>
+  }
+}

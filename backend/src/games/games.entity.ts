@@ -46,12 +46,26 @@ export class Game {
   })
   player2Board: number;
 
-  @Column({ type: 'time', default: () => 'CURRENT_TIME' })
+  @Column({ type: 'integer', default: 0 })
   @ApiProperty({
-    description: 'The Gaming Time',
+    description: 'Tracks how much elo player1 gained through the game',
+    example: 0,
+  })
+  player1EloGain: number;
+
+  @ApiProperty({
+    description: 'Tracks how much elo player2 gained through the game',
+    example: 0,
+  })
+  @Column({ type: 'integer', default: 0 })
+  player2EloGain: number;
+
+  @Column({ type: 'integer', default: 0 })
+  @ApiProperty({
+    description: 'How long the game lasted in ms',
     example: '1:00:00',
   })
-  gameTime: Date;
+  duration: number;
 
   @Column({ type: 'integer', default: 1 })
   @ApiProperty({ description: 'The current turn of the game', example: 1 })

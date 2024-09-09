@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpResponse} from "@angular/common/http";
-import {UpdatePasswordDto} from "./update-password.dto";
-import {Observable} from "rxjs";
+import { ApiEndpoints } from '../../../../api-endpoints';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +13,7 @@ export class PasswordChangeService {
 
   changePassword(oldPassword: string, newPassword: string) {
 
-    this.http.put<HttpResponse<any>>('/api/user', {oldPassword: oldPassword, newPassword: newPassword}, {observe: 'response'}).subscribe({
+    this.http.put<HttpResponse<any>>(ApiEndpoints.ME, {oldPassword: oldPassword, newPassword: newPassword}, {observe: 'response'}).subscribe({
       next: (response: HttpResponse<any>) => {
         switch (response?.status) {
           case 200:

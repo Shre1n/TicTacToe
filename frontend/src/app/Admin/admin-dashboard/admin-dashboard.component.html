@@ -7,7 +7,7 @@
       <ul class="list-group">
         @for (game of this.adminService.runningGames; track game) {
           <li class="list-group-item list-group-item-action" (click)="selectGame(game, $event)">
-            Game ID: {{ game.gameId }}, Players: {{ game.player1.username }} vs {{ game.player2.username }}
+            Players: {{ game.player1.username }} vs {{ game.player2.username }}
           </li>
         }
       </ul>
@@ -59,7 +59,7 @@
       <h1 class="mt-4 ms-4">Admin Dashboard</h1>
       <div class="justify-content-start align-items-start">
         @if (this.adminService.userGames.length > 0) {
-          @for (game of this.adminService.userGames; track game.gameId) {
+          @for (game of this.adminService.userGames; let k = $index; track k) {
             <div class="card">
               <div class="card-body d-flex flex-column align-items-center justify-content-center">
                 <!-- Tic-Tac-Toe Board -->
@@ -120,7 +120,7 @@
     <div class="list-group list-group-flush">
       <a class="list-group-item list-group-item-action" (click)="toggleQueue()"></a>
       <ul class="list-group">
-        @for (player of this.adminService.matchMakingQueue?.queueEntries; track player) {
+        @for (player of this.adminService.matchMakingQueue; track player) {
           <li class="list-group-item">
             {{ player.username }}
             {{ player.elo }}
@@ -146,6 +146,7 @@
           Inspect {{ selectedGame.player2.username }}
         </button>
       }
+      <button class="btn btn-primary" (click)="spectateGame(selectedGame.player1)">Spectate Game</button>
 
     </div>
   }

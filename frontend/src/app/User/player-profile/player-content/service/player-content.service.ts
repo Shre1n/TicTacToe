@@ -1,17 +1,13 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpResponse} from "@angular/common/http";
-import {UserDto} from "../userDto";
-import {
-  ReadUserProfilePictureService
-} from "../../../../services/user/readUserProfilePicture/read-user-profile-picture.service";
-import {ReadUserService} from "../../../../services/user/readUser/read-user.service";
+import { ApiEndpoints } from '../../../../api-endpoints';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlayerContentService {
 
-  constructor(private http: HttpClient, private readUserService: ReadUserService) {
+  constructor(private http: HttpClient) {
   }
 
   onUpload(file: File | null) {
@@ -20,7 +16,7 @@ export class PlayerContentService {
       formData.append('avatar', file);
       formData.append('title', 'my nice avatar');
 
-      this.http.post<HttpResponse<any>>('/api/user/avatar', formData, {observe: 'response'}).subscribe({
+      this.http.post<HttpResponse<any>>(ApiEndpoints.USERAVATAR, formData, {observe: 'response'}).subscribe({
         next: (response: HttpResponse<any>) => {
           switch (response.status) {
             case 201:
@@ -40,10 +36,5 @@ export class PlayerContentService {
     } else {
       alert('Bitte wähle eine Datei aus!');
     }
-  }
-
-
-  readUser(): void {
-    this.readUserService.readUser();
   }
 }
