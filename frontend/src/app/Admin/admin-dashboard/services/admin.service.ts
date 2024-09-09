@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {GameDto} from "../../../Game/interfaces/gamesDto"
 import {UserDto} from '../../../User/interfaces/userDto';
 import { QueueDto } from '../interfaces/queueDto';
@@ -8,6 +8,7 @@ import { ProfileDto } from '../../../User/player-profile/interfaces/profile.dto'
 import { SocketService } from '../../../Socket/socket.service';
 import { UserStatsDto } from '../../../User/player-profile/interfaces/user-stats.dto';
 import { MatchDto } from '../../../Game/interfaces/matchDto';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,8 @@ export class AdminService {
 
   constructor(
     private http : HttpClient,
-    private socketService: SocketService,
+    socketService: SocketService,
+    private router: Router,
   ) {
     socketService.onQueueUpdated().subscribe(() => {
       this.getMatchMakingQueue();
@@ -42,8 +44,12 @@ export class AdminService {
       next: (response: [UserDto]) => {
         this.users = response;
       },
-      error: (err)=> {
+      error: (err: HttpErrorResponse)=> {
         console.error(err);
+        if (err.status === 403)
+          this.router.navigate(['/forbidden']);
+        if (err.status === 401)
+          this.router.navigate(['/unauthorized']);
     }
     });
   }
@@ -53,8 +59,12 @@ export class AdminService {
       next: (queue: { queueEntries: QueueDto[] }) => {
         this.matchMakingQueue = queue.queueEntries;
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         console.error('Failed to fetch queue:', err);
+        if (err.status === 403)
+          this.router.navigate(['/forbidden']);
+        if (err.status === 401)
+          this.router.navigate(['/unauthorized']);
       }
     });
   }
@@ -64,8 +74,12 @@ export class AdminService {
       next: (games: GameDto[]) => {
         this.runningGames = games;
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         console.error('Failed to fetch games:', err);
+        if (err.status === 403)
+          this.router.navigate(['/forbidden']);
+        if (err.status === 401)
+          this.router.navigate(['/unauthorized']);
       }
     });
   }
@@ -77,8 +91,12 @@ export class AdminService {
             this.userGames = response.matchHistory;
             this.userStats = response.stats;
           },
-          error: (err) => {
+          error: (err: HttpErrorResponse) => {
             console.error('Search failed:', err);
+            if (err.status === 403)
+              this.router.navigate(['/forbidden']);
+            if (err.status === 401)
+              this.router.navigate(['/unauthorized']);
           }
         });
     }
