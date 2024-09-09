@@ -6,6 +6,7 @@ import {PlayerPasswordChangeComponent} from "./player-password-change/player-pas
 import {LogoutService} from "../../Auth/logout/services/logout.service";
 import {SocketService} from "../../Socket/socket.service";
 import {UserService} from "../user.service";
+import {StatusIndikatorComponent} from "../status-indikator/status-indikator.component";
 
 @Component({
   selector: 'app-player-profile',
@@ -13,7 +14,8 @@ import {UserService} from "../user.service";
   imports: [
     OptionsComponent,
     PlayerContentComponent,
-    PlayerPasswordChangeComponent
+    PlayerPasswordChangeComponent,
+    StatusIndikatorComponent
   ],
   templateUrl: './player-profile.component.html',
   styleUrl: './player-profile.component.css'
