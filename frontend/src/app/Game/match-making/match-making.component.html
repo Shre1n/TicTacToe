@@ -17,12 +17,7 @@
 </nav>
 <div class="matchmaking-container">
   <div class="left-side" id="left-side" #leftSide>
-    @if (this.userService.user?.profilePictureUrl){
-      <img src="{{ this.userService.user?.profilePictureUrl }}" alt="Your Profile" class="profile-img your-profile-img" #yourProfile>
-    } @else {
-      <img src="./assets/steve.jpeg"  alt="Your Profile" class="profile-img your-profile-img" #yourProfile >
-    }
-
+      <img src="{{ this.userService.user?.profilePictureUrl ?? './assets/steve.jpeg'}}" alt="Your Profile" class="profile-img your-profile-img" #yourProfile>
   </div>
   <div class="middle" #middle>
     <div class="timer">{{ formattedTime }}</div>

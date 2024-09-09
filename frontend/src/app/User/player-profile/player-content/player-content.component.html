@@ -1,8 +1,7 @@
 <div class="tab-content">
   <div class="tab-pane fade active show" id="account-general">
-    @if (this.userService.user?.profilePictureId){
       <div class="card-body media align-items-center bilder">
-        <img src="{{this.userService.user?.profilePictureUrl}}" alt="yourProfilePicture"
+        <img src="{{this.userService.user?.profilePictureUrl ?? './assets/steve.jpeg'}}" alt="yourProfilePicture"
              class="d-block ui-w-80 profile-img">
         <div class="media-body ml-4">
           <label class="btn btn-outline-primary">
@@ -12,20 +11,6 @@
           <div class="text-light small mt-1">Allowed jpg | jpeg | png | webp.</div>
         </div>
       </div>
-    } @else {
-      <div class="card-body media align-items-center bilder">
-        <img src="./assets/steve.jpeg" alt="yourProfilePicture"
-             class="d-block ui-w-80 profile-img">
-        <div class="media-body ml-4">
-          <label class="btn btn-outline-primary">
-            Upload new photo
-            <input type="file" (change)="selectedFile($event)" class="account-settings-fileinput">
-          </label> &nbsp;
-          <div class="text-light small mt-1">Allowed jpg | jpeg | png| webp.</div>
-        </div>
-      </div>
-    }
-
     </div>
 
     <hr class="border-light m-0">

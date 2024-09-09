@@ -18,8 +18,8 @@ export class TictactoeService {
   private _board: number[] = [];
   private _player: UserDto | undefined;
   private _opponent: UserDto | undefined;
-  private _playerPicture: string = "";
-  private _opponentPicture: string = "";
+  private _playerPicture?: string;
+  private _opponentPicture?: string;
   private player_turn: number = 0;
   private _isPlayersTurn: boolean = false;
   private _winner: string = "";
@@ -120,11 +120,11 @@ export class TictactoeService {
     return this._isPlayersTurn;
   }
 
-  get playerPicture(): string {
+  get playerPicture(): string | undefined {
     return this._playerPicture;
   }
 
-  get opponentPicture(): string {
+  get opponentPicture(): string | undefined {
     return this._opponentPicture;
   }
 
