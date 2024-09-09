@@ -40,7 +40,7 @@
 </section>
 
 <div class="chat-wrapper">
-  <app-chat [id]="this.id" [messages]="this.tictactoeService.game?.chat || []"></app-chat>
+  <app-chat [messages]="this.tictactoeService.game?.chat || []"></app-chat>
 </div>
 
 <button class="back btn p-0" (click)="back()">

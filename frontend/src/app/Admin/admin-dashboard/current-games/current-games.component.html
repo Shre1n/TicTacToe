@@ -1,6 +1,6 @@
 <div class="list-group list-group-flush">
   <ul class="list-group">
-    @for (game of this.adminService.runningGames; track game.id) {
+    @for (game of this.adminService.runningGames; track game) {
       <li class="list-group-item list-group-item-action" (click)="selectGame(game, $event)">
         {{ game.player1.username }} vs {{ game.player2.username }}
       </li>

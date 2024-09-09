@@ -53,7 +53,7 @@ export class UsersService {
 
   async findOne(username: string) {
     return await this.usersRepository.findOne({
-      where: { username: username ?? "" },
+      where: { username: username ?? '' },
       relations: { profilePicture: true },
     });
   }
@@ -83,8 +83,14 @@ export class UsersService {
   }
 
   async getMatchHistory(games: Game[], user: User) {
-    return games.map((g) =>
-      MatchDto.from(UserDto.from(user), UserDto.from(g.player1.username === user.username ? g.player2 : g.player1), g),
+    return games.map((game) =>
+      MatchDto.from(
+        UserDto.from(user),
+        UserDto.from(
+          game.player1.username === user.username ? game.player2 : game.player1,
+        ),
+        game,
+      ),
     );
   }
 

@@ -4,9 +4,10 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SocketService } from "../../../Socket/socket.service";
 import { MoveDto } from "../../interfaces/MoveDto";
 import { GameUpdateDto } from "../../interfaces/GameUpdateDto";
-import { UserService } from '../../../User/user.service';
 import { ApiEndpoints } from '../../../api-endpoints';
 import { Router } from '@angular/router';
+import { map, mergeMap, of } from 'rxjs';
+import { UserService } from '../../../User/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +18,8 @@ export class TictactoeService {
   constructor(
     private http: HttpClient,
     private router: Router,
+    private socketService: SocketService,
     private userService: UserService,
-    private socketService: SocketService
   ) {
     this.socketService.onMoveMade().subscribe((update: GameUpdateDto) => {
       if (!this.game) return;
@@ -29,6 +30,7 @@ export class TictactoeService {
         this.game.winner = update.winner;
         this.game.isFinished = update.isFinished;
         this.showGameOverAlert();
+        this.userService.setReady();
       }
     });
 
@@ -37,36 +39,48 @@ export class TictactoeService {
 
       this.game.turn = 0;
       alert('The other player has given up!');
-      this.router.navigate(['']);
+      this.userService.setReady();
+      this.router.navigate(['']).then();
     });
   }
 
 
 
   loadFromApi(){
-    this.http.get<GameDto>(`${ApiEndpoints.USERGAME}`).subscribe({
-      next: (response: GameDto) => {
-        this.initGameBoard(response);
-      },
-      error: (err: HttpErrorResponse) => {
-        if (err.status === 404)
-          this.router.navigate(['NotFound']);
-        console.log(err);
-      }
-    });
+    this.http.get<GameDto>(`${ApiEndpoints.USERGAME}`)
+      .pipe(this.profilePicturePipe(1))
+      .pipe(this.profilePicturePipe(2))
+      .subscribe({
+        next: (response: GameDto) => {
+          this.initGameBoard(response);
+        },
+        error: (err: HttpErrorResponse) => {
+          if (err.status === 404)
+            this.router.navigate(['NotFound']).then();
+          console.log(err);
+        }
+      });
   }
 
   initGameBoard(game: GameDto){
     this.game = game;
-    this.readProfilePictures(game);
   }
 
-  readProfilePictures(game: GameDto) {
-    this.http.get(`${ApiEndpoints.AVATAR}/${game.player1.profilePictureId}`, {responseType: 'arraybuffer'}).subscribe(buffer => {
-      this.game!.player1.profilePictureUrl = URL.createObjectURL(new Blob([buffer]));
-    });
-    this.http.get(`${ApiEndpoints.AVATAR}/${game.player2.profilePictureId}`, {responseType: 'arraybuffer'}).subscribe(buffer => {
-      this.game!.player2.profilePictureUrl = URL.createObjectURL(new Blob([buffer]));
+  profilePicturePipe(player: number) {
+    return mergeMap((game: GameDto, _) => {
+      if (player === 1)
+        return game.player1.profilePictureId ? this.http.get(`${ApiEndpoints.AVATAR}/${game.player1.profilePictureId}`, {responseType: 'arraybuffer'})
+          .pipe(map((pic): GameDto => {
+            const p1 = { ...game.player1, profilePictureUrl: URL.createObjectURL(new Blob([pic])) };
+            return {...game, player1: p1}
+          })) : of(game);
+      if (player === 2)
+        return game.player2.profilePictureId ? this.http.get(`${ApiEndpoints.AVATAR}/${game.player2.profilePictureId}`, {responseType: 'arraybuffer'})
+          .pipe(map((pic): GameDto => {
+            const p2 = { ...game.player2, profilePictureUrl: URL.createObjectURL(new Blob([pic])) };
+            return {...game, player2: p2}
+          })) : of(game)
+      return of(game);
     });
   }
 
@@ -86,7 +100,8 @@ export class TictactoeService {
     this.game.turn = 0;
     this.socketService.giveUp();
     alert('You have given up!');
-    this.router.navigate(['']);
+    this.router.navigate(['']).then();
+    this.userService.setReady();
   }
 
   showGameOverAlert() {
@@ -99,7 +114,7 @@ export class TictactoeService {
     } else {
       alert('You lost. Better luck next time!');
     }
-    this.router.navigate(['']);
+    this.router.navigate(['']).then();
   }
 
   getPlayer() {
