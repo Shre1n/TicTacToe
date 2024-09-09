@@ -4,11 +4,14 @@ import { LogoutService } from '../../Auth/logout/services/logout.service';
 import { UserService } from '../../User/user.service';
 import { UserState } from '../../User/interfaces/userDto';
 import { SocketService } from '../../Socket/socket.service';
+import {ToastMenuComponent} from "../../Notifications/toast-menu/toast-menu.component";
 
 @Component({
   selector: 'app-play-now',
   standalone: true,
-  imports: [],
+  imports: [
+    ToastMenuComponent
+  ],
   templateUrl: './play-now.component.html',
   styleUrl: './play-now.component.css'
 })
