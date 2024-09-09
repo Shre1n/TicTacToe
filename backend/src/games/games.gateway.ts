@@ -63,7 +63,7 @@ export class GamesGateway {
 
     if (game.isFinished) {
       setTimeout(() => this.server.socketsLeave(game.id.toString()), 600000);
-      this.server.to("admin").emit(ServerSentEvents.runningGamesUpdated);
+      this.server.to('admin').emit(ServerSentEvents.runningGamesUpdated);
     }
   }
 
@@ -83,7 +83,9 @@ export class GamesGateway {
       .to(game.id.toString())
       .emit(ServerSentEvents.receiveGiveUp);
 
-    if (game.isFinished)
+    if (game.isFinished) {
       setTimeout(() => this.server.socketsLeave(game.id.toString()), 600000);
+      this.server.to('admin').emit(ServerSentEvents.runningGamesUpdated);
+    }
   }
 }
