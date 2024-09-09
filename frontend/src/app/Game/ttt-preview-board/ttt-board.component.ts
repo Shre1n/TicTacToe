@@ -9,5 +9,4 @@ import { Component, Input } from '@angular/core';
 })
 export class TttBoardComponent {
   @Input() board: number[] = [0,0,0,0,0,0,0,0,0];
-  @Input() playerIdentity: 1 | 2 = 1;
 }

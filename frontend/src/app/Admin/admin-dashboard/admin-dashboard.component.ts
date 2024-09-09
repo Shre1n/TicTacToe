@@ -7,7 +7,7 @@ import {NgClass, NgStyle, NgSwitch} from "@angular/common";
 import {LogoutService} from "../../Auth/logout/services/logout.service";
 import {UserDto} from "../../User/interfaces/userDto";
 import { CurrentGamesComponent } from './current-games/current-games.component';
-import { TttBoardComponent } from './ttt-board/ttt-board.component';
+import { TttBoardComponent } from '../../Game/ttt-preview-board/ttt-board.component';
 import { WaitingPlayersComponent } from './waiting-players/waiting-players.component';
 import { GameResult } from '../../Game/interfaces/matchDto';
 
