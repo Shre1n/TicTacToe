@@ -41,6 +41,7 @@ export class TictactoeService {
 
     this.socketService.onGiveup().subscribe(() => {
       this._isPlayersTurn = false;
+      this.userService.setReady();
       alert('The other player has given up!');
       this.router.navigate(['']);
     });

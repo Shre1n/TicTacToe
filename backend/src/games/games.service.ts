@@ -63,7 +63,7 @@ export class GamesService {
       game.winningState = 'p1';
       game.isFinished = true;
     }
-    await this.updateElo(game);
+    game = await this.updateElo(game);
     game.duration = Date.now() - game.createdAt.getTime();
     await this.gameRepository.save(game);
     return game;
