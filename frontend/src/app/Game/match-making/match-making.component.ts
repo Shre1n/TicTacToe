@@ -3,7 +3,6 @@ import {Router} from "@angular/router";
 import {NgOptimizedImage} from "@angular/common";
 import { UserService } from '../../User/user.service';
 import { SocketService } from '../../Socket/socket.service';
-import { GameDto } from '../interfaces/gamesDto';
 import {LogoutService} from "../../Auth/logout/services/logout.service";
 import {StatusIndikatorComponent} from "../../User/status-indikator/status-indikator.component";
 import { UserDto } from '../../User/interfaces/userDto';
