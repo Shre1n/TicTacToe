@@ -12,6 +12,20 @@
   padding: 1rem 2rem;
 }
 
+.btn i.fa-right-from-bracket {
+  font-size: 1.5rem;
+  color: #dc3545;
+}
+
+.btn:hover i.fa-right-from-bracket {
+  color: #c82333;
+}
+
+.navbar {
+  padding: 1rem;
+}
+
+
 .profile-img {
   max-height: 7vh;
   border-radius: 50%;
@@ -24,7 +38,7 @@
 }
 
 .userName {
-  font-size: 1em;
+  font-size: 1.5rem;
   font-weight: bold;
   background: linear-gradient(90deg, #69dbc9, rgb(116, 166, 158));
   -webkit-background-clip: text;
@@ -36,7 +50,7 @@
 }
 
 .userElo {
-  font-size: 0.5em;
+  font-size: 1rem;
   color: #4bc589;
   justify-content: end;
   font-family: 'Roboto', sans-serif;

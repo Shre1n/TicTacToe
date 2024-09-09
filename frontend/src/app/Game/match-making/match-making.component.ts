@@ -5,12 +5,15 @@ import {TictactoeService} from "../tic-tac-toe/services/tictactoe.service";
 import { UserService } from '../../User/user.service';
 import { SocketService } from '../../Socket/socket.service';
 import { GameDto } from '../interfaces/gamesDto';
+import {LogoutService} from "../../Auth/logout/services/logout.service";
+import {StatusIndikatorComponent} from "../../User/status-indikator/status-indikator.component";
 
 @Component({
   selector: 'app-match-making',
   standalone: true,
   imports: [
-    NgOptimizedImage
+    NgOptimizedImage,
+    StatusIndikatorComponent
   ],
   templateUrl: './match-making.component.html',
   styleUrl: './match-making.component.css'
@@ -29,6 +32,7 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private router: Router,
+    private logOut: LogoutService,
     public userService: UserService,
     public tictactoeService: TictactoeService,
     private socketService: SocketService
@@ -91,4 +95,10 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
     this.router.navigate(['']);
     console.log('Matchmaking abgebrochen');
   }
+
+
+  back(){
+    this.router.navigate(['/']);
+  }
+
 }

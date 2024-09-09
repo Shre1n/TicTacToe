@@ -9,6 +9,7 @@ export enum ClientSentEvents {
   makeMove = 'makeMove',
   gameFoundAcknowledged = 'gameFoundAcknowledged',
   sendMessage = 'sendMessage',
+  sendGiveUp = 'sendGiveUp',
 }
 
 export enum ServerSentEvents {
@@ -16,11 +17,13 @@ export enum ServerSentEvents {
   gameStarted = 'gameStarted',
   moveMade = 'moveMade',
   receiveMessage = 'receiveMessage',
+  receiveGiveUp = 'receiveGiveUp',
 }
 
 export interface ClientToServerEvents {
   enterQueue: () => void;
   leaveQueue: () => void;
+  sendGiveUp: () => void;
   makeMove: (move: MoveDto) => void;
   gameFoundAcknowledged: () => void;
   sendMessage: (message: ChatDto) => void;
@@ -28,6 +31,7 @@ export interface ClientToServerEvents {
 
 export interface ServerToClientEvents {
   gameFound: () => void;
+  receiveGiveUp: () => void;
   gameStarted: (game: GameDto) => void;
   moveMade: (update: GameUpdateDto) => void;
   receiveMessage: () => void;
