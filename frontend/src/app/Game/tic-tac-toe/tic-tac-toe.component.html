@@ -18,7 +18,7 @@
     <div class="tictactoe-board">
       @for (cell of this.tictactoeService.board; let i = $index; track i //change to a unique tracking index) {
         <button class="tictactoe-cell" (click)="moveMove(i)">
-          {{ cell }}
+          <i [class]="getIcon(cell)"></i>
         </button>
       }
     </div>
