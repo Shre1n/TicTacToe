@@ -1,0 +1,32 @@
+.icon-x::before {
+  content: 'X';
+  color: #007bff;
+  font-size: 2rem;
+}
+
+.icon-o::before {
+  content: 'O';
+  color: #dc3545;
+  font-size: 2rem;
+  align-content: center;
+}
+
+.card {
+  max-width: 400px;
+  margin: auto;
+}
+
+
+
+.game-info p {
+  margin: 0.5rem 0;
+}
+
+.game-info strong {
+  font-weight: bold;
+}
+
+.game-info span {
+  font-size: 0.875rem;
+  color: #6c757d;
+}

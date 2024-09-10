@@ -1,11 +1,17 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import { ApiEndpoints } from '../../../../api-endpoints';
+import {ProfileDto} from "../../interfaces/profile.dto";
+import {UserStatsDto} from "../../interfaces/user-stats.dto";
+import {MatchDto} from "../../../../Game/interfaces/matchDto";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlayerContentService {
+
+  public stats?: UserStatsDto
+  public matchhistory: MatchDto[] = []
 
   constructor(private http: HttpClient) {
   }
@@ -36,5 +42,17 @@ export class PlayerContentService {
     } else {
       alert('Bitte wähle eine Datei aus!');
     }
+  }
+
+  getinfo(){
+    this.http.get<ProfileDto>(ApiEndpoints.USERPROFILE).subscribe({
+     next: (response: ProfileDto) => {
+       this.stats = response.stats;
+       this.matchhistory = response.matchHistory;
+     },
+      error: (err: HttpErrorResponse) => {
+       console.error(err);
+      }
+    })
   }
 }

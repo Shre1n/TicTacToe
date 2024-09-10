@@ -6,6 +6,8 @@ import {PlayerPasswordChangeComponent} from "./player-password-change/player-pas
 import {LogoutService} from "../../Auth/logout/services/logout.service";
 import {UserService} from "../user.service";
 import {StatusIndikatorComponent} from "../status-indikator/status-indikator.component";
+import {GamesInfoComponent} from "./player-content/games-info/games-info.component";
+import {StatsComponent} from "./player-content/stats/stats.component";
 
 @Component({
   selector: 'app-player-profile',
@@ -14,7 +16,9 @@ import {StatusIndikatorComponent} from "../status-indikator/status-indikator.com
     OptionsComponent,
     PlayerContentComponent,
     PlayerPasswordChangeComponent,
-    StatusIndikatorComponent
+    StatusIndikatorComponent,
+    GamesInfoComponent,
+    StatsComponent
   ],
   templateUrl: './player-profile.component.html',
   styleUrl: './player-profile.component.css'

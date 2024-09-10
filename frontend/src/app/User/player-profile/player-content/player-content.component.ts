@@ -16,7 +16,7 @@ export class PlayerContentComponent implements OnInit{
   file: File | null = null;
 
   ngOnInit(){
-    //TODO: GET Profile Endpoint
+   this.playerContent.getinfo();
   }
 
   constructor(public playerContent: PlayerContentService, public userService: UserService) {
