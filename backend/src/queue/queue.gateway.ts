@@ -122,12 +122,12 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
         .in([preGame.player1Id, preGame.player2Id])
         .socketsJoin(game.id.toString());
 
-      this.server.to(preGame.player1Id).emit(ServerSentEvents.gameStarted, {
-        opponent: UserDto.from(game.player2),
-      });
-      this.server.to(preGame.player2Id).emit(ServerSentEvents.gameStarted, {
-        opponent: UserDto.from(game.player1),
-      });
+      this.server
+        .to(preGame.player1Id)
+        .emit(ServerSentEvents.gameStarted, UserDto.from(game.player2));
+      this.server
+        .to(preGame.player2Id)
+        .emit(ServerSentEvents.gameStarted, UserDto.from(game.player1));
       this.server.to('admin').emit(ServerSentEvents.runningGamesUpdated);
     }
   }
