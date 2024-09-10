@@ -1,7 +1,7 @@
-import { GameDto } from '../games/dto/game.dto';
 import { GameUpdateDto } from '../games/dto/gameUpdate.dto';
 import { MoveDto } from '../games/dto/move.dto';
 import { ChatDto } from '../games/chat/dto/chat.dto';
+import { UserDto } from '../users/dto/user.dto';
 
 export enum ClientSentEvents {
   enterQueue = 'enterQueue',
@@ -18,6 +18,8 @@ export enum ServerSentEvents {
   moveMade = 'moveMade',
   receiveMessage = 'receiveMessage',
   receiveGiveUp = 'receiveGiveUp',
+  queueUpdated = 'queueUpdated',
+  runningGamesUpdated = 'runningGamesUpdated',
 }
 
 export interface ClientToServerEvents {
@@ -32,7 +34,9 @@ export interface ClientToServerEvents {
 export interface ServerToClientEvents {
   gameFound: () => void;
   receiveGiveUp: () => void;
-  gameStarted: (game: GameDto) => void;
+  gameStarted: (opponent: UserDto) => void;
   moveMade: (update: GameUpdateDto) => void;
   receiveMessage: () => void;
+  queueUpdated: () => void;
+  runningGamesUpdated: () => void;
 }

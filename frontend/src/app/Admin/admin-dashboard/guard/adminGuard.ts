@@ -13,12 +13,11 @@ export class AdminGuard implements CanActivate {
   }
 
   canActivate() {
-    if (this.userService.isAdmin()) {
-      return of(true);
-    }
     return this.userService.isAuthenticated().pipe(
       map((response: UserDto) => {
-        if (response)
+        if (response?.isAdmin)
+          return true;
+        else if (response)
           this.router.navigate(['/forbidden']);
         else
           this.router.navigate(['/unauthorized'])

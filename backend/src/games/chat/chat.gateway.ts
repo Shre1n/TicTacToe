@@ -41,12 +41,6 @@ export class ChatGateway {
     const request = client.request as Request;
     const session = request.session;
 
-    const user = session.user;
-
-    if (!user) {
-      throw new WsException('User not found');
-    }
-
     const game = await this.gameService.getActiveGame(session.user);
     if (!game)
       throw new WsException(
@@ -58,9 +52,6 @@ export class ChatGateway {
     this.server
       .to(game.id.toString())
       .except(session.id)
-      .emit(ServerSentEvents.receiveMessage, {
-        username: message.username,
-        message: message.message,
-      });
+      .emit(ServerSentEvents.receiveMessage, message);
   }
 }

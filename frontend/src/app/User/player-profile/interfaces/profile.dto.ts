@@ -1,5 +1,7 @@
+import { MatchDto } from '../../../Game/interfaces/matchDto';
+import { UserStatsDto } from './user-stats.dto';
+
 export interface ProfileDto {
-  //TODO: Create interfaces
-  stats: undefined;
-  matchHistory: [];
+  stats: UserStatsDto;
+  matchHistory: MatchDto[];
 }

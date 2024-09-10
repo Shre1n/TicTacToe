@@ -20,12 +20,10 @@ export class GameViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-        this.userService.userDataLoaded.subscribe(value => {
-          if (value && this.userService.getUserState() === UserState.Ready) {
-            this.socketService.enterQueue();
-            this.userService.setWaiting();
-          }
-        });
+      if (this.userService.getUserState() === UserState.Ready) {
+        this.socketService.enterQueue();
+        this.userService.setWaiting();
+      }
   }
 
   protected readonly UserState = UserState;

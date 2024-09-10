@@ -1,144 +1,137 @@
 import { Injectable } from '@angular/core';
 import { GameDto } from "../../interfaces/gamesDto";
-import { UserDto } from "../../../User/interfaces/userDto";
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SocketService } from "../../../Socket/socket.service";
 import { MoveDto } from "../../interfaces/MoveDto";
 import { GameUpdateDto } from "../../interfaces/GameUpdateDto";
-import { ChatDTO } from "../../chat/dto/chat.dto";
-import { UserService } from '../../../User/user.service';
 import { ApiEndpoints } from '../../../api-endpoints';
 import { Router } from '@angular/router';
+import { map, mergeMap, of } from 'rxjs';
+import { UserService } from '../../../User/user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TictactoeService {
-  public chat: ChatDTO[] = [];
-  private _board: number[] = [];
-  private _player: UserDto | undefined;
-  private _opponent: UserDto | undefined;
-  private _playerPicture?: string;
-  private _opponentPicture?: string;
-  private player_turn: number = 0;
-  private _isPlayersTurn: boolean = false;
-  private _winner: string = "";
+  public game?: GameDto;
 
   constructor(
     private http: HttpClient,
-    private userService: UserService,
+    private router: Router,
     private socketService: SocketService,
-    private router: Router
+    private userService: UserService,
   ) {
     this.socketService.onMoveMade().subscribe((update: GameUpdateDto) => {
-      this._isPlayersTurn = update.turn === this.player_turn;
-      this._board = update.board;
+      if (!this.game) return;
+
+      this.game.turn = update.turn;
+      this.game.board = update.board;
       if (update.isFinished) {
-        this._winner = update.winner;
+        this.game.winner = update.winner;
+        this.game.isFinished = update.isFinished;
         this.showGameOverAlert();
         this.userService.setReady();
       }
     });
 
     this.socketService.onGiveup().subscribe(() => {
-      this._isPlayersTurn = false;
-      this.userService.setReady();
+      if (!this.game) return;
+
+      this.game.turn = 0;
       alert('The other player has given up!');
-      this.router.navigate(['']);
+      this.router.navigate(['']).then();
+      this.userService.setReady();
     });
   }
 
-  loadFromApi() {
-    this.http.get<GameDto>(ApiEndpoints.USERGAME).subscribe({
-      next: (response: GameDto) => {
-        this.initGameBoard(response);
-      },
-      error: (err: HttpErrorResponse) => {
-        if (err.status === 404) {
-          this.userService.loadUserData();
+
+
+  loadFromApi(){
+    this.http.get<GameDto>(`${ApiEndpoints.USERGAME}`)
+      .pipe(this.profilePicturePipe(1))
+      .pipe(this.profilePicturePipe(2))
+      .subscribe({
+        next: (response: GameDto) => {
+          this.initGameBoard(response);
+        },
+        error: (err: HttpErrorResponse) => {
+          if (err.status === 404)
+            this.router.navigate(['NotFound']).then();
+          console.log(err);
         }
-        console.log(err);
-      }
+      });
+  }
+
+  initGameBoard(game: GameDto){
+    this.game = game;
+  }
+
+  profilePicturePipe(player: number) {
+    return mergeMap((game: GameDto, _) => {
+      if (player === 1)
+        return game.player1.profilePictureId ? this.http.get(`${ApiEndpoints.AVATAR}/${game.player1.profilePictureId}`, {responseType: 'arraybuffer'})
+          .pipe(map((pic): GameDto => {
+            const p1 = { ...game.player1, profilePictureUrl: URL.createObjectURL(new Blob([pic])) };
+            return {...game, player1: p1}
+          })) : of(game);
+      if (player === 2)
+        return game.player2.profilePictureId ? this.http.get(`${ApiEndpoints.AVATAR}/${game.player2.profilePictureId}`, {responseType: 'arraybuffer'})
+          .pipe(map((pic): GameDto => {
+            const p2 = { ...game.player2, profilePictureUrl: URL.createObjectURL(new Blob([pic])) };
+            return {...game, player2: p2}
+          })) : of(game)
+      return of(game);
     });
   }
 
-  initGameBoard(game: GameDto) {
-    this._board = game.board;
-    this.chat = game.chat;
-    if (game.playerIdentity === 1) {
-      this._player = game.player1;
-      this._opponent = game.player2;
-      this.player_turn = 1;
-    } else {
-      this._player = game.player2;
-      this._opponent = game.player1;
-      this.player_turn = 2;
-    }
-    this._isPlayersTurn = game.turn === this.player_turn;
-    this.readProfilePicture(this._player.profilePictureId, true);
-    this.readProfilePicture(this._opponent.profilePictureId, false);
-  }
+  makeMove(move: MoveDto){
+    if (!this.game || this.game.isFinished) return;
+    if (!this.isPlayerTurn()) return;
+    if (this.game.board[move.position] !== 0) return;
 
-  readProfilePicture(id: number, isPlayer: boolean) {
-    this.http.get(`${ApiEndpoints.AVATAR}/${id}`, { responseType: 'arraybuffer' }).subscribe(buffer => {
-      if (isPlayer) {
-        this._playerPicture = URL.createObjectURL(new Blob([buffer]));
-      } else {
-        this._opponentPicture = URL.createObjectURL(new Blob([buffer]));
-      }
-    });
-  }
-
-  makeMove(move: MoveDto) {
-    if (this._winner !== "") return;
-    if (!this._isPlayersTurn) return;
-    if (this._board[move.position] !== 0) return;
-    this._isPlayersTurn = false;
-    this._board[move.position] = this.player_turn;
+    this.game.turn = this.game.playerIdentity === 1 ? 2 : 1;
+    this.game.board[move.position] = this.game.playerIdentity;
     this.socketService.makeMove(move);
   }
 
   giveUp() {
-    if (this._winner !== "") return;
-    this._isPlayersTurn = false;
+    if (!this.game) return;
+
+    this.game.turn = 0;
     this.socketService.giveUp();
-    this.userService.setReady();
     alert('You have given up!');
-    this.router.navigate(['']);
+    this.router.navigate(['']).then();
+    this.userService.setReady();
   }
 
-  private showGameOverAlert() {
-    if (this._winner === "draw")
+  showGameOverAlert() {
+    if (!this.game) return;
+
+    if (this.game.winner === "draw")
       alert('is draw!');
-    else if (this._winner === "p1") {
+    else if (this.game.winner === "p1") {
       alert('Congratulations, you won!');
     } else {
       alert('You lost. Better luck next time!');
     }
-    this.router.navigate(['']);
+    this.router.navigate(['']).then();
   }
 
-  get isPlayersTurn(): boolean {
-    return this._isPlayersTurn;
+  getPlayer() {
+    if (!this.game) return null;
+
+    if (this.game.playerIdentity === 1) return this.game.player1;
+    else return this.game.player2;
   }
 
-  get playerPicture(): string | undefined {
-    return this._playerPicture;
+  getOpponent() {
+    if (!this.game) return null;
+
+    if (this.game.playerIdentity === 1) return this.game.player2;
+    else return this.game.player1;
   }
 
-  get opponentPicture(): string | undefined {
-    return this._opponentPicture;
-  }
-
-  get board(): number[] {
-    return this._board;
-  }
-
-  get player(): UserDto | undefined {
-    return this._player;
-  }
-
-  get opponent(): UserDto | undefined {
-    return this._opponent;
+  isPlayerTurn(): boolean {
+    return this.game !== undefined && this.game.turn === this.game.playerIdentity;
   }
 }

@@ -1,13 +1,11 @@
-<div class="border-left" id="right-sidebar-wrapper">
-  <div class="sidebar-heading">Matchmaking Queue</div>
-  <div class="list-group list-group-flush">
-    <a class="list-group-item list-group-item-action" (click)="toggleQueue()"></a>
-    <ul class="list-group">
-      @for(player of matchMakingQueue; track player){
-        <li class="list-group-item">
-          {{ player }}
-        </li>
-      }
-    </ul>
-  </div>
+<div class="list-group list-group-flush">
+  <ul class="list-group">
+    @for (player of this.adminService.matchMakingQueue; track player.username) {
+      <li class="list-group-item">
+        {{ player.username }}
+        {{ player.elo }}
+        {{ player.entryTime }}
+      </li>
+    }
+  </ul>
 </div>
