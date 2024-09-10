@@ -1,0 +1,85 @@
+/* Toast-Saving Container */
+.toast-saving-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+/* Toast-Saving Icon */
+.toast-saving-icon {
+  font-size: 30px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  padding: 15px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Toast-Saving Box */
+.toast-saving-box {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  bottom: 60px;
+  right: 0;
+  width: 400px;
+  max-height: 300px;
+  box-shadow: 0 2px 10px rgb(12, 201, 225);
+  border-radius: 8px;
+  overflow: hidden;
+  transform: translateY(100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.toast-saving-box.open {
+  display: flex;
+  transform: translateY(0%);
+}
+
+/* Toast-Saving Header */
+.toast-saving-header {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toast-saving-header button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+/* Toast-Saving Messages */
+.toast-saving-messages {
+  flex-grow: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.toast-saving-message {
+  margin-bottom: 10px;
+  word-wrap: break-word;
+}
+
+.toast-saving-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

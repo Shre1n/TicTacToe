@@ -23,7 +23,6 @@
         [(ngModel)]="password"
         name="password"
         type="password"
-        (keydown.enter)="onSubmit()"
         required>
 
       @if (errors.get('_password')) {

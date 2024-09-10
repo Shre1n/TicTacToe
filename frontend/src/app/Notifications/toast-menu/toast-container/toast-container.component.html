@@ -1,0 +1,6 @@
+@for (toast of toasts; let i = $index; track i){
+<app-toast-menu
+  [toast]="toast" [i]="i"
+  (remove)="remove($event)">
+</app-toast-menu>
+}

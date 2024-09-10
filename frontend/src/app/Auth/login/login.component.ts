@@ -5,12 +5,15 @@ import {Router} from "@angular/router";
 import { UserService } from '../../User/user.service';
 import { UserDto } from '../../User/interfaces/userDto';
 import { SocketService } from '../../Socket/socket.service';
+import {ToastService} from "../../Notifications/toast-menu/services/toast.service";
+import {ToastContainerComponent} from "../../Notifications/toast-menu/toast-container/toast-container.component";
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    FormsModule
+    FormsModule,
+    ToastContainerComponent
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -33,6 +36,7 @@ export class LoginComponent{
     private router: Router,
     private socketService: SocketService,
     private userService: UserService,
+    private toast:ToastService
     ) {
   }
 
@@ -55,11 +59,12 @@ export class LoginComponent{
             this.router.navigate(['/admin']);
           }
           this.socketService.connect();
-          //todo show user the success
+          this.toast.show("success", "Erfolreich", "Sie haben sich erfolgreich Eingeloggt!",10, true);
         },
         error: error => {
           if (error.status === 403) {
             this.errors.set('_error', 'Der Nutzername oder das Passwort stimmt nicht.');
+            this.toast.show('warning', 'Fehler', 'Ungültiger Benutzername oder Passwort.', 10);
           }
         }
       });
