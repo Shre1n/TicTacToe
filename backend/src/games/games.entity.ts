@@ -92,4 +92,13 @@ export class Game {
   @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   @ApiProperty({ description: 'The date and time when the game was created' })
   createdAt: Date;
+
+  board(): number[] {
+    const board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (let i = 0; i < 9; i++) {
+      if ((this.player1Board & (1 << i)) !== 0) board[i] = 1;
+      else if ((this.player2Board & (1 << i)) !== 0) board[i] = 2;
+    }
+    return board;
+  }
 }

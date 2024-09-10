@@ -1,0 +1,12 @@
+<div class="toast-container">
+  <div #toast class="toast" [ngClass]="{'show-toast': showToast}" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header" [ngStyle]="{'background-color': backgroundColor}">
+      <i #image [class]="iconMap.get(type)" class="rounded me-2"></i>
+      <strong class="mr-auto">{{ defined_header }}</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      {{ message }}
+    </div>
+  </div>
+</div>

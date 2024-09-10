@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {TictactoeService} from "./services/tictactoe.service";
 import {ChatComponent} from "../chat/chat.component";
 import { NgClass, NgIf } from '@angular/common';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-tic-tac-toe',
@@ -18,13 +19,13 @@ export class TicTacToeComponent implements OnInit{
 
   constructor(
     public tictactoeService: TictactoeService,
+    private router: Router,
     ) {
   }
 
+
   ngOnInit() {
-    if (this.tictactoeService.board.length === 0){
-      this.tictactoeService.loadFromApi();
-    }
+    this.tictactoeService.loadFromApi();
   }
 
   moveMove(position: number) {
@@ -33,5 +34,12 @@ export class TicTacToeComponent implements OnInit{
 
   getIcon(cell: number) : string {
     return cell === 1 ? 'fa-solid fa-x' : cell === 2 ? 'fa-solid fa-o' : '';
+  }
+  giveUp(){
+    this.tictactoeService.giveUp();
+  }
+
+  back(){
+    this.router.navigate(['/']);
   }
 }

@@ -6,6 +6,10 @@ import {GameDto} from "../../Game/interfaces/gamesDto";
 import {NgClass, NgStyle, NgSwitch} from "@angular/common";
 import {LogoutService} from "../../Auth/logout/services/logout.service";
 import {UserDto} from "../../User/interfaces/userDto";
+import { CurrentGamesComponent } from './current-games/current-games.component';
+import { TttBoardComponent } from '../../Game/ttt-preview-board/ttt-board.component';
+import { WaitingPlayersComponent } from './waiting-players/waiting-players.component';
+import { GameResult } from '../../Game/interfaces/matchDto';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -14,7 +18,10 @@ import {UserDto} from "../../User/interfaces/userDto";
     FormsModule,
     NgStyle,
     NgClass,
-    NgSwitch
+    NgSwitch,
+    CurrentGamesComponent,
+    TttBoardComponent,
+    WaitingPlayersComponent,
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
@@ -27,25 +34,22 @@ export class AdminDashboardComponent implements OnInit {
     private router: Router) {}
 
   searchText: string = '';
-  showQueue: boolean = false;
-  showGames: boolean = false;
   boxPosition = { top: 0, left: 0 };
   usernameHints: string[] = [];
   selectedGame: GameDto | null = null;
 
 
   ngOnInit() {
-    this.getMatchMakingQueue();
-    this.getRunningGames();
-    this.getAllUsers();
-  }
-
-  getAllUsers(){
+    this.adminService.getMatchMakingQueue();
+    this.adminService.getRunningGames();
     this.adminService.getUsers();
   }
 
   updateHints() {
-    this.usernameHints = this.adminService.user.map((x) => x.username).filter((x) => x.startsWith(this.searchText)).slice(0,10);
+    this.usernameHints = this.adminService.users
+        .map((x) => x.username)
+        .filter((x) => x.startsWith(this.searchText))
+        .slice(0,10);
   }
 
   logout(){
@@ -96,22 +100,6 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
-  toggleQueue(){
-    this.showQueue = !this.showQueue;
-  }
-
-  toggleGames(){
-    this.showGames = !this.showGames;
-  }
-
-  getMatchMakingQueue() {
-    this.adminService.getMatchMakingQueue();
-  }
-
-  getRunningGames() {
-    this.adminService.getRunningGames();
-  }
-
   onSearch() {
     this.adminService.searchUsers(this.searchText);
     this.usernameHints = [];
@@ -127,7 +115,8 @@ export class AdminDashboardComponent implements OnInit {
     this.onSearch();
   }
 
-  selectGame(game: any, event: MouseEvent) {
+  selectGame(data: {game: GameDto, event: MouseEvent}) {
+    const {game, event} = data;
     if (this.selectedGame) {
       this.selectedGame = null;
       const gameDetailsBox = document.querySelector('.game-details-box') as HTMLElement;
@@ -158,4 +147,5 @@ export class AdminDashboardComponent implements OnInit {
   }
 
 
+  protected readonly GameResult = GameResult;
 }
