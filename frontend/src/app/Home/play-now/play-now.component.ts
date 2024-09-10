@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { Router } from '@angular/router';
 import { LogoutService } from '../../Auth/logout/services/logout.service';
 import { UserService } from '../../User/user.service';
@@ -7,6 +7,9 @@ import { SocketService } from '../../Socket/socket.service';
 import {NgClass} from "@angular/common";
 import {StatusIndikatorComponent} from "../../User/status-indikator/status-indikator.component";
 import {ToastMenuComponent} from "../../Notifications/toast-menu/toast-menu.component";
+import {ToastContainerComponent} from "../../Notifications/toast-menu/toast-container/toast-container.component";
+import {ToastService} from "../../Notifications/toast-menu/services/toast.service";
+import {ToastMessageSavingComponent} from "../../Notifications/toast-message-saving/toast-message-saving.component";
 
 @Component({
   selector: 'app-play-now',
@@ -14,20 +17,26 @@ import {ToastMenuComponent} from "../../Notifications/toast-menu/toast-menu.comp
   imports: [
     NgClass,
     StatusIndikatorComponent,
-    ToastMenuComponent
+    ToastMenuComponent,
+    ToastContainerComponent,
+    ToastMessageSavingComponent
   ],
   templateUrl: './play-now.component.html',
   styleUrl: './play-now.component.css'
 })
-export class PlayNowComponent {
+export class PlayNowComponent{
 
 
   constructor(
     private router: Router,
     private logOut: LogoutService,
     private socketService: SocketService,
-    public userService: UserService
+    public userService: UserService,
+    private toaster: ToastService,
     ) {}
+
+
+
 
   logout(){
     this.logOut.logout();
