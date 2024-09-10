@@ -9,6 +9,7 @@ import {StatusIndikatorComponent} from "../../User/status-indikator/status-indik
 import {ToastMenuComponent} from "../../Notifications/toast-menu/toast-menu.component";
 import {ToastContainerComponent} from "../../Notifications/toast-menu/toast-container/toast-container.component";
 import {ToastService} from "../../Notifications/toast-menu/services/toast.service";
+import {ToastMessageSavingComponent} from "../../Notifications/toast-message-saving/toast-message-saving.component";
 
 @Component({
   selector: 'app-play-now',
@@ -17,7 +18,8 @@ import {ToastService} from "../../Notifications/toast-menu/services/toast.servic
     NgClass,
     StatusIndikatorComponent,
     ToastMenuComponent,
-    ToastContainerComponent
+    ToastContainerComponent,
+    ToastMessageSavingComponent
   ],
   templateUrl: './play-now.component.html',
   styleUrl: './play-now.component.css'

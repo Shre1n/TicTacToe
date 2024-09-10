@@ -64,7 +64,7 @@ export class LoginComponent{
         error: error => {
           if (error.status === 403) {
             this.errors.set('_error', 'Der Nutzername oder das Passwort stimmt nicht.');
-            this.toast.show('warning', 'Fehler', 'Ungültiger Benutzername oder Passwort.');
+            this.toast.show('warning', 'Fehler', 'Ungültiger Benutzername oder Passwort.', 10);
           }
         }
       });
