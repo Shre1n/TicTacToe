@@ -92,7 +92,7 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
       throw new WsException(
         'One of the players is already waiting for acknowledgement.',
       );
-    this.queueService.removePlayer(opponent.player);
+    this.queueService.addPlayer(session.user, session.id);
 
     this.server.to('admin').emit(ServerSentEvents.queueUpdated);
     this.server.to(session.id).emit(ServerSentEvents.gameFound);
@@ -113,6 +113,9 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.queueService.acknowledgePreGame(session.user);
     if (this.queueService.isPreGameAcknowledged(session.user)) {
       const preGame = this.queueService.removePreGame(session.user);
+      this.queueService.removePlayer(preGame.player1);
+      this.queueService.removePlayer(preGame.player2);
+
       const game = await this.gameService.createGame(
         preGame.player1.id,
         preGame.player2.id,

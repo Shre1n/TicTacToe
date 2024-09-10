@@ -20,11 +20,11 @@ export class AdminGuard implements CanActivate {
         else if (response)
           this.router.navigate(['/forbidden']);
         else
-          this.router.navigate(['/unauthorized'])
+          this.router.navigate([''])
         return false;
       }),
       catchError((_) => {
-        this.router.navigate(['/unauthorized']);
+        this.router.navigate(['']);
         return of(false);
       })
     );

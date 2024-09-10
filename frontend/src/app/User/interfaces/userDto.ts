@@ -5,6 +5,7 @@ export interface UserDto {
   elo: number;
   state?: UserState;
   isAdmin: boolean;
+  waitingTime?: number;
 }
 
 export enum UserState {

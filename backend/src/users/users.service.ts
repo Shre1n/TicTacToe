@@ -58,6 +58,10 @@ export class UsersService {
     });
   }
 
+  getWaitingTime(user: User) {
+    return this.queueService.getWaitingTime(user);
+  }
+
   async getCurrentUserInformation(session: SessionData) {
     const dto = UserDto.from(session.user);
     dto.state = UserState.Ready;
