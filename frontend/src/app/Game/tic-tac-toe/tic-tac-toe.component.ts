@@ -13,17 +13,15 @@ import {Router} from "@angular/router";
   styleUrl: './tic-tac-toe.component.css'
 })
 export class TicTacToeComponent implements OnInit{
-
   constructor(
     public tictactoeService: TictactoeService,
     private router: Router,
     ) {
   }
 
+
   ngOnInit() {
-    if (this.tictactoeService.board.length === 0){
-      this.tictactoeService.loadFromApi();
-    }
+    this.tictactoeService.loadFromApi();
   }
 
   moveMove(position: number) {

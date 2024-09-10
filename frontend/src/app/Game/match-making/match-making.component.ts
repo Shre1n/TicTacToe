@@ -1,12 +1,10 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Router} from "@angular/router";
 import {NgOptimizedImage} from "@angular/common";
-import {TictactoeService} from "../tic-tac-toe/services/tictactoe.service";
 import { UserService } from '../../User/user.service';
 import { SocketService } from '../../Socket/socket.service';
-import { GameDto } from '../interfaces/gamesDto';
-import {LogoutService} from "../../Auth/logout/services/logout.service";
 import {StatusIndikatorComponent} from "../../User/status-indikator/status-indikator.component";
+import { UserDto } from '../../User/interfaces/userDto';
 
 @Component({
   selector: 'app-match-making',
@@ -22,6 +20,7 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
   timeElapsed: number = 0;
   interval: any;
   found: boolean = false;
+  opponent?: UserDto;
 
   @ViewChild('yourProfile') yourProfile!: ElementRef<HTMLImageElement>;
   @ViewChild('opponentProfile') opponentProfile!: ElementRef<HTMLImageElement>;
@@ -32,9 +31,7 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private router: Router,
-    private logOut: LogoutService,
     public userService: UserService,
-    public tictactoeService: TictactoeService,
     private socketService: SocketService
   ) {
   }
@@ -44,8 +41,8 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.socketService.onGameStarted().subscribe((game: GameDto) => {
-      this.tictactoeService.initGameBoard(game);
+    this.socketService.onGameStarted().pipe(this.userService.profilePicturePipe()).subscribe((opponent: UserDto) => {
+      this.opponent = opponent;
       setTimeout(() => {
         this.found = true;
         setTimeout(() => {
@@ -54,6 +51,7 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
           this.hideMiddleElements();
           setTimeout(() => {
             this.userService.setPlaying();
+            this.router.navigate(['/game']);
           }, 1000);
         }, 3000);
       }, 1000);

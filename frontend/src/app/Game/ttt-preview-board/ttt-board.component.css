@@ -1,0 +1,28 @@
+.tic-tac-toe-board {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  margin-bottom: 1rem;
+}
+
+.cell {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  font-size: 2rem;
+}
+
+.icon-x::before {
+  content: 'X';
+  color: #007bff;
+  font-size: 2rem;
+}
+
+.icon-o::before {
+  content: 'O';
+  color: #dc3545;
+  font-size: 2rem;
+}

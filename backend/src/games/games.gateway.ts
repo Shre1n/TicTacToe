@@ -48,7 +48,7 @@ export class GamesGateway {
 
     const activeGame = await this.gameService.getActiveGame(session.user);
     if (!activeGame) {
-      throw new NotFoundException('Invalid game or game already finished');
+      throw new NotFoundException('User is not in a game');
     }
 
     const game = await this.gameService.makeAMove(
@@ -61,8 +61,10 @@ export class GamesGateway {
       .to(game.id.toString())
       .emit(ServerSentEvents.moveMade, GameUpdateDto.from(game, data.position));
 
-    if (game.isFinished)
+    if (game.isFinished) {
       setTimeout(() => this.server.socketsLeave(game.id.toString()), 600000);
+      this.server.to('admin').emit(ServerSentEvents.runningGamesUpdated);
+    }
   }
 
   @UseGuards(IsSocketLoggedInGuard)
@@ -81,6 +83,9 @@ export class GamesGateway {
       .to(game.id.toString())
       .emit(ServerSentEvents.receiveGiveUp);
 
-    if (game.isFinished) this.server.socketsLeave(game.id.toString());
+    if (game.isFinished) {
+      setTimeout(() => this.server.socketsLeave(game.id.toString()), 600000);
+      this.server.to('admin').emit(ServerSentEvents.runningGamesUpdated);
+    }
   }
 }
