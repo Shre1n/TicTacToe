@@ -59,7 +59,7 @@ export class LoginComponent{
             this.router.navigate(['/admin']);
           }
           this.socketService.connect();
-          this.toast.show("success", "Erfolreich", "Sie haben sich erfolgreich Eingeloggt!");
+          this.toast.show("success", "Erfolreich", "Sie haben sich erfolgreich Eingeloggt!",10, true);
         },
         error: error => {
           if (error.status === 403) {
