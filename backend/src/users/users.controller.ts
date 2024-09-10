@@ -95,7 +95,8 @@ export class UsersController {
   @ApiOkResponse({ description: 'Successful operation', type: UserDto })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   async getUserInfo(@Session() session: SessionData): Promise<UserDto> {
-    const user: UserDto = await this.usersService.getCurrentUserInformation(session);
+    const user: UserDto =
+      await this.usersService.getCurrentUserInformation(session);
     user.isAdmin = session.user.isAdmin;
     return user;
   }
@@ -142,6 +143,21 @@ export class UsersController {
   @ApiNotFoundResponse({ description: 'The user is not playing a game' })
   async getActiveUserGames(@Session() session: SessionData): Promise<GameDto> {
     return await this.usersService.getActiveUserGame(session.user);
+  }
+
+  @UseGuards(IsLoggedInGuard)
+  @Get('@me/waitingTime')
+  @ApiOperation({
+    summary: 'Gets the time the user is waiting in the queue',
+    description:
+      'Gets the queue waiting time of the user. Returns 404 if user is not in queue',
+  })
+  @ApiOkResponse({ description: 'Successful operation', type: 'number' })
+  @ApiNotFoundResponse({ description: 'The user is not waiting in the queue' })
+  async getWaitingTime(@Session() session: SessionData): Promise<number> {
+    const waitingTime = this.usersService.getWaitingTime(session.user);
+    if (!waitingTime) throw new NotFoundException('Player not in queue');
+    return waitingTime;
   }
 
   @UseGuards(IsLoggedInGuard)

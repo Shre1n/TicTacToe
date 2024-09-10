@@ -29,6 +29,13 @@ export class UserDto {
   })
   isAdmin?: boolean;
 
+  @ApiProperty({
+    description:
+      'The time a user is waiting in the queue. Only set, when user is waiting',
+    nullable: true,
+  })
+  waitingTime?: number;
+
   public static from(user: User): UserDto {
     const { username, elo, profilePicture } = user;
     return {

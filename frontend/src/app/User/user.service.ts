@@ -72,4 +72,8 @@ export class UserService {
   setUserData(data: UserDto) {
     this.user = data;
   }
+
+  getWaitingTime() {
+    return this.http.get<number>(ApiEndpoints.USERWAITINGTIME);
+  }
 }
