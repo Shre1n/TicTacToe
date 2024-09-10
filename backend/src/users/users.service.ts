@@ -23,7 +23,6 @@ import { GameDto } from '../games/dto/game.dto';
 @Injectable()
 export class UsersService {
   private readonly usersRepository: Repository<User>;
-  private readonly gameRepository: Repository<Game>;
 
   constructor(
     private dataSource: DataSource,
@@ -31,20 +30,10 @@ export class UsersService {
     private queueService: QueueService,
   ) {
     this.usersRepository = this.dataSource.getRepository(User);
-    this.gameRepository = this.dataSource.getRepository(Game);
   }
 
   async getAllUsers() {
     return await this.usersRepository.find();
-  }
-
-  async searchUsers(username: string) {
-    const user = await this.findOne(username);
-
-    if (!user) {
-      throw new NotFoundException('User not found!');
-    }
-    return await this.getUserGames(user);
   }
 
   async create(registerDto: RegisterUserDto) {
@@ -64,7 +53,7 @@ export class UsersService {
 
   async findOne(username: string) {
     return await this.usersRepository.findOne({
-      where: { username },
+      where: { username: username ?? '' },
       relations: { profilePicture: true },
     });
   }
@@ -82,13 +71,11 @@ export class UsersService {
 
   async getUserStats(games: Game[], user: User) {
     const stats = new UserStatsDto();
-    stats.wins = games.filter(
-      (g) =>
-        (g.player1 === user && g.winningState == 'p1') ||
-        (g.player2 === user && g.winningState == 'p2'),
+    stats.wins = games.filter((game) =>
+      this.gameService.isWinner(game, user),
     ).length;
 
-    stats.draws = games.filter((g) => g.winningState == 'draw').length;
+    stats.draws = games.filter((game) => game.winningState === 'draw').length;
 
     stats.loses = games.length - stats.wins - stats.draws;
 
@@ -96,44 +83,26 @@ export class UsersService {
   }
 
   async getMatchHistory(games: Game[], user: User) {
-    return games.map((g) =>
-      MatchDto.from(UserDto.from(g.player1 == user ? g.player2 : g.player1), g),
+    return games.map((game) =>
+      MatchDto.from(
+        UserDto.from(user),
+        UserDto.from(
+          game.player1.username === user.username ? game.player2 : game.player1,
+        ),
+        game,
+      ),
     );
   }
 
-  async getActiveUserGame(user: User) {
+  async getActiveUserGame(user: User): Promise<GameDto> {
     const game = await this.gameService.getActiveGame(user);
     if (!game) throw new NotFoundException('Player not in a game');
 
-    let identity: 0 | 1 | 2 = 0;
-    if (game.player1.id === user.id) identity = 1;
-    if (game.player2.id === user.id) identity = 2;
-
-    const dto = { ...GameDto.from(game), playerIdentity: identity };
-    dto.chat = await this.gameService.getGameChat(game);
-    return dto;
-  }
-
-  //Admin
-  async getUserGames(user: User) {
-    const games = await this.gameRepository.find({
-      where: [
-        { player1: { id: user.id }, isFinished: true },
-        { player2: { id: user.id }, isFinished: true },
-      ],
-      relations: ['player1', 'player2'],
-    });
-    return games.map((game) => GameDto.from(game));
+    return await this.gameService.gameToFullDto(game, user);
   }
 
   async getUserProfile(user: User) {
-    const games = await this.gameRepository.find({
-      where: [
-        { player1: user, isFinished: true },
-        { player2: user, isFinished: true },
-      ],
-      relations: { player1: true, player2: true },
-    });
+    const games = await this.gameService.getFinishedGamesByPlayer(user);
 
     const stats = await this.getUserStats(games, user);
     const matches = await this.getMatchHistory(games, user);
