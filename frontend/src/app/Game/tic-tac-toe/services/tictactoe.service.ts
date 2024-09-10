@@ -39,8 +39,8 @@ export class TictactoeService {
 
       this.game.turn = 0;
       alert('The other player has given up!');
-      this.userService.setReady();
       this.router.navigate(['']).then();
+      this.userService.setReady();
     });
   }
 
@@ -95,7 +95,7 @@ export class TictactoeService {
   }
 
   giveUp() {
-    if (!this.game || this.game.isFinished) return;
+    if (!this.game) return;
 
     this.game.turn = 0;
     this.socketService.giveUp();
@@ -105,7 +105,7 @@ export class TictactoeService {
   }
 
   showGameOverAlert() {
-    if (!this.game || this.game.isFinished) return;
+    if (!this.game) return;
 
     if (this.game.winner === "draw")
       alert('is draw!');
