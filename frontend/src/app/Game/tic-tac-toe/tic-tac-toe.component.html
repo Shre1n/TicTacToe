@@ -2,7 +2,7 @@
   <div class="container-fluid d-flex justify-content-between align-items-center">
     <!-- Player Info (Left) -->
     <span class="navbar-text d-flex align-items-center">
-        <img src="{{ this.tictactoeService.getPlayer()?.profilePictureUrl  ?? './assets/steve.jpeg'}}" class="profile-img me-2" alt="yourProfile" #yourProfile>
+        <img src="{{ this.tictactoeService.getPlayer()?.profilePictureUrl  ?? './assets/steve.jpeg'}}" class="profile-img me-2" [class]="this.tictactoeService.isPlayerTurn() ? 'your-profile-img' : ''" alt="yourProfile" #yourProfile>
       <div class="user-info">
         <div class="userElo">{{ this.tictactoeService.getPlayer()?.elo ?? 0 }} Elo</div>
         <div class="userName">{{ this.tictactoeService.getPlayer()?.username ?? '' }}</div>
@@ -19,7 +19,7 @@
         <div class="userElo">{{ this.tictactoeService.getOpponent()?.elo ?? 0 }} Elo</div>
         <div class="userName">{{ this.tictactoeService.getOpponent()?.username ?? '' }}</div>
       </div>
-      <img src="{{ this.tictactoeService.getOpponent()?.profilePictureUrl ?? './assets/steve.jpeg' }}" class="profile-img" alt="opponentProfile"
+      <img src="{{ this.tictactoeService.getOpponent()?.profilePictureUrl ?? './assets/steve.jpeg' }}" class="profile-img" [class]="this.tictactoeService.isPlayerTurn() ? '' : 'your-profile-img'" alt="opponentProfile"
            #opponentProfile>
     </span>
   </div>
@@ -30,10 +30,18 @@
 <section class="container-fluid">
   <div class="d-flex justify-content-center align-items-center">
     <div class="tictactoe-board">
-      @for (cell of this.tictactoeService.game?.board || []; let i = $index; track i //change to a unique tracking index) {
-        <button class="tictactoe-cell" (click)="moveMove(i)">
-          {{ cell }}
-        </button>
+      @if (this.tictactoeService.isPlayerTurn()) {
+        @for (cell of this.tictactoeService.game?.board || []; let i = $index; track i //change to a unique tracking index) {
+          <button class="tictactoe-cell-green" (click)="moveMove(i)">
+            <i [class]="getIcon(cell)"></i>
+          </button>
+        }
+      } @else {
+        @for (cell of this.tictactoeService.game?.board || []; let i = $index; track i //change to a unique tracking index) {
+          <button class="tictactoe-cell-red" (click)="moveMove(i)">
+            <i [class]="getIcon(cell)"></i>
+          </button>
+        }
       }
     </div>
   </div>

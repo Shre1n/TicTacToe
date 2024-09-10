@@ -1,18 +1,22 @@
 import {Component, OnInit} from '@angular/core';
 import {TictactoeService} from "./services/tictactoe.service";
 import {ChatComponent} from "../chat/chat.component";
+import { NgClass, NgIf } from '@angular/common';
 import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-tic-tac-toe',
   standalone: true,
   imports: [
-    ChatComponent
+    ChatComponent,
+    NgIf,
+    NgClass,
   ],
   templateUrl: './tic-tac-toe.component.html',
   styleUrl: './tic-tac-toe.component.css'
 })
 export class TicTacToeComponent implements OnInit{
+
   constructor(
     public tictactoeService: TictactoeService,
     private router: Router,
@@ -28,6 +32,9 @@ export class TicTacToeComponent implements OnInit{
     this.tictactoeService.makeMove({position});
   }
 
+  getIcon(cell: number) : string {
+    return cell === 1 ? 'fa-solid fa-x' : cell === 2 ? 'fa-solid fa-o' : '';
+  }
   giveUp(){
     this.tictactoeService.giveUp();
   }
