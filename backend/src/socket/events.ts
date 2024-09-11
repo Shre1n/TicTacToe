@@ -2,6 +2,7 @@ import { GameUpdateDto } from '../games/dto/gameUpdate.dto';
 import { MoveDto } from '../games/dto/move.dto';
 import { ChatDto } from '../games/chat/dto/chat.dto';
 import { UserDto } from '../users/dto/user.dto';
+import { SpectateDto } from '../games/dto/spectate.dto';
 
 export enum ClientSentEvents {
   enterQueue = 'enterQueue',
@@ -10,6 +11,8 @@ export enum ClientSentEvents {
   gameFoundAcknowledged = 'gameFoundAcknowledged',
   sendMessage = 'sendMessage',
   sendGiveUp = 'sendGiveUp',
+  enterSpectate = 'enterSpectate',
+  leaveSpectate = 'leaveSpectate',
 }
 
 export enum ServerSentEvents {
@@ -29,6 +32,8 @@ export interface ClientToServerEvents {
   makeMove: (move: MoveDto) => void;
   gameFoundAcknowledged: () => void;
   sendMessage: (message: ChatDto) => void;
+  enterSpectate: (data: SpectateDto) => void;
+  leaveSpectate: (date: SpectateDto) => void;
 }
 
 export interface ServerToClientEvents {

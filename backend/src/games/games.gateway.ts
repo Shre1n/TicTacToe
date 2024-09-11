@@ -25,6 +25,7 @@ import { MoveDto } from './dto/move.dto';
 import { Request } from 'express';
 import { GameUpdateDto } from './dto/gameUpdate.dto';
 import { HttpExceptionTransformationFilter } from '../filter/HttpExceptionTransformationFilter';
+import { SpectateDto } from './dto/spectate.dto';
 
 @UseFilters(HttpExceptionTransformationFilter)
 @WebSocketGateway({ namespace: 'socket' })
@@ -35,6 +36,24 @@ export class GamesGateway {
   >();
 
   constructor(private readonly gameService: GamesService) {}
+
+  @UseGuards()
+  @UsePipes(new ValidationPipe())
+  @SubscribeMessage(ClientSentEvents.enterSpectate)
+  async handleEnterSpectate(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: SpectateDto,
+  ) {
+    const user = await this.gameService.findOne(data.username);
+    if (!user) {
+      throw new NotFoundException('User does not exist');
+    }
+    const activeGame = await this.gameService.getActiveGame(user);
+    if (!activeGame) {
+      throw new NotFoundException('User is not in a game');
+    }
+    client.join(activeGame.id.toString());
+  }
 
   @UseGuards(IsSocketLoggedInGuard)
   @UsePipes(new ValidationPipe())

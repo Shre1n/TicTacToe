@@ -44,6 +44,10 @@ export class SocketService extends Socket{
     this.emit("sendMessage", message);
   }
 
+  enterSpectate(username: string) {
+    this.emit("enterSpectate", {username});
+  }
+
   onGameStarted() {
     return this.fromEvent<UserDto>("gameStarted");
   }
@@ -67,4 +71,6 @@ export class SocketService extends Socket{
   onRunningGamesUpdated() {
     return this.fromEvent("runningGamesUpdated");
   }
+
+
 }

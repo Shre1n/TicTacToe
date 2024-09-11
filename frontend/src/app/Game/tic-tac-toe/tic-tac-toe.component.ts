@@ -35,6 +35,7 @@ export class TicTacToeComponent implements OnInit{
   getIcon(cell: number) : string {
     return cell === 1 ? 'fa-solid fa-x' : cell === 2 ? 'fa-solid fa-o' : '';
   }
+
   giveUp(){
     this.tictactoeService.giveUp();
   }

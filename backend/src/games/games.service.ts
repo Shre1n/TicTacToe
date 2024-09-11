@@ -247,4 +247,11 @@ export class GamesService {
     await this.userRepository.save(game.player2);
     return game;
   }
+
+  async findOne(username: string) {
+    return await this.userRepository.findOne({
+      where: { username: username ?? '' },
+      relations: { profilePicture: true },
+    });
+  }
 }
