@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TictactoeService } from '../../../Game/tic-tac-toe/services/tictactoe.service';
 import { Router } from '@angular/router';
 import { NgClass, NgIf } from '@angular/common';
+import { SocketService } from '../../../Socket/socket.service';
 
 @Component({
   selector: 'app-spectate',
@@ -18,6 +19,7 @@ export class SpectateComponent implements OnInit {
   constructor(
     public tictactoeService: TictactoeService,
     private router: Router,
+    private socketService: SocketService,
   ) {
   }
 
@@ -26,6 +28,9 @@ export class SpectateComponent implements OnInit {
   }
 
   back(){
+    if (this.tictactoeService.game) {
+      this.socketService.leaveSpectate(this.tictactoeService.game?.player1.username)
+    }
     this.router.navigate(['/admin']);
   }
 

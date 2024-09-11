@@ -48,6 +48,10 @@ export class SocketService extends Socket{
     this.emit("enterSpectate", {username});
   }
 
+  leaveSpectate(username: string) {
+    this.emit("leaveSpectate", {username});
+  }
+
   onGameStarted() {
     return this.fromEvent<UserDto>("gameStarted");
   }

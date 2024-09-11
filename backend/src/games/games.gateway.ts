@@ -55,6 +55,24 @@ export class GamesGateway {
     client.join(activeGame.id.toString());
   }
 
+  @UseGuards()
+  @UsePipes(new ValidationPipe())
+  @SubscribeMessage(ClientSentEvents.leaveSpectate)
+  async handleLeaveSpectate(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: SpectateDto,
+  ) {
+    const user = await this.gameService.findOne(data.username);
+    if (!user) {
+      throw new NotFoundException('User does not exist');
+    }
+    const activeGame = await this.gameService.getActiveGame(user);
+    if (!activeGame) {
+      throw new NotFoundException('User is not in a game');
+    }
+    client.leave(activeGame.id.toString());
+  }
+
   @UseGuards(IsSocketLoggedInGuard)
   @UsePipes(new ValidationPipe())
   @SubscribeMessage(ClientSentEvents.makeMove)
