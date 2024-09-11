@@ -10,6 +10,8 @@ import { CurrentGamesComponent } from './current-games/current-games.component';
 import { TttBoardComponent } from '../../Game/ttt-preview-board/ttt-board.component';
 import { WaitingPlayersComponent } from './waiting-players/waiting-players.component';
 import { GameResult } from '../../Game/interfaces/matchDto';
+import { TictactoeService } from '../../Game/tic-tac-toe/services/tictactoe.service';
+import { SocketService } from '../../Socket/socket.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -31,7 +33,9 @@ export class AdminDashboardComponent implements OnInit {
   constructor(
     public adminService: AdminService,
     private logOut: LogoutService,
-    private router: Router) {}
+    private router: Router,
+    private tictactoeservice: TictactoeService,
+    private socketService: SocketService,) {}
 
   searchText: string = '';
   boxPosition = { top: 0, left: 0 };
@@ -71,8 +75,20 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
-  spectateGame(player: UserDto){
-    //todo: logik machen
+  spectateGame(game: GameDto){
+    this.tictactoeservice.initGameBoard(game, true);
+    this.socketService.enterSpectate(game.player1.username);
+    this.adminService.getProfilePicture(game.player1.profilePictureId).subscribe((data)=> {
+      if (this.tictactoeservice.game?.player1){
+        this.tictactoeservice.game.player1.profilePictureUrl = URL.createObjectURL(new Blob([data]))
+      }
+    } )
+    this.adminService.getProfilePicture(game.player2.profilePictureId).subscribe((data)=> {
+      if (this.tictactoeservice.game?.player2){
+        this.tictactoeservice.game.player2.profilePictureUrl = URL.createObjectURL(new Blob([data]))
+      }
+    } )
+    this.router.navigate(['/spectate']);
   }
 
   //todo: style it properly. Similar to the left sided translation

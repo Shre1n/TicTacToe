@@ -7,6 +7,7 @@ import { SocketService } from './Socket/socket.service';
 import { GameUpdateDto } from './Game/interfaces/GameUpdateDto';
 import { UserDto } from './User/interfaces/userDto';
 import { ToastService } from './Notifications/toast-menu/services/toast.service';
+import { TictactoeService } from './Game/tic-tac-toe/services/tictactoe.service';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +19,7 @@ import { ToastService } from './Notifications/toast-menu/services/toast.service'
 export class AppComponent implements OnInit {
 
 
-  constructor( private userService: UserService, private socketService: SocketService, private router: Router, private toastService: ToastService) {
+  constructor( private userService: UserService, private socketService: SocketService, private router: Router, private toastService: ToastService, private tictactoeService: TictactoeService) {
     userService.loadUserData();
   }
 
@@ -31,7 +32,8 @@ export class AppComponent implements OnInit {
       this.toastService.show('success', 'Game started!', `${opponent.username} is your opponent!` , 6, true );
     })
     this.socketService.onMoveMade().subscribe((game: GameUpdateDto) => {
-      if (this.checkURL()) {
+      console.log(game)
+      if (this.checkURL() || this.tictactoeService.isSpectating) {
         return
       }
       if (!game.isFinished) {
