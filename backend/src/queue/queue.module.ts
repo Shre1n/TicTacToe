@@ -9,6 +9,6 @@ import { GamesModule } from '../games/games.module';
   imports: [GamesModule],
   controllers: [QueueController],
   providers: [QueueService, QueueGateway, EloService],
-  exports: [QueueService],
+  exports: [QueueService, QueueGateway],
 })
 export class QueueModule {}

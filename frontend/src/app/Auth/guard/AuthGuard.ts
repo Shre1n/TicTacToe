@@ -17,11 +17,11 @@ export class AuthGuard implements CanActivate {
       map((response: UserDto) => {
         if (response)
           return true;
-        this.router.navigate(['/unauthorized']);
+        this.router.navigate(['']);
         return false;
       }),
       catchError((_) => {
-        this.router.navigate(['/unauthorized']);
+        this.router.navigate(['']);
         return of(false);
       })
     );

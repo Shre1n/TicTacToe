@@ -38,6 +38,9 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.startTimer();
+    this.userService.getWaitingTime().subscribe(time => {
+      this.timeElapsed = time / 1000;
+    });
   }
 
   ngAfterViewInit() {
@@ -77,7 +80,7 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
 
   get formattedTime(): string {
     const minutes = Math.floor(this.timeElapsed / 60).toString().padStart(2, '0');
-    const seconds = (this.timeElapsed % 60).toString().padStart(2, '0');
+    const seconds = Math.floor(this.timeElapsed % 60).toString().padStart(2, '0');
     return `${minutes}:${seconds}`;
   }
 
