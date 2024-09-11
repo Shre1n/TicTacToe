@@ -26,6 +26,7 @@ import { Request } from 'express';
 import { GameUpdateDto } from './dto/gameUpdate.dto';
 import { HttpExceptionTransformationFilter } from '../filter/HttpExceptionTransformationFilter';
 import { SpectateDto } from './dto/spectate.dto';
+import { IsSocketAdminGuard } from '../guards/is-socket-admin/is-socket-admin.guard';
 
 @UseFilters(HttpExceptionTransformationFilter)
 @WebSocketGateway({ namespace: 'socket' })
@@ -37,7 +38,7 @@ export class GamesGateway {
 
   constructor(private readonly gameService: GamesService) {}
 
-  @UseGuards()
+  @UseGuards(IsSocketAdminGuard)
   @UsePipes(new ValidationPipe())
   @SubscribeMessage(ClientSentEvents.enterSpectate)
   async handleEnterSpectate(
@@ -55,7 +56,7 @@ export class GamesGateway {
     client.join(activeGame.id.toString());
   }
 
-  @UseGuards()
+  @UseGuards(IsSocketAdminGuard)
   @UsePipes(new ValidationPipe())
   @SubscribeMessage(ClientSentEvents.leaveSpectate)
   async handleLeaveSpectate(
