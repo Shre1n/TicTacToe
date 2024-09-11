@@ -12,6 +12,7 @@ import { WaitingPlayersComponent } from './waiting-players/waiting-players.compo
 import { GameResult } from '../../Game/interfaces/matchDto';
 import { TictactoeService } from '../../Game/tic-tac-toe/services/tictactoe.service';
 import { SocketService } from '../../Socket/socket.service';
+import {UserListComponent} from "../user-list/user-list.component";
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -24,6 +25,7 @@ import { SocketService } from '../../Socket/socket.service';
     CurrentGamesComponent,
     TttBoardComponent,
     WaitingPlayersComponent,
+    UserListComponent,
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
@@ -33,15 +35,13 @@ export class AdminDashboardComponent implements OnInit {
   constructor(
     public adminService: AdminService,
     private logOut: LogoutService,
-    private router: Router,
-    private tictactoeservice: TictactoeService,
-    private socketService: SocketService,) {}
+    private router: Router) {}
 
   searchText: string = '';
-  boxPosition = { top: 0, left: 0 };
   usernameHints: string[] = [];
   selectedGame: GameDto | null = null;
   userToInspect: string = "";
+  viewUsers: boolean = false;
 
 
   ngOnInit() {
@@ -57,86 +57,89 @@ export class AdminDashboardComponent implements OnInit {
         .slice(0,10);
   }
 
+  toggleUserView(){
+    this.viewUsers = !this.viewUsers
+  }
+
   logout(){
     this.logOut.logout();
   }
 
-  toggleLeftSidebar() {
-    const leftSidebar = document.getElementById('left-sidebar-wrapper');
+  toggleSidebars(side: string) {
+    const leftSidebar = document.getElementById(`${side}-sidebar-wrapper`);
     const wrapper = document.getElementById('wrapper');
 
     if (leftSidebar && wrapper) {
-      if (wrapper.classList.contains('toggled-left')) {
+      if (wrapper.classList.contains(`toggled-${side}`)) {
         setTimeout(() => {
 
           leftSidebar.style.display = 'none';
-          wrapper.classList.remove('toggled-left');
+          wrapper.classList.remove(`toggled-${side}`);
         }, 250);
       } else {
         leftSidebar.style.display = 'block';
         setTimeout(() => {
-          wrapper.classList.add('toggled-left');
+          wrapper.classList.add(`toggled-${side}`);
         }, 10);
       }
     }
   }
 
-  spectateGame(game: GameDto){
-    this.tictactoeservice.initGameBoard(game, true);
-    this.socketService.enterSpectate(game.player1.username);
-    this.adminService.getProfilePicture(game.player1.profilePictureId).subscribe((data)=> {
-      if (this.tictactoeservice.game?.player1){
-        this.tictactoeservice.game.player1.profilePictureUrl = URL.createObjectURL(new Blob([data]))
-      }
-    } )
-    this.adminService.getProfilePicture(game.player2.profilePictureId).subscribe((data)=> {
-      if (this.tictactoeservice.game?.player2){
-        this.tictactoeservice.game.player2.profilePictureUrl = URL.createObjectURL(new Blob([data]))
-      }
-    } )
-    this.router.navigate(['/spectate']);
+  onFocusInEvent(){
+    this.showElement("searchResults", "visible");
   }
 
-  //todo: style it properly. Similar to the left sided translation
-
-  toggleRightSidebar() {
-    const rightSidebar = document.getElementById('right-sidebar-wrapper');
-    const wrapper = document.getElementById('wrapper');
-
-    if (rightSidebar && wrapper) {
-      if (wrapper.classList.contains('toggled-right')) {
-        rightSidebar.classList.remove('transition');
-        setTimeout(() => {
-          rightSidebar.classList.add('transition');
-          rightSidebar.style.display = 'none';
-          wrapper.classList.remove('toggled-right');
-        }, 250);
-      } else {
-
-        rightSidebar.style.display = 'block';
-        setTimeout(() => {
-          rightSidebar.classList.add('transition');
-          wrapper.classList.add('toggled-right');
-        }, 10);
-      }
+  onFocusOutEvent(event: FocusEvent){
+    const target = event.relatedTarget as HTMLElement;
+    if (target && target.closest('#searchResults')) {
+      return;
     }
+    this.showElement("searchResults", "hidden");
+  }
+
+
+  onResultsMouseDown(event: MouseEvent) {
+    event.preventDefault();
+  }
+
+
+  getSearchTextFromChild($event: string){
+    this.searchText = $event;
+    this.displayUserToInspect($event);
+    this.adminService.searchUsers(this.searchText);
+  }
+
+  displayUserToInspect(text: string) {
+    this.userToInspect = "Stats from " + text;
   }
 
   onSearch() {
     this.adminService.searchUsers(this.searchText);
-    this.userToInspect = "Games from " + this.searchText;
+    this.displayUserToInspect(this.searchText);
     this.usernameHints = [];
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    if (event.key === "Enter") {
+      this.displayUserToInspect(this.searchText);
+      this.onSearch();
+    }
   }
 
   selectUser(username: string) {
     this.searchText = username;
+    this.displayUserToInspect(this.searchText);
+    this.showElement("searchResults","hidden");
+
   }
 
-  inspectPlayer(player: UserDto) {
-    this.searchText = player.username;
-    console.log(this.searchText);
-    this.onSearch();
+
+  showElement(indicator: string, showState: string){
+    const selectedUser = document.getElementById(indicator);
+    if (selectedUser)
+      selectedUser.style.visibility = showState;
   }
+
 
   selectGame(data: {game: GameDto, event: MouseEvent}) {
     const {game, event} = data;
@@ -147,25 +150,7 @@ export class AdminDashboardComponent implements OnInit {
         gameDetailsBox.classList.remove('show');
       }
     } else {
-      // Select a new game
       this.selectedGame = game;
-      setTimeout(() => this.setPosition(event), 0); // Ensure position is set after view update
-    }
-  }
-
-  setPosition(event: MouseEvent) {
-    const listItem = event.target as HTMLElement;
-    const rect = listItem?.getBoundingClientRect();
-    const gameDetailsBox = document.querySelector('.game-details-box') as HTMLElement;
-
-    if (gameDetailsBox) {
-      this.boxPosition.top = rect.top + window.scrollY;
-      this.boxPosition.left = rect.left + window.scrollX + listItem.offsetWidth + 10;
-      gameDetailsBox.style.top = `${this.boxPosition.top}px`;
-      gameDetailsBox.style.left = `${this.boxPosition.left}px`;
-      gameDetailsBox.classList.add('show');
-    } else {
-      console.error('List item or game details box not found');
     }
   }
 

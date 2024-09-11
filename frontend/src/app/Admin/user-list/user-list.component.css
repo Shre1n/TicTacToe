@@ -1,0 +1,18 @@
+.card {
+  cursor: pointer;
+  transition: max-height 0.3s ease;
+  overflow: hidden;
+  max-height: 150px; /* Default height of the card when collapsed */
+}
+
+.card.expanded {
+  max-height: 400px; /* Adjust as needed for expanded state */
+}
+
+.expanded-content {
+  display: none;
+}
+
+.expanded .expanded-content {
+  display: block;
+}

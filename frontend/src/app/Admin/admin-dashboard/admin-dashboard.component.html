@@ -2,19 +2,18 @@
 
   <!-- Left Sidebar for Running Games -->
   <div class="border-right" id="left-sidebar-wrapper">
-    <app-current-games (onGameSelected)="selectGame($event)"></app-current-games>
+    <app-current-games (userSelected)="getSearchTextFromChild($event)"
+                       (onGameSelected)="selectGame($event)"></app-current-games>
   </div>
   <!-- /#left-sidebar-wrapper -->
 
   <!-- Page Content -->
   <div id="page-content-wrapper">
     <nav class="navbar navbar-expand-lg border-bottom">
-      <button class="btn btn-primary" id="menu-toggle-left" (click)="toggleLeftSidebar()">Current Games</button>
+      <button class="btn btn-primary" id="menu-toggle-left" (click)="toggleSidebars('left')">Current Games</button>
+      <button class="btn btn-primary" id="toggle-all-users" (click)="toggleUserView()">View all Users</button>
 
       <div class="ms-auto">
-        <button class="btn p-0" (click)="logout()">
-          <i class="fas fa-door-open"></i> <span>Sign Out</span>
-        </button>
       </div>
       <form class="d-flex ms-auto">
         <div class="position-relative">
@@ -25,13 +24,16 @@
             [(ngModel)]="searchText"
             name="searchText"
             aria-label="Search"
-            (keydown.enter)="onSearch()"
+            (keydown)="onKeyDown($event)"
             (input)="updateHints()"
             autocomplete="off"
+            (focus)="onFocusInEvent()"
+            (focusout)="onFocusOutEvent($event)"
           >
           <!-- TODO: Select with arrow keys -->
-          @if (usernameHints) {
-            <ul class="list-group position-absolute search-results" id="searchResults">
+          @if (usernameHints.length != 0) {
+            <ul class="list-group position-absolute search-results" id="searchResults"
+                (mousedown)="onResultsMouseDown($event)">
               @for (result of usernameHints; track result) {
                 <li (click)="selectUser(result)">
                   {{ result }}
@@ -44,64 +46,77 @@
           <span><i class="fa-sharp fa-solid fa-magnifying-glass"></i></span>
         </button>
       </form>
-      <button class="btn btn-primary" id="menu-toggle-right" (click)="toggleRightSidebar()">Waiting Players</button>
+      <button class="btn p-0 d-flex align-items-center" (click)="logout()">
+        <i class="fas fa-door-open"></i>
+      </button>
+      <button class="btn btn-primary" id="menu-toggle-right" (click)="toggleSidebars('right')">Waiting Players</button>
     </nav>
 
-    <div class="container-fluid">
-      <h1 class="mt-4 ms-4">{{userToInspect}}</h1>
-      <div class="justify-content-start align-items-start">
-        @if (this.adminService.userGames.length > 0) {
-          @for (game of this.adminService.userGames; track game) {
+    @if (viewUsers){
+      <app-user-list></app-user-list>
+    }
+
+    @if (this.adminService.error.length === 0 && !viewUsers) {
+      <div class="container-fluid">
+        <h1 class="mt-4 ms-4">{{ userToInspect }}</h1>
+        <div class="justify-content-start align-items-start">
+          @if (this.adminService.userGames.length > 0) {
             <div class="card">
-              <div class="card-body d-flex flex-column align-items-center justify-content-center">
-                <!-- Tic-Tac-Toe Board -->
-                <app-ttt-board [board]="game.board"></app-ttt-board>
+              @for (game of this.adminService.userGames; track game) {
+                <div class="card">
+                  <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                    <!-- Tic-Tac-Toe Board -->
+                    <app-ttt-board [board]="game.board"></app-ttt-board>
 
-                <!-- Game Info -->
-                <div class="game-info d-flex justify-content-between mt-3">
-                  <!-- Player 1 Info -->
-                  <div class="text-start me-3">
-                    @if(game.playerIdentity === 1) {
-                      <i class="icon-x"></i>
+                    <!-- Game Info -->
+                    <div class="game-info d-flex justify-content-between mt-3">
+                      <!-- Player 1 Info -->
+                      <div class="text-start me-3">
+                        @if (game.playerIdentity === 1) {
+                          <i class="icon-x"></i>
+                        } @else {
+                          <i class="icon-o"></i>
+                        }
+                        <p class="mb-0"><strong>{{ game.player.username }}</strong></p>
+                        <small class="text-muted">(Elo: {{ game.player.elo }})</small>
+                      </div>
+
+                      <!-- Player 2 Info -->
+                      <div class="text-end ms-3">
+
+                        @if (game.playerIdentity === 2) {
+                          <i class="icon-x"></i>
+                        } @else {
+                          <i class="icon-o"></i>
+                        }
+                        <p class="mb-0"><strong>{{ game.opponent.username }}</strong></p>
+                        <small class="text-muted">(Elo: {{ game.opponent.elo }})</small>
+                      </div>
+                    </div>
+
+                    <!-- Winner Information -->
+                    <!-- todo: Styling -->
+                    @if (game.outcome === GameResult.Self) {
+                      <p class="text-center mt-3"><strong>Winner:</strong> {{ game.player.username }}</p>
+                    } @else if (game.outcome === GameResult.Opponent) {
+                      <p class="text-center mt-3"><strong>Winner:</strong> {{ game.opponent.username }}</p>
                     } @else {
-                      <i class="icon-o"></i>
+                      <p class="text-center mt-3"><strong>Draw!</strong></p>
                     }
-                    <p class="mb-0"><strong>{{ game.player.username }}</strong></p>
-                    <small class="text-muted">(Elo: {{ game.player.elo }})</small>
-                  </div>
-
-                  <!-- Player 2 Info -->
-                  <div class="text-end ms-3">
-
-                    @if(game.playerIdentity === 2) {
-                      <i class="icon-x"></i>
-                    } @else {
-                      <i class="icon-o"></i>
-                    }
-                    <p class="mb-0"><strong>{{ game.opponent.username }}</strong></p>
-                    <small class="text-muted">(Elo: {{ game.opponent.elo }})</small>
                   </div>
                 </div>
-
-                <!-- Winner Information -->
-                <!-- todo: Styling -->
-                @if (game.outcome === GameResult.Self) {
-                  <p class="text-center mt-3"><strong>Winner:</strong> {{ game.player.username }}</p>
-                } @else if (game.outcome === GameResult.Opponent) {
-                  <p class="text-center mt-3"><strong>Winner:</strong> {{ game.opponent.username }}</p>
-                } @else {
-                  <p class="text-center mt-3"><strong>Draw!</strong></p>
-                }
-              </div>
+              }
             </div>
           }
-        }
+        </div>
       </div>
-    </div>
+    } @else {
+      <div class="container-fluid">
+        <h1 class="mt-4 ms-4">{{ this.adminService.error }}</h1>
+      </div>
+    }
   </div>
   <!-- /#page-content-wrapper -->
-
-
 
 
   <!-- Right Sidebar for Matchmaking Queue -->
@@ -110,22 +125,4 @@
   </div>
   <!-- /#right-sidebar-wrapper -->
 
-  @if (selectedGame) {
-    <div class="game-details-box" [ngClass]="{'show': selectedGame}"
-         [ngStyle]="{'top.px': boxPosition.top, 'left.px': boxPosition.left}">
-      <div class="game-details-arrow"></div>
-      @if (selectedGame.player1) {
-        <button class="btn btn-primary" (click)="inspectPlayer(selectedGame.player1)">
-          Inspect {{ selectedGame.player1.username }}
-        </button>
-      }
-      @if (selectedGame.player2) {
-        <button class="btn btn-primary" (click)="inspectPlayer(selectedGame.player2)">
-          Inspect {{ selectedGame.player2.username }}
-        </button>
-      }
-      <button class="btn btn-primary" (click)="spectateGame(selectedGame)">Spectate Game</button>
-
-    </div>
-  }
 </div>

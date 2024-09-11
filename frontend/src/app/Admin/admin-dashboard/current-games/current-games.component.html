@@ -2,8 +2,20 @@
 <div class="list-group list-group-flush">
   <ul class="list-group">
     @for (game of this.adminService.runningGames; track game) {
-      <li class="list-group-item list-group-item-action mt-3" (click)="selectGame(game, $event)">
+      <li class="list-group-item list-group-item-action mt-3"
+          (click)="selectGame(game, $event)"
+          [ngClass]="{'expanded': selectedGame === game}">
+
         {{ game.player1.username }} vs {{ game.player2.username }}
+
+        <!-- Buttons anzeigen, wenn das Spiel ausgewählt ist -->
+        @if (selectedGame === game){
+        <div class="button-container mt-2">
+          <button class="btn btn-primary" (click)="selectPlayer(game.player1.username)">Inspect {{ game.player1.username }}</button>
+          <button class="btn btn-primary" (click)="selectPlayer(game.player2.username)">Inspect {{ game.player2.username }}</button>
+          <button class="btn btn-primary" (click)="spectateGame(game)">Spectate Game</button>
+        </div>
+        }
       </li>
     }
   </ul>

@@ -1,14 +1,15 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {GameDto} from "../../../Game/interfaces/gamesDto"
 import {UserDto} from '../../../User/interfaces/userDto';
-import { QueueDto } from '../interfaces/queueDto';
-import { ApiEndpoints } from '../../../api-endpoints';
-import { ProfileDto } from '../../../User/player-profile/interfaces/profile.dto';
-import { SocketService } from '../../../Socket/socket.service';
-import { UserStatsDto } from '../../../User/player-profile/interfaces/user-stats.dto';
-import { MatchDto } from '../../../Game/interfaces/matchDto';
-import { Router } from '@angular/router';
+import {QueueDto} from '../interfaces/queueDto';
+import {ApiEndpoints} from '../../../api-endpoints';
+import {ProfileDto} from '../../../User/player-profile/interfaces/profile.dto';
+import {SocketService} from '../../../Socket/socket.service';
+import {UserStatsDto} from '../../../User/player-profile/interfaces/user-stats.dto';
+import {MatchDto} from '../../../Game/interfaces/matchDto';
+import {Router} from '@angular/router';
+import {ToastService} from "../../../Notifications/toast-menu/services/toast.service";
 
 @Injectable({
   providedIn: 'root'
@@ -24,11 +25,14 @@ export class AdminService {
 
   userStats?: UserStatsDto;
 
+  error: string = "";
+
 
   constructor(
-    private http : HttpClient,
+    private http: HttpClient,
     socketService: SocketService,
     private router: Router,
+    private toast: ToastService,
   ) {
     socketService.onQueueUpdated().subscribe(() => {
       this.getMatchMakingQueue();
@@ -39,18 +43,18 @@ export class AdminService {
   }
 
 
-  getUsers(){
+  getUsers() {
     this.http.get<[UserDto]>(ApiEndpoints.USER).subscribe({
       next: (response: [UserDto]) => {
         this.users = response;
       },
-      error: (err: HttpErrorResponse)=> {
-        console.error(err);
+      error: (err: HttpErrorResponse) => {
+        this.toast.show('error', "Error", "Something went wrong.");
         if (err.status === 403)
           this.router.navigate(['/forbidden']);
         if (err.status === 401)
           this.router.navigate(['/unauthorized']);
-    }
+      }
     });
   }
 
@@ -60,7 +64,7 @@ export class AdminService {
         this.matchMakingQueue = queue.queueEntries;
       },
       error: (err: HttpErrorResponse) => {
-        console.error('Failed to fetch queue:', err);
+        this.toast.show('error', "Error", "Something went wrong.");
         if (err.status === 403)
           this.router.navigate(['/forbidden']);
         if (err.status === 401)
@@ -75,7 +79,7 @@ export class AdminService {
         this.runningGames = games;
       },
       error: (err: HttpErrorResponse) => {
-        console.error('Failed to fetch games:', err);
+        this.toast.show('error', "Error", "Something went wrong.");
         if (err.status === 403)
           this.router.navigate(['/forbidden']);
         if (err.status === 401)
@@ -87,19 +91,26 @@ export class AdminService {
   searchUsers(query: string): void {
     if (query.length > 0) {
       this.http.get<ProfileDto>(`${ApiEndpoints.USER}/${query}`).subscribe({
-          next: (response: ProfileDto) => {
-            this.userGames = response.matchHistory;
-            this.userStats = response.stats;
-          },
-          error: (err: HttpErrorResponse) => {
-            console.error('Search failed:', err);
-            if (err.status === 403)
-              this.router.navigate(['/forbidden']);
-            if (err.status === 401)
-              this.router.navigate(['/unauthorized']);
-          }
-        });
+        next: (response: ProfileDto) => {
+          this.userGames = response.matchHistory;
+          this.userStats = response.stats;
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Search failed:', err);
+          if (err.status === 404)
+            this.error = this.displayError("User not Found!");
+          if (err.status === 403)
+            this.router.navigate(['/forbidden']);
+          if (err.status === 401)
+            this.router.navigate(['/unauthorized']);
+        }
+      });
     }
+    this.error = "";
+  }
+
+  displayError(error: string): string {
+    return error
   }
 
   getProfilePicture(id: number) {

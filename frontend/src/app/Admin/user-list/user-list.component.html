@@ -1,0 +1,17 @@
+<div class="container-fluid mt-4">
+  <h2 class="mb-4">User List</h2>
+  <div class="row">
+    @for (user of adminService.users; track user) {
+      <div class="col">
+        <div class="card" (click)="toggleExpand(user.username)">
+          <img src="{{user.profilePictureUrl}}" class="card-img-top" alt="{{user.profilePictureUrl}}">
+          <div class="card-body">
+            <h3 class="card-title">Username: {{ user.username }}</h3>
+            <h6 class="card-subtitle">Elo: {{ user.elo }}</h6>
+          </div>
+          <!--                <button class="btn btn-primary btn-sm" (click)="selectUser(user.username)">Inspect</button>-->
+        </div>
+      </div>
+    }
+  </div>
+</div>

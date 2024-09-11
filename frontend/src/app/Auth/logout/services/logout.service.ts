@@ -17,7 +17,7 @@ export class LogoutService {
         this.userService.clear();
         window.localStorage.clear();
         window.location.reload();
-        this.router.navigate(['/']);
+        this.router.navigate(['']);
       },
       error: (err) => {
         console.error('Error during logout', err);
