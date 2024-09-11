@@ -4,8 +4,9 @@ import {LoginComponent} from "./Auth/login/login.component";
 import { UserService } from './User/user.service';
 import {ToastContainerComponent} from "./Notifications/toast-menu/toast-container/toast-container.component";
 import { SocketService } from './Socket/socket.service';
-import { GameDto } from './Game/interfaces/gamesDto';
 import { GameUpdateDto } from './Game/interfaces/GameUpdateDto';
+import { UserDto } from './User/interfaces/userDto';
+import { ToastService } from './Notifications/toast-menu/services/toast.service';
 
 @Component({
   selector: 'app-root',
@@ -17,22 +18,25 @@ import { GameUpdateDto } from './Game/interfaces/GameUpdateDto';
 export class AppComponent implements OnInit {
 
 
-  constructor(userService: UserService, private socketService: SocketService, private router: Router) {
+  constructor( private userService: UserService, private socketService: SocketService, private router: Router, private toastService: ToastService) {
     userService.loadUserData();
   }
 
   ngOnInit(): void {
-    this.socketService.onGameStarted().subscribe((game: GameDto) => {
+    this.socketService.onGameStarted().subscribe((opponent: UserDto) => {
       if (this.checkURL()) {
         return
       }
-
+      this.userService.setPlaying()
+      this.toastService.show('success', 'Game started!', `${opponent.username} is your opponent!` , 6, true );
     })
     this.socketService.onMoveMade().subscribe((game: GameUpdateDto) => {
       if (this.checkURL()) {
         return
       }
-
+      if (!game.isFinished) {
+        this.toastService.show('success', 'It is your turn!' , `Your opponent made his move on ${game.position}!`, 6, true );
+      }
     })
     }
 
