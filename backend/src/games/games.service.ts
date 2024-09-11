@@ -179,29 +179,17 @@ export class GamesService {
     return isPlayer1 ? 1 : isPlayer2 ? 2 : 0;
   }
 
-  async getActiveGames(): Promise<Game[]> {
-    return await this.gameRepository.find({
+  async getActiveGames(): Promise<GameDto[]> {
+    const games = await this.gameRepository.find({
       where: { isFinished: false },
-      relations: ['player1', 'player2'],
-      select: {
-        id: true,
-        player1Board: false,
-        player2Board: false,
-        duration: true,
-        turn: false,
-        isFinished: false,
-        createdAt: false,
-        player1: {
-          id: false,
-          username: true,
-        },
-        player2: {
-          id: false,
-          username: true,
-        },
-        winningState: false,
-      },
+      relations: [
+        'player1',
+        'player2',
+        'player1.profilePicture',
+        'player2.profilePicture',
+      ],
     });
+    return games.map((game) => GameDto.from(game));
   }
 
   isWinner(game: Game, user: User) {
