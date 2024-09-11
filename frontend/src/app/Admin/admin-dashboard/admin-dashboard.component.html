@@ -1,17 +1,15 @@
 <div class="d-flex" id="wrapper">
+
   <!-- Left Sidebar for Running Games -->
-  <div class="border-right d-flex flex-column h-100" id="left-sidebar-wrapper">
-    <div class="sidebar-heading">Running Games</div>
+  <div class="border-right" id="left-sidebar-wrapper">
     <app-current-games (onGameSelected)="selectGame($event)"></app-current-games>
   </div>
   <!-- /#left-sidebar-wrapper -->
 
   <!-- Page Content -->
   <div id="page-content-wrapper">
-    <nav class="navbar navbar-expand-lg navbar-light border-bottom">
+    <nav class="navbar navbar-expand-lg border-bottom">
       <button class="btn btn-primary" id="menu-toggle-left" (click)="toggleLeftSidebar()">Current Games</button>
-
-
 
       <div class="ms-auto">
         <button class="btn p-0" (click)="logout()">
@@ -50,7 +48,7 @@
     </nav>
 
     <div class="container-fluid">
-      <h1 class="mt-4 ms-4">Admin Dashboard</h1>
+      <h1 class="mt-4 ms-4">{{userToInspect}}</h1>
       <div class="justify-content-start align-items-start">
         @if (this.adminService.userGames.length > 0) {
           @for (game of this.adminService.userGames; track game) {
@@ -103,9 +101,11 @@
   </div>
   <!-- /#page-content-wrapper -->
 
+
+
+
   <!-- Right Sidebar for Matchmaking Queue -->
-  <div class="border-left transition" id="right-sidebar-wrapper">
-    <div class="sidebar-heading">Matchmaking Queue</div>
+  <div class="border-left" id="right-sidebar-wrapper">
     <app-waiting-players></app-waiting-players>
   </div>
   <!-- /#right-sidebar-wrapper -->

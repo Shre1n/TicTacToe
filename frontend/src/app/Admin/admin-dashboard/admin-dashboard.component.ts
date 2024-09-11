@@ -10,6 +10,7 @@ import { CurrentGamesComponent } from './current-games/current-games.component';
 import { TttBoardComponent } from '../../Game/ttt-preview-board/ttt-board.component';
 import { WaitingPlayersComponent } from './waiting-players/waiting-players.component';
 import { GameResult } from '../../Game/interfaces/matchDto';
+import {transition} from "@angular/animations";
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -37,6 +38,7 @@ export class AdminDashboardComponent implements OnInit {
   boxPosition = { top: 0, left: 0 };
   usernameHints: string[] = [];
   selectedGame: GameDto | null = null;
+  userToInspect: string = "";
 
 
   ngOnInit() {
@@ -57,16 +59,21 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   toggleLeftSidebar() {
+    const leftSidebar = document.getElementById('left-sidebar-wrapper');
     const wrapper = document.getElementById('wrapper');
-    const gameDetailsBox = document.querySelector('.game-details-box') as HTMLElement;
 
-    if (wrapper) {
-      wrapper.classList.toggle('toggled-left');
+    if (leftSidebar && wrapper) {
+      if (wrapper.classList.contains('toggled-left')) {
+        setTimeout(() => {
 
-      // Hide the game details box when the sidebar is toggled
-      if (gameDetailsBox) {
-        gameDetailsBox.classList.remove('show');
-        this.selectedGame = null;
+          leftSidebar.style.display = 'none';
+          wrapper.classList.remove('toggled-left');
+        }, 250);
+      } else {
+        leftSidebar.style.display = 'block';
+        setTimeout(() => {
+          wrapper.classList.add('toggled-left');
+        }, 10);
       }
     }
   }
@@ -102,6 +109,7 @@ export class AdminDashboardComponent implements OnInit {
 
   onSearch() {
     this.adminService.searchUsers(this.searchText);
+    this.userToInspect = "Games from " + this.searchText;
     this.usernameHints = [];
   }
 
