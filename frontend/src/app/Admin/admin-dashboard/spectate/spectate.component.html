@@ -27,7 +27,7 @@
   <div class="d-flex justify-content-center align-items-center">
     <div class="tictactoe-board">
         @for (cell of this.tictactoeService.game?.board || []; let i = $index; track i //change to a unique tracking index) {
-          <button class="tictactoe-cell-red">
+          <button class="tictactoe-cell-red justify-content-center">
             <i [class]="getIcon(cell)"></i>
           </button>
         }
