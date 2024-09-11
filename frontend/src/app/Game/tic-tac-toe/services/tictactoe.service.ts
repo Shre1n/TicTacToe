@@ -8,6 +8,7 @@ import { ApiEndpoints } from '../../../api-endpoints';
 import { Router } from '@angular/router';
 import { map, mergeMap, of } from 'rxjs';
 import { UserService } from '../../../User/user.service';
+import { ToastService } from '../../../Notifications/toast-menu/services/toast.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class TictactoeService {
     private router: Router,
     private socketService: SocketService,
     private userService: UserService,
+    private toastService: ToastService,
   ) {
     this.socketService.onMoveMade().subscribe((update: GameUpdateDto) => {
       if (!this.game) return;
@@ -38,9 +40,10 @@ export class TictactoeService {
       if (!this.game) return;
 
       this.game.turn = 0;
-      alert('The other player has given up!');
+      this.toastService.show('success', 'You won the game', 'The other player has given up!', 6, true)
       this.router.navigate(['']).then();
       this.userService.setReady();
+      this.game = undefined
     });
   }
 
@@ -99,22 +102,24 @@ export class TictactoeService {
 
     this.game.turn = 0;
     this.socketService.giveUp();
-    alert('You have given up!');
+    this.toastService.show('error', 'You lost the game', 'You have given up!', 6, false)
     this.router.navigate(['']).then();
     this.userService.setReady();
+    this.game = undefined
   }
 
   showGameOverAlert() {
     if (!this.game) return;
 
     if (this.game.winner === "draw")
-      alert('is draw!');
-    else if (this.game.winner === "p1") {
-      alert('Congratulations, you won!');
+      this.toastService.show('warning', 'Draw!', 'Your game ended in a draw!' , 6, true)
+    else if ((this.game.winner === "p1" && this.game.playerIdentity === 1) || (this.game.winner === "p2" && this.game.playerIdentity === 2)) {
+      this.toastService.show('success', 'You won the game!', 'Congratulations, you won!', 6, true)
     } else {
-      alert('You lost. Better luck next time!');
+      this.toastService.show('error', 'Game Over!', `You lost the game!` , 6, true)
     }
     this.router.navigate(['']).then();
+    this.game = undefined
   }
 
   getPlayer() {
