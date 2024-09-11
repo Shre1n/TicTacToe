@@ -1,33 +1,59 @@
 <nav class="navbar bg-body-tertiary">
-  <div class="container-fluid">
-      <span class="navbar-text">
-        <img src="{{ this.tictactoeService.playerPicture }}" class="profile-img" alt="yourProfile" #yourProfile>
-        {{ this.tictactoeService.player?.elo }}
-      </span>
-    <span class="navbar-text">
-        {{ this.tictactoeService.opponent?.elo }}
-      <img src="{{ this.tictactoeService.opponentPicture }}" class="profile-img justify-content-end" alt="yourProfile"
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <!-- Player Info (Left) -->
+    <span class="navbar-text d-flex align-items-center">
+        <img src="{{ this.tictactoeService.getPlayer()?.profilePictureUrl  ?? './assets/steve.jpeg'}}" class="profile-img me-2" [class]="this.tictactoeService.isPlayerTurn() ? 'your-profile-img' : ''" alt="yourProfile" #yourProfile>
+      <div class="user-info">
+        <div class="userElo">{{ this.tictactoeService.getPlayer()?.elo ?? 0 }} Elo</div>
+        <div class="userName">{{ this.tictactoeService.getPlayer()?.username ?? '' }}</div>
+      </div>
+    </span>
+
+    <!-- Give Up Button (Center) -->
+    <button class="btn btn-danger-led" (click)="giveUp()">Give Up</button>
+
+
+    <!-- Opponent Info (Right) -->
+    <span class="navbar-text d-flex align-items-center">
+      <div class="user-info text-end me-2">
+        <div class="userElo">{{ this.tictactoeService.getOpponent()?.elo ?? 0 }} Elo</div>
+        <div class="userName">{{ this.tictactoeService.getOpponent()?.username ?? '' }}</div>
+      </div>
+      <img src="{{ this.tictactoeService.getOpponent()?.profilePictureUrl ?? './assets/steve.jpeg' }}" class="profile-img" [class]="this.tictactoeService.isPlayerTurn() ? '' : 'your-profile-img'" alt="opponentProfile"
            #opponentProfile>
-      </span>
+    </span>
   </div>
 </nav>
 
+<br>
 
 <section class="container-fluid">
   <div class="d-flex justify-content-center align-items-center">
     <div class="tictactoe-board">
-      @for (cell of this.tictactoeService.board; let i = $index; track i //change to a unique tracking index) {
-        <button class="tictactoe-cell" (click)="moveMove(i)">
-          {{ cell }}
-        </button>
+      @if (this.tictactoeService.isPlayerTurn()) {
+        @for (cell of this.tictactoeService.game?.board || []; let i = $index; track i //change to a unique tracking index) {
+          <button class="tictactoe-cell-green" (click)="moveMove(i)">
+            <i [class]="getIcon(cell)"></i>
+          </button>
+        }
+      } @else {
+        @for (cell of this.tictactoeService.game?.board || []; let i = $index; track i //change to a unique tracking index) {
+          <button class="tictactoe-cell-red" (click)="moveMove(i)">
+            <i [class]="getIcon(cell)"></i>
+          </button>
+        }
       }
     </div>
   </div>
 </section>
 
 <div class="chat-wrapper">
-  <app-chat [messages]="this.tictactoeService.chat"></app-chat>
+  <app-chat [messages]="this.tictactoeService.game?.chat || []"></app-chat>
 </div>
+
+<button class="back btn p-0" (click)="back()">
+  <i class="fa-solid fa-left-long me-2"></i>
+</button>
 
 
 

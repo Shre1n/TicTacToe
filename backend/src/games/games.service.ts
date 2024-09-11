@@ -8,6 +8,7 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from '../users/users.entity';
 import { EloService } from '../elo/elo.service';
 import { ChatService } from './chat/chat.service';
+import { GameDto } from './dto/game.dto';
 
 @Injectable()
 export class GamesService {
@@ -55,6 +56,19 @@ export class GamesService {
     return await this.gameRepository.save(game);
   }
 
+  async giveUp(game: Game, playerId: number): Promise<Game> {
+    if (game.player1.id === playerId) {
+      game.winningState = 'p2';
+      game.isFinished = true;
+    } else {
+      game.winningState = 'p1';
+      game.isFinished = true;
+    }
+    game = await this.updateElo(game);
+    game.duration = Date.now() - game.createdAt.getTime();
+    return await this.gameRepository.save(game);
+  }
+
   async makeAMove(
     game: Game,
     playerId: number,
@@ -81,7 +95,7 @@ export class GamesService {
     }
 
     if (this.checkWinner(game)) {
-      await this.updateElo(game);
+      game = await this.updateElo(game);
       game.duration = Date.now() - game.createdAt.getTime();
     }
 
@@ -134,11 +148,38 @@ export class GamesService {
     });
   }
 
+  async gameToFullDto(game: Game, user: User) {
+    const chat = await this.getGameChat(game);
+    const playerIdentity: 0 | 1 | 2 = this.getPlayerIdentity(game, user);
+    return { ...GameDto.from(game), playerIdentity, chat };
+  }
+
+  async getFinishedGamesByPlayer(player: User) {
+    return await this.gameRepository.find({
+      where: [
+        { player1: { id: player.id }, isFinished: true },
+        { player2: { id: player.id }, isFinished: true },
+      ],
+      relations: [
+        'player1',
+        'player2',
+        'player1.profilePicture',
+        'player2.profilePicture',
+      ],
+    });
+  }
+
   async getGameChat(game: Game) {
     return this.chatService.getMessagesByGame(game);
   }
 
-  async getAllGames(): Promise<Game[]> {
+  getPlayerIdentity(game: Game, user: User) {
+    const isPlayer1 = game.player1.id == user.id;
+    const isPlayer2 = game.player2.id == user.id;
+    return isPlayer1 ? 1 : isPlayer2 ? 2 : 0;
+  }
+
+  async getActiveGames(): Promise<Game[]> {
     return await this.gameRepository.find({
       where: { isFinished: false },
       relations: ['player1', 'player2'],
@@ -163,46 +204,59 @@ export class GamesService {
     });
   }
 
-  async updateElo(game: Game) {
+  isWinner(game: Game, user: User) {
+    const userAsPlayer1IsWinning =
+      game.player1 === user && game.winningState === 'p1';
+    const userAsPlayer2IsWinning =
+      game.player2 === user && game.winningState === 'p2';
+
+    return userAsPlayer1IsWinning || userAsPlayer2IsWinning;
+  }
+
+  async updateElo(game: Game): Promise<Game> {
     switch (game.winningState) {
       case 'p1':
-        game.player1.elo = this.eloService.calculate(
+        game.player1EloGain = this.eloService.calculate(
           game.player1,
           game.player2,
           1,
         );
-        game.player2.elo = this.eloService.calculate(
+        game.player2EloGain = this.eloService.calculate(
           game.player2,
           game.player1,
           0,
         );
         break;
       case 'p2':
-        game.player1.elo = this.eloService.calculate(
+        game.player1EloGain = this.eloService.calculate(
           game.player1,
           game.player2,
           0,
         );
-        game.player2.elo = this.eloService.calculate(
+        game.player2EloGain = this.eloService.calculate(
           game.player2,
           game.player1,
           1,
         );
         break;
       case 'draw':
-        game.player1.elo = this.eloService.calculate(
+        game.player1EloGain = this.eloService.calculate(
           game.player1,
           game.player2,
           0.5,
         );
-        game.player2.elo = this.eloService.calculate(
+        game.player2EloGain = this.eloService.calculate(
           game.player2,
           game.player1,
           0.5,
         );
         break;
     }
+    game.player1.elo += game.player1EloGain;
+    game.player2.elo += game.player2EloGain;
+
     await this.userRepository.save(game.player1);
     await this.userRepository.save(game.player2);
+    return game;
   }
 }

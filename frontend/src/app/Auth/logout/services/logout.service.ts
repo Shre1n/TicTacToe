@@ -15,6 +15,8 @@ export class LogoutService {
     return this.http.delete(ApiEndpoints.AUTH, {}).subscribe({
       next: () => {
         this.userService.clear();
+        window.localStorage.clear();
+        window.location.reload();
         this.router.navigate(['/']);
       },
       error: (err) => {

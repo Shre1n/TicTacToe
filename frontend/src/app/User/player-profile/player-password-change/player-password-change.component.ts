@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {PasswordChangeService} from "./service/password-change.service";
 

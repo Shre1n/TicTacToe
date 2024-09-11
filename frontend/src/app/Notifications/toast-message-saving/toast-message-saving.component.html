@@ -1,0 +1,26 @@
+<div class="toast-saving-container">
+  <!-- Toast-Saving Icon -->
+  <div class="toast-saving-icon" (click)="toggleToastSaving()">
+    <i class="fas fa-bell"></i>
+    @if (unreadCount > 0){
+      <span class="toast-saving-badge">{{unreadCount}}</span>
+    }
+  </div>
+
+  <!-- Toast-Saving Box -->
+  <div class="toast-saving-box" [class.open]="isToastSavingOpen">
+    <div class="toast-saving-header">
+      <h4>Toast-Savings</h4>
+      <button (click)="toggleToastSaving()">Close</button>
+    </div>
+    <div class="toast-saving-messages" #toastSavingMessages>
+      <!-- Nachrichten iterieren -->
+      @for (toast of toastService.storedToasts; let i = $index; track trackByIndex){
+        <div class="toast-saving-message">
+          {{ toast.body }}
+        </div>
+      }
+    </div>
+  </div>
+</div>
+

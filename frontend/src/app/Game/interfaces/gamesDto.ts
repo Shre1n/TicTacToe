@@ -8,6 +8,7 @@ export interface GameDto {
   player2: UserDto;
   winner: string;
   turn: number;
+  isFinished: boolean;
   chat: ChatDTO[];
   playerIdentity: 0 | 1| 2;
 }

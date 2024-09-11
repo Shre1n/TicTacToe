@@ -48,6 +48,20 @@ export class Game {
 
   @Column({ type: 'integer', default: 0 })
   @ApiProperty({
+    description: 'Tracks how much elo player1 gained through the game',
+    example: 0,
+  })
+  player1EloGain: number;
+
+  @ApiProperty({
+    description: 'Tracks how much elo player2 gained through the game',
+    example: 0,
+  })
+  @Column({ type: 'integer', default: 0 })
+  player2EloGain: number;
+
+  @Column({ type: 'integer', default: 0 })
+  @ApiProperty({
     description: 'How long the game lasted in ms',
     example: '1:00:00',
   })
@@ -78,4 +92,13 @@ export class Game {
   @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   @ApiProperty({ description: 'The date and time when the game was created' })
   createdAt: Date;
+
+  board(): number[] {
+    const board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (let i = 0; i < 9; i++) {
+      if ((this.player1Board & (1 << i)) !== 0) board[i] = 1;
+      else if ((this.player2Board & (1 << i)) !== 0) board[i] = 2;
+    }
+    return board;
+  }
 }

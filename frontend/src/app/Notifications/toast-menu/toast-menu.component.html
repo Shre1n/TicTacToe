@@ -1,0 +1,11 @@
+<div #toaster class="toast toast-{{toast.type}}"
+     [style.bottom.px]="i*100">
+  <div class="toast-header">
+    <i #image [class]="iconMap.get(toast.type)" class="rounded me-2"></i>
+    <strong class="mr-auto">{{toast.title}}</strong>
+  </div>
+  <div class="toast-body">
+    {{toast.body}}
+  </div>
+  <a class="close" (click)="remove.emit(i)">&times;</a>
+</div>

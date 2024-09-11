@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {AdminService} from "../services/admin.service";
 
 @Component({
@@ -8,15 +8,8 @@ import {AdminService} from "../services/admin.service";
   templateUrl: './waiting-players.component.html',
   styleUrl: './waiting-players.component.css'
 })
-export class WaitingPlayersComponent implements OnInit {
-  matchMakingQueue: string[] = [];
+export class WaitingPlayersComponent {
 
-  constructor(private adminService: AdminService) {}
+  constructor(public adminService: AdminService) {}
 
-  ngOnInit(): void {
-  }
-
-  toggleQueue(): void {
-    // Implementiere die Logik zum Umschalten der Ansicht
-  }
 }

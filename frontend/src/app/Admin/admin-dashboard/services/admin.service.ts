@@ -1,69 +1,102 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {GameDto} from "../../../Game/interfaces/gamesDto"
 import {UserDto} from '../../../User/interfaces/userDto';
 import { QueueDto } from '../interfaces/queueDto';
 import { ApiEndpoints } from '../../../api-endpoints';
+import { ProfileDto } from '../../../User/player-profile/interfaces/profile.dto';
+import { SocketService } from '../../../Socket/socket.service';
+import { UserStatsDto } from '../../../User/player-profile/interfaces/user-stats.dto';
+import { MatchDto } from '../../../Game/interfaces/matchDto';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
-  matchMakingQueue?: QueueDto[];
+  matchMakingQueue: QueueDto[] = [];
 
-  runningGames?: GameDto[];
+  runningGames: GameDto[] = [];
 
-  user: UserDto[] = [];
+  users: UserDto[] = [];
 
-  userGames: GameDto[] = []
+  userGames: MatchDto[] = []
+
+  userStats?: UserStatsDto;
 
 
   constructor(
     private http : HttpClient,
-  ) { }
+    socketService: SocketService,
+    private router: Router,
+  ) {
+    socketService.onQueueUpdated().subscribe(() => {
+      this.getMatchMakingQueue();
+    });
+    socketService.onRunningGamesUpdated().subscribe(() => {
+      this.getRunningGames();
+    });
+  }
 
 
   getUsers(){
     this.http.get<[UserDto]>(ApiEndpoints.USER).subscribe({
       next: (response: [UserDto]) => {
-        this.user = response;
+        this.users = response;
       },
-      error: (err)=> {
-        console.log(err);
+      error: (err: HttpErrorResponse)=> {
+        console.error(err);
+        if (err.status === 403)
+          this.router.navigate(['/forbidden']);
+        if (err.status === 401)
+          this.router.navigate(['/unauthorized']);
     }
     });
   }
 
   getMatchMakingQueue() {
-    this.http.get<QueueDto[]>(ApiEndpoints.QUEUE).subscribe({
-      next: (queue: QueueDto[]) => {
-        this.matchMakingQueue = queue;
+    this.http.get<{ queueEntries: QueueDto[] }>(ApiEndpoints.QUEUE).subscribe({
+      next: (queue: { queueEntries: QueueDto[] }) => {
+        this.matchMakingQueue = queue.queueEntries;
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         console.error('Failed to fetch queue:', err);
+        if (err.status === 403)
+          this.router.navigate(['/forbidden']);
+        if (err.status === 401)
+          this.router.navigate(['/unauthorized']);
       }
     });
   }
 
-  getRunningGames() {
+  getRunningGames(): void {
     this.http.get<GameDto[]>(ApiEndpoints.GAME).subscribe({
       next: (games: GameDto[]) => {
         this.runningGames = games;
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         console.error('Failed to fetch games:', err);
+        if (err.status === 403)
+          this.router.navigate(['/forbidden']);
+        if (err.status === 401)
+          this.router.navigate(['/unauthorized']);
       }
     });
   }
 
   searchUsers(query: string): void {
     if (query.length > 0) {
-      this.http.get<[GameDto]>(`${ApiEndpoints.USER}/${query}`).subscribe({
-          next: (response: [GameDto]) => {
-            this.userGames = response;
+      this.http.get<ProfileDto>(`${ApiEndpoints.USER}/${query}`).subscribe({
+          next: (response: ProfileDto) => {
+            this.userGames = response.matchHistory;
+            this.userStats = response.stats;
           },
-          error: (err) => {
+          error: (err: HttpErrorResponse) => {
             console.error('Search failed:', err);
+            if (err.status === 403)
+              this.router.navigate(['/forbidden']);
+            if (err.status === 401)
+              this.router.navigate(['/unauthorized']);
           }
         });
     }
