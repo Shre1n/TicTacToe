@@ -42,16 +42,6 @@ export class AppComponent implements OnInit {
 
   checkURL() {
     const currentUrl = this.router.url;
-
-    if (currentUrl !== '/game') {
-      console.log('NICHT auf der Game-Seite');
-      return false;
-    } else {
-      console.log('sind auf der game-Seite');
-      return true;
-    }
+    return currentUrl === '/game'
   }
-
-
-
 }
