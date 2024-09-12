@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import { ApiEndpoints } from '../../../../api-endpoints';
 import {ProfileDto} from "../../interfaces/profile.dto";
 import {UserStatsDto} from "../../interfaces/user-stats.dto";
 import {MatchDto} from "../../../../Game/interfaces/matchDto";
 import {UserDto} from "../../../interfaces/userDto";
 import {UserService} from "../../../user.service";
+import { ToastService } from '../../../../Notifications/toast-menu/services/toast.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +16,7 @@ export class PlayerContentService {
   public stats?: UserStatsDto
   public matchhistory: MatchDto[] = []
 
-  constructor(private http: HttpClient,private userService: UserService,
-  ) {
-  }
+  constructor(private http: HttpClient,private userService: UserService, private toastService: ToastService) {}
 
   onUpload(file: File | null) {
     if (file) {
@@ -51,6 +50,7 @@ export class PlayerContentService {
      },
       error: (err: HttpErrorResponse) => {
        console.error(err);
+       this.toastService.show('error', 'Http Error!', 'Error while loading profile');
       }
     })
   }
