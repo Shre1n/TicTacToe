@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <h4 class="d-flex justify-content-center align-items-center">Game History</h4>
+  <h4 class="d-flex justify-content-center align-items-center">Match History</h4>
   @if (this.playerContent.matchhistory.length > 0) {
     <div class="row">
       @for (game of this.playerContent.matchhistory; track game) {
@@ -12,34 +12,52 @@
 
               <!-- Game Info -->
               <div class="d-flex justify-content-center align-items-center">
-                <p>Your overall Timeplay :<strong>
-                  {{ Math.floor(game.duration / 60000) }}:{{ Math.floor((game.duration % 60000) / 1000) }} minutes
+                <p>Your overall Timeplay: <strong>
+                  {{ Math.floor(game.duration / 60000).toString().padStart(2, '0') }}:
+                  {{ Math.floor((game.duration % 60000) / 1000).toString().padStart(2, '0') }} minutes
                 </strong></p>
               </div>
               <div class="d-flex justify-content-center align-items-center">
-                <p>The Elo-points gains :<strong>{{ Math.floor(game.eloGain) }}</strong></p>
+                <p>The Elo-points gained: <strong>{{ Math.floor(game.eloGain) }}</strong></p>
               </div>
-              <div class="game-info d-flex justify-content-between mt-3">
+              <div class="game-info d-flex justify-content-between">
                 <!-- Player Info -->
-                <div class="text-start me-3">
+                <div class="d-flex flex-column align-items-center">
+                  <!-- Icon -->
                   @if (game.playerIdentity === 1) {
                     <i class="icon-x"></i>
                   } @else {
                     <i class="icon-o"></i>
                   }
-                  <p class="mb-0"><strong>{{ game.player.username }}</strong></p>
-                  <small class="text-muted">(Elo: {{ game.player.elo }})</small>
+
+                  <!-- Player Name -->
+                  <p class="mb-0 text-center"><strong>{{ game.player.username }}</strong></p>
+
+                  <!-- Elo -->
+                  <small class="text-muted text-center">(Elo: {{ game.player.elo }})</small>
+                </div>
+
+                <!-- Elo Gain in der Mitte -->
+                <div class="d-flex flex-column align-items-center justify-content-center mx-3">
+                  <p class="mb-0" [ngStyle]="{ 'color': game.eloGain > 0 ? 'green' : 'red' }">
+                    <strong>{{ game.eloGain > 0 ? '+' : '' }}{{ game.eloGain }}</strong>
+                  </p>
                 </div>
 
                 <!-- Opponent Info -->
-                <div class="text-end ms-3">
+                <div class="d-flex flex-column align-items-center">
+                  <!-- Icon -->
                   @if (game.playerIdentity === 2) {
                     <i class="icon-x"></i>
                   } @else {
                     <i class="icon-o"></i>
                   }
-                  <p class="mb-0"><strong>{{ game.opponent.username }}</strong></p>
-                  <small class="text-muted">(Elo: {{ game.opponent.elo }})</small>
+
+                  <!-- Opponent Name -->
+                  <p class="mb-0 text-center"><strong>{{ game.opponent.username }}</strong></p>
+
+                  <!-- Opponent Elo -->
+                  <small class="text-muted text-center">(Elo: {{ game.opponent.elo }})</small>
                 </div>
               </div>
 

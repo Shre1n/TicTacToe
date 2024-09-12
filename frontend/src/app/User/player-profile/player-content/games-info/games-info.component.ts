@@ -3,12 +3,14 @@ import {TttBoardComponent} from "../../../../Game/ttt-preview-board/ttt-board.co
 import {GameResult} from "../../../../Game/interfaces/matchDto";
 import {Router} from "@angular/router";
 import {PlayerContentService} from "../service/player-content.service";
+import {NgStyle} from "@angular/common";
 
 @Component({
   selector: 'app-games-info',
   standalone: true,
   imports: [
-    TttBoardComponent
+    TttBoardComponent,
+    NgStyle
   ],
   templateUrl: './games-info.component.html',
   styleUrl: './games-info.component.css'
