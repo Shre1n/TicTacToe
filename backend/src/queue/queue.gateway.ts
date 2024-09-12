@@ -67,6 +67,8 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const session = request.session;
 
     // Check if the player can enter the queue
+    if (session.isAdmin) throw new WsException("Admins can't start a game");
+
     if (this.queueService.isPlayerInQueue(session.user))
       throw new WsException('Player already in queue.');
 
