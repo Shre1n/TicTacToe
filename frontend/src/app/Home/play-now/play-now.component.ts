@@ -33,6 +33,9 @@ export class PlayNowComponent{
     public userService: UserService) {}
 
 
+  navToAdminDashboard(){
+    this.router.navigate(['/admin']);
+  }
 
 
   logout(){
