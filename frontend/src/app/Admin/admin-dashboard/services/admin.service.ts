@@ -10,6 +10,7 @@ import {UserStatsDto} from '../../../User/player-profile/interfaces/user-stats.d
 import {MatchDto} from '../../../Game/interfaces/matchDto';
 import {Router} from '@angular/router';
 import {ToastService} from "../../../Notifications/toast-menu/services/toast.service";
+import { TictactoeService } from '../../../Game/tic-tac-toe/services/tictactoe.service';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +36,7 @@ export class AdminService {
     socketService: SocketService,
     private router: Router,
     private toast: ToastService,
+    private tictactoeService: TictactoeService
   ) {
     socketService.onQueueUpdated().subscribe(() => {
       this.getMatchMakingQueue();
@@ -72,6 +74,12 @@ export class AdminService {
         if (err.status === 401)
           this.router.navigate(['/unauthorized']);
       }
+    });
+  }
+
+  loadGame(player: string) {
+    this.http.get<GameDto[]>(ApiEndpoints.GAME).subscribe((games: GameDto[]) => {
+      this.tictactoeService.initGameBoard(games.filter(game => game.player1.username === player || game.player2.username === player).pop(), true);
     });
   }
 

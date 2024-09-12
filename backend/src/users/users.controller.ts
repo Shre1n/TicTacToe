@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Header,
   HttpStatus,
@@ -96,8 +95,9 @@ export class UsersController {
   @ApiOkResponse({ description: 'Successful operation', type: UserDto })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   async getUserInfo(@Session() session: SessionData): Promise<UserDto> {
-    const user: UserDto =
-      await this.usersService.getCurrentUserInformation(session);
+    const user: UserDto = await this.usersService.getCurrentUserInformation(
+      session.user,
+    );
     user.isAdmin = session.user.isAdmin;
     return user;
   }
@@ -193,7 +193,7 @@ export class UsersController {
       session.user,
       newProfilePicture,
     );
-    return await this.usersService.getCurrentUserInformation(session);
+    return await this.usersService.getCurrentUserInformation(session.user);
   }
 
   @Get('avatar/:id')
