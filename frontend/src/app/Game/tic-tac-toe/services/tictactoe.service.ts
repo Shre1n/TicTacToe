@@ -77,7 +77,8 @@ export class TictactoeService {
       });
   }
 
-  initGameBoard(game: GameDto, isSpectating: boolean = false) {
+  initGameBoard(game?: GameDto, isSpectating: boolean = false) {
+    if (!game) return;
     this.game = game;
     this.isSpectating = isSpectating;
   }
