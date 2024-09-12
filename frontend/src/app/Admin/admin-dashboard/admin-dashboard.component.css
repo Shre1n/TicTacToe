@@ -103,12 +103,8 @@
 
 .highlight {
   font-weight: bold;
-  background-color: #007bff;
+  background-color: rgba(8, 255, 0, 0.51);
   color: white;
-}
-
-.highlight:hover {
-  background-color: #0056b3;
 }
 
 

@@ -34,8 +34,8 @@
           @if (usernameHints.length != 0) {
             <ul class="list-group position-absolute search-results" id="searchResults"
                 (mousedown)="onResultsMouseDown($event)">
-              @for (result of usernameHints; track result) {
-                <li (click)="selectUser(result)">
+              @for (result of usernameHints; let i = $index; track result) {
+                <li [ngClass]="{'highlight': highlightedIndex === i}" (click)="selectUser(result)">
                   {{ result }}
                 </li>
               }

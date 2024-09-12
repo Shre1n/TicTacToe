@@ -6,12 +6,12 @@ import {GameDto} from "../../Game/interfaces/gamesDto";
 import {NgClass, NgStyle, NgSwitch} from "@angular/common";
 import {LogoutService} from "../../Auth/logout/services/logout.service";
 import {UserDto} from "../../User/interfaces/userDto";
-import { CurrentGamesComponent } from './current-games/current-games.component';
-import { TttBoardComponent } from '../../Game/ttt-preview-board/ttt-board.component';
-import { WaitingPlayersComponent } from './waiting-players/waiting-players.component';
-import { GameResult } from '../../Game/interfaces/matchDto';
-import { TictactoeService } from '../../Game/tic-tac-toe/services/tictactoe.service';
-import { SocketService } from '../../Socket/socket.service';
+import {CurrentGamesComponent} from './current-games/current-games.component';
+import {TttBoardComponent} from '../../Game/ttt-preview-board/ttt-board.component';
+import {WaitingPlayersComponent} from './waiting-players/waiting-players.component';
+import {GameResult} from '../../Game/interfaces/matchDto';
+import {TictactoeService} from '../../Game/tic-tac-toe/services/tictactoe.service';
+import {SocketService} from '../../Socket/socket.service';
 import {UserListComponent} from "../user-list/user-list.component";
 import {PlayerStatsComponent} from "./player-stats/player-stats.component";
 
@@ -37,12 +37,15 @@ export class AdminDashboardComponent implements OnInit {
   constructor(
     public adminService: AdminService,
     private logOut: LogoutService,
-    private router: Router) {}
+    private router: Router) {
+  }
 
   searchText: string = '';
   usernameHints: string[] = [];
   selectedGame: GameDto | null = null;
   viewUsers: boolean = false;
+
+  highlightedIndex: number | null = null;
 
 
   ngOnInit() {
@@ -53,20 +56,21 @@ export class AdminDashboardComponent implements OnInit {
 
   updateHints() {
     this.usernameHints = this.adminService.users
-        .map((x) => x.username)
-        .filter((x) => x.startsWith(this.searchText))
-        .slice(0,10);
+      .map((x) => x.username)
+      .filter((x) => x.startsWith(this.searchText))
+      .slice(0, 10);
+    this.highlightedIndex = null;
   }
 
-  toggleUserView(){
+  toggleUserView() {
     this.viewUsers = !this.viewUsers
   }
 
-  logout(){
+  logout() {
     this.logOut.logout();
   }
 
-  setSearchText($event: string){
+  setSearchText($event: string) {
     this.searchText = $event;
     this.viewUsers = false;
     this.onSearch();
@@ -92,16 +96,17 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
-  onFocusInEvent(){
+  onFocusInEvent() {
     this.showElement("searchResults", "visible");
   }
 
-  onFocusOutEvent(event: FocusEvent){
+  onFocusOutEvent(event: FocusEvent) {
     const target = event.relatedTarget as HTMLElement;
     if (target && target.closest('#searchResults')) {
       return;
     }
     this.showElement("searchResults", "hidden");
+    this.highlightedIndex = null;
   }
 
 
@@ -110,9 +115,8 @@ export class AdminDashboardComponent implements OnInit {
   }
 
 
-  getSearchTextFromChild($event: string){
+  getSearchTextFromChild($event: string) {
     this.searchText = $event;
-    // this.displayUserToInspect($event);
     this.adminService.searchUsers(this.searchText);
   }
 
@@ -125,26 +129,58 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   onKeyDown(event: KeyboardEvent) {
-    if (event.key === "Enter") {
-      this.onSearch();
+
+    switch (event.key) {
+      case "Enter":
+        if (this.highlightedIndex !== null) {
+          this.searchText = this.usernameHints[this.highlightedIndex];
+          this.showElement("searchResults", "hidden");
+          this.highlightedIndex = null;
+          this.onSearch();
+          return;
+        }
+        break;
+      case "ArrowDown":
+        if (this.highlightedIndex === null) {
+          this.highlightedIndex = 0;
+        } else if (this.highlightedIndex < this.usernameHints.length - 1) {
+          this.highlightedIndex++;
+        }
+        this.scrollToHighlighted();
+        break;
+      case "ArrowUp":
+        if (this.highlightedIndex !== null && this.highlightedIndex > 0) {
+          this.highlightedIndex--;
+          this.scrollToHighlighted();
+        }
+    }
+  }
+
+  scrollToHighlighted() {
+    const searchResults = document.getElementById("searchResults");
+    if (searchResults && this.highlightedIndex !== null) {
+      const highlightedItem = searchResults.children[this.highlightedIndex] as HTMLElement;
+      if (highlightedItem) {
+        highlightedItem.scrollIntoView({block: 'nearest'});
+      }
     }
   }
 
   selectUser(username: string) {
     this.searchText = username;
-    this.showElement("searchResults","hidden");
+    this.showElement("searchResults", "hidden");
 
   }
 
 
-  showElement(indicator: string, showState: string){
+  showElement(indicator: string, showState: string) {
     const selectedUser = document.getElementById(indicator);
     if (selectedUser)
       selectedUser.style.visibility = showState;
   }
 
 
-  selectGame(data: {game: GameDto, event: MouseEvent}) {
+  selectGame(data: { game: GameDto, event: MouseEvent }) {
     const {game, event} = data;
     if (this.selectedGame) {
       this.selectedGame = null;
