@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import {AdminService} from "../services/admin.service";
 import { GameDto } from '../../../Game/interfaces/gamesDto';
 import {DatePipe, NgClass} from "@angular/common";
