@@ -19,4 +19,5 @@ export class GamesInfoComponent {
     private router: Router) {}
 
   protected readonly GameResult = GameResult;
+  protected readonly Math = Math;
 }

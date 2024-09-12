@@ -28,7 +28,8 @@ export class PlayerProfileComponent {
   constructor(
     private router: Router,
     private logOut: LogoutService,
-    public userService: UserService
+    public userService: UserService,
+
   ) {}
 
   back(){
