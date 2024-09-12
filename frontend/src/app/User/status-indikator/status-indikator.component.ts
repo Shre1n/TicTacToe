@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import {UserState} from "../interfaces/userDto";
 import {UserService} from "../user.service";
-import {SocketService} from "../../Socket/socket.service";
 import {Router} from "@angular/router";
 import {NgClass} from "@angular/common";
+import { TictactoeService } from '../../Game/tic-tac-toe/services/tictactoe.service';
 
 @Component({
   selector: 'app-status-indikator',
@@ -17,17 +17,13 @@ import {NgClass} from "@angular/common";
 export class StatusIndikatorComponent {
   constructor(
     private router: Router,
-    private socketService: SocketService,
-    public userService: UserService
+    public userService: UserService,
+    public tictactoeService: TictactoeService
   ) {}
 
     protected readonly UserState = UserState;
 
   navMatchMaking(){
-    if (this.userService.getUserState() === UserState.Ready) {
-      this.socketService.enterQueue();
-      this.userService.setWaiting();
-    }
     this.router.navigate(['/game']);
   }
 }
