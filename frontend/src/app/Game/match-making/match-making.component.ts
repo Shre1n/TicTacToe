@@ -5,6 +5,7 @@ import { UserService } from '../../User/user.service';
 import { SocketService } from '../../Socket/socket.service';
 import {StatusIndikatorComponent} from "../../User/status-indikator/status-indikator.component";
 import { UserDto } from '../../User/interfaces/userDto';
+import { ToastService } from '../../Notifications/toast-menu/services/toast.service';
 
 @Component({
   selector: 'app-match-making',
@@ -32,7 +33,8 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private router: Router,
     public userService: UserService,
-    private socketService: SocketService
+    private socketService: SocketService,
+    private toastService: ToastService
   ) {
   }
 
@@ -94,7 +96,7 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
     this.socketService.leaveQueue();
     this.userService.setReady();
     this.router.navigate(['']);
-    console.log('Matchmaking abgebrochen');
+    this.toastService.show('success', '!', 'Matchmaking was cancelled');
   }
 
 

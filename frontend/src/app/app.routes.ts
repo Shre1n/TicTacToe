@@ -11,13 +11,14 @@ import {Unauthorized401Component} from "./Error-Components/unauthorized-401/unau
 import { HomeViewComponent } from './Home/home-view/home-view.component';
 import { GameViewComponent } from './Game/game-view/game-view.component';
 import { SpectateComponent } from './Admin/admin-dashboard/spectate/spectate.component';
+import { AntiAdminGuard } from './Auth/guard/AntiAdminGuard';
 
 export const routes: Routes = [
   {path: '', component: HomeViewComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'admin', title: 'Admin Dashboard', component: AdminDashboardComponent, canActivate: [AdminGuard]},
   {path: 'spectate', title: 'Admin Spectate', component: SpectateComponent, canActivate: [AdminGuard]},
-  {path: 'game', title: 'Game', component: GameViewComponent, canActivate: [AuthGuard]},
+  {path: 'game', title: 'Game', component: GameViewComponent, canActivate: [AntiAdminGuard]},
   {path: 'profile', title:'Profile', component: PlayerProfileComponent, canActivate: [AuthGuard]},
   {path: 'forbidden', title:'403 - Forbidden', component: Forbidden403Component},
   {path: 'unauthorized', title:'401 - Unauthorized', component: Unauthorized401Component},

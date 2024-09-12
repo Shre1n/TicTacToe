@@ -5,6 +5,7 @@ import { GameUpdateDto } from '../Game/interfaces/GameUpdateDto';
 import { ChatDTO } from '../Game/chat/dto/chat.dto';
 import { MoveDto } from '../Game/interfaces/MoveDto';
 import { UserDto } from '../User/interfaces/userDto';
+import { ToastService } from '../Notifications/toast-menu/services/toast.service';
 
 const config: SocketIoConfig = {
   url: 'http://localhost:3000/socket',
@@ -18,10 +19,13 @@ const config: SocketIoConfig = {
 })
 export class SocketService extends Socket{
 
-  constructor() {
+  constructor(toastService: ToastService) {
     super(config);
     this.on("gameFound", () => this.emit("gameFoundAcknowledged"));
-    this.on("exception", (err: String) => console.log(err));
+    this.on("exception", (err: any) => {
+      toastService.show('error', "Socket Error!", err.message);
+      console.error(err);
+    });
   }
 
   enterQueue() {
