@@ -4,6 +4,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, map, mergeMap, Observable, of } from 'rxjs';
 import { SocketService } from '../Socket/socket.service';
 import { ApiEndpoints } from '../api-endpoints';
+import { ToastService } from '../Notifications/toast-menu/services/toast.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class UserService {
   private userLoadedSubject = new BehaviorSubject<boolean>(false);
   userDataLoaded: Observable<boolean> = this.userLoadedSubject.asObservable();
 
-  constructor(private http: HttpClient, private socketService: SocketService) { }
+  constructor(private http: HttpClient, private socketService: SocketService, private toastService: ToastService) { }
 
   profilePicturePipe() {
     return mergeMap((user: UserDto, _) => user.profilePictureId ? this.http.get(`${ApiEndpoints.AVATAR}/${user.profilePictureId}`, {responseType: 'arraybuffer'})
@@ -34,6 +35,7 @@ export class UserService {
         if (error.status === 401) {
           this.userLoadedSubject.next(true);
         }
+        this.toastService.show('error', "HTTP Error", "Error while loading userdata!");
       },
     });
   }

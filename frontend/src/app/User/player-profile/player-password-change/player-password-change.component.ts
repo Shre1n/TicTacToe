@@ -1,6 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {PasswordChangeService} from "./service/password-change.service";
+import { ToastService } from '../../../Notifications/toast-menu/services/toast.service';
 
 
 @Component({
@@ -20,7 +21,7 @@ export class PlayerPasswordChangeComponent {
 
   errors = new Map<string, string>();
 
-  constructor(private updatePass: PasswordChangeService) {
+  constructor(private updatePass: PasswordChangeService, private toastService: ToastService) {
   }
 
   @ViewChild('currentPass')
@@ -46,9 +47,8 @@ export class PlayerPasswordChangeComponent {
     }
 
     if (this.errors.size === 0) {
-      console.log(this.currentPassword, this.newPassword);
       this.updatePass.changePassword(this.currentPassword, this.newPassword);
-      console.log('Passwortänderung erfolgreich!');
+      this.toastService.show('success', 'Success!', 'Password changed.');
     }
   }
 }

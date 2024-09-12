@@ -71,7 +71,8 @@ export class TictactoeService {
         error: (err: HttpErrorResponse) => {
           if (err.status === 404)
             this.router.navigate(['NotFound']).then();
-          console.log(err);
+          console.error(err);
+          this.toastService.show('error', "HTTP Error", "Error while loading the game!");
         }
       });
   }
