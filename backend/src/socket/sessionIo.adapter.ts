@@ -2,6 +2,9 @@ import { IoAdapter } from '@nestjs/platform-socket.io';
 import { Server, ServerOptions } from 'socket.io';
 import { INestApplication } from '@nestjs/common';
 
+/**
+ * Extends the default SocketIo Adapter to support express sessions
+ */
 export class SessionIoAdapter extends IoAdapter {
   constructor(
     private readonly middleware: any,
