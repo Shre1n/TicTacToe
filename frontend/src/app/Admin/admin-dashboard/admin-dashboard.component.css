@@ -1,123 +1,118 @@
+/* Hauptcontainer für Flex-Layout */
 #wrapper {
   display: flex;
-  min-width: 100vw;
-  align-items: stretch;
+  width: 100%;
   position: relative;
+  height: 100vh; /* Volle Höhe */
+  overflow: hidden;
 }
 
+
+/* Linke Sidebar */
 #left-sidebar-wrapper {
-  min-height: 100vh;
-  margin-left: -15rem;
-  transition: margin 0.25s ease-out;
-}
-
-#left-sidebar-wrapper .sidebar-heading {
-  padding: 0.875rem 1.25rem;
-  font-size: 1.2rem;
-}
-
-#left-sidebar-wrapper .list-group {
   width: 15rem;
-}
-
-#wrapper.toggled-left #left-sidebar-wrapper {
-  margin-left: 0;
+  min-height: 100vh;
+  display: none;
+  transition: transform 0.25s ease-out;
+  transform: translateX(-15rem); /* Verhindert den Gebrauch von Margin */
 }
 
 #page-content-wrapper {
-  width: 100%;
+  flex-grow: 1; /* Lässt den Hauptinhalt sich ausdehnen */
   padding: 20px;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
-.transition{
-  transition: margin 0.25s ease-out;
+#wrapper.toggled-left #left-sidebar-wrapper {
+  transform: translateX(0);
 }
 
-#right-sidebar-wrapper {
-  min-height: 100vh;
-  margin-right: -15rem;
-  display: none;
-}
-
+#left-sidebar-wrapper .sidebar-heading,
 #right-sidebar-wrapper .sidebar-heading {
   padding: 0.875rem 1.25rem;
   font-size: 1.2rem;
 }
 
-#right-sidebar-wrapper .list-group {
+/* Rechte Sidebar */
+#right-sidebar-wrapper {
   width: 15rem;
+  min-height: 100vh;
+  display: none;
+  transition: transform 0.25s ease-out;
+  transform: translateX(15rem); /* Verhindert den Gebrauch von Margin */
 }
 
 #wrapper.toggled-right #right-sidebar-wrapper {
-  margin-right: 0;
+  transform: translateX(0);
 }
 
-#menu-toggle-right{
+/* Hauptinhalt */
+#page-content-wrapper {
+  flex-grow: 1; /* Hauptinhalt kann sich ausdehnen */
+}
+
+
+/* Buttons */
+#menu-toggle-right,
+#menu-toggle-left {
+  margin: 0 1rem;
+}
+
+#search {
   margin-right: 2rem;
 }
 
-#menu-toggle-left{
-  margin-left: 2rem;
-}
-
-.navbar {
-  display: flex;
-  justify-content: space-between;
-}
-
-#search{
-  margin-right: 2rem;
-}
-
-#search:hover{
+#search:hover {
   background-color: #0056b3;
   color: white;
 }
 
-.list-group-item {
-  position: relative;
-  cursor: pointer;
-}
-
+/* Standardstil für die Spiel-Detailbox */
 .game-details-box {
   position: absolute;
-  background: white;
+  background-color: white;
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  display: none;
   z-index: 1000;
   max-width: 200px;
+  cursor: pointer;
+  display: none; /* Standardmäßig ausgeblendet */
+  transition: all 0.3s ease;
 }
 
+/* Wenn die Box erweitert ist */
 .game-details-box.show {
-  display: block; /* Show when 'show' class is added */
+  display: block; /* Zeige die Box an */
 }
 
-.game-details-arrow {
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-width: 10px;
-  border-style: solid;
+.game-details-box.expanded {
+  width: 400px; /* Breite der erweiterten Box */
+  max-width: 90%;
+  padding: 20px;
 }
 
-.game-details-box .game-details-arrow {
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-width: 10px;
-  border-style: solid;
-  border-color: transparent white transparent transparent; /* Pfeil zeigt nach links */
-  top: 50%; /* Vertikale Zentrierung */
-  right: 100%; /* Positioniert den Pfeil an der linken Kante der Box */
-  transform: translateY(-50%); /* Zentriert den Pfeil vertikal */
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
 }
 
+.highlight {
+  font-weight: bold;
+  background-color: rgba(8, 255, 0, 0.51);
+  color: white;
+}
+
+
+/* Search Results */
 .search-results {
   z-index: 1000;
   width: 100%;
+  display: block;
   max-height: 200px;
   overflow-y: auto;
   background-color: white;
@@ -141,17 +136,13 @@
   cursor: pointer;
 }
 
-
-
-/*Admin Haupseiten Zeug*/
-
+/* Karten */
 .card {
   max-width: 400px;
   margin: auto;
 }
 
-
-
+/* Spielinfo */
 .game-info p {
   margin: 0.5rem 0;
 }
@@ -165,6 +156,7 @@
   color: #6c757d;
 }
 
+/* Symbole */
 .icon-x::before {
   content: 'X';
   color: #007bff;
@@ -176,4 +168,3 @@
   color: #dc3545;
   font-size: 2rem;
 }
-
