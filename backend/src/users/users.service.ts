@@ -15,7 +15,6 @@ import { UserDto, UserState } from './dto/user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { RegisterUserDto } from '../auth/dto/register-user.dto';
 import { ProfilePicture } from '../profilePicture/profilePicture.entity';
-import { SessionData } from 'express-session';
 import { GamesService } from '../games/games.service';
 import { QueueService } from '../queue/queue.service';
 import { GameDto } from '../games/dto/game.dto';
@@ -32,10 +31,17 @@ export class UsersService {
     this.usersRepository = this.dataSource.getRepository(User);
   }
 
+  /**
+   * Returns all users in the db
+   */
   async getAllUsers() {
     return await this.usersRepository.find();
   }
 
+  /**
+   * Creates a new user
+   * @param registerDto - username and password; username must be unique
+   */
   async create(registerDto: RegisterUserDto) {
     const dbCheck = await this.usersRepository.findOne({
       where: { username: registerDto.username },
@@ -51,6 +57,10 @@ export class UsersService {
     return user;
   }
 
+  /**
+   * Returns a user with a given username
+   * @param username
+   */
   async findOne(username: string) {
     return await this.usersRepository.findOne({
       where: { username: username ?? '' },
@@ -58,21 +68,33 @@ export class UsersService {
     });
   }
 
+  /**
+   * Gets the current queue waiting time of a given user
+   * @param user
+   */
   getWaitingTime(user: User) {
     return this.queueService.getWaitingTime(user);
   }
 
-  async getCurrentUserInformation(session: SessionData) {
-    const dto = UserDto.from(session.user);
+  /**
+   * Transforms user entity into dto and sets the current state.
+   * @param user
+   */
+  async getCurrentUserInformation(user: User) {
+    const dto = UserDto.from(user);
     dto.state = UserState.Ready;
-    if (this.queueService.isPlayerInQueue(session.user))
-      dto.state = UserState.Waiting;
+    if (this.queueService.isPlayerInQueue(user)) dto.state = UserState.Waiting;
 
-    if (await this.gameService.isPlayerInGame(session.user))
+    if (await this.gameService.isPlayerInGame(user))
       dto.state = UserState.Playing;
     return dto;
   }
 
+  /**
+   * Gets userstats across all played games
+   * @param games
+   * @param user
+   */
   async getUserStats(games: Game[], user: User) {
     const stats = new UserStatsDto();
     stats.wins = games.filter((game) =>
@@ -86,6 +108,11 @@ export class UsersService {
     return stats;
   }
 
+  /**
+   * Gets the users match history
+   * @param games
+   * @param user
+   */
   async getMatchHistory(games: Game[], user: User) {
     return games.map((game) =>
       MatchDto.from(
@@ -98,6 +125,10 @@ export class UsersService {
     );
   }
 
+  /**
+   * Returns the currently played game of the user
+   * @param user
+   */
   async getActiveUserGame(user: User): Promise<GameDto> {
     const game = await this.gameService.getActiveGame(user);
     if (!game) throw new NotFoundException('Player not in a game');
@@ -105,6 +136,10 @@ export class UsersService {
     return await this.gameService.gameToFullDto(game, user);
   }
 
+  /**
+   * Returns stats and match history of a given user
+   * @param user
+   */
   async getUserProfile(user: User) {
     const games = await this.gameService.getFinishedGamesByPlayer(user);
 
@@ -114,6 +149,11 @@ export class UsersService {
     return ProfileDto.from(stats, matches);
   }
 
+  /**
+   * Changes the password of a user
+   * @param updatePasswordDto
+   * @param user
+   */
   async updatePassword(updatePasswordDto: UpdatePasswordDto, user: User) {
     const verify = await bcrypt.compare(
       updatePasswordDto.oldPassword,
@@ -131,6 +171,11 @@ export class UsersService {
     );
   }
 
+  /**
+   * Changes the password of the given user
+   * @param user
+   * @param profilePicture
+   */
   async updateAvatar(user: User, profilePicture: ProfilePicture) {
     user.profilePicture = profilePicture;
     await this.usersRepository.save(user);

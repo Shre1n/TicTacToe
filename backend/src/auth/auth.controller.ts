@@ -11,21 +11,14 @@ import {
 import { SessionData } from 'express-session';
 import { UsersService } from '../users/users.service';
 import { UserDto } from '../users/dto/user.dto';
-import { DataSource, Repository } from 'typeorm';
-import { Game } from '../games/games.entity';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  private readonly gameRepository: Repository<Game>;
-
   constructor(
     private authService: AuthService,
-    private dataSource: DataSource,
     private userService: UsersService,
-  ) {
-    this.gameRepository = this.dataSource.getRepository(Game);
-  }
+  ) {}
 
   @Post()
   @ApiOperation({
@@ -46,7 +39,7 @@ export class AuthController {
     session.isLoggedIn = true;
     session.isAdmin = user.isAdmin;
 
-    const userInfo = await this.userService.getCurrentUserInformation(session);
+    const userInfo = await this.userService.getCurrentUserInformation(user);
     userInfo.isAdmin = user.isAdmin;
     return userInfo;
   }

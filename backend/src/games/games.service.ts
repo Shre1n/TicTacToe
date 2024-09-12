@@ -35,16 +35,13 @@ export class GamesService {
     this.userRepository = this.dataSource.getRepository(User);
   }
 
-  async createGame(player1Id: number, player2Id: number) {
-    const player1 = await this.userRepository.findOne({
-      where: { id: player1Id },
-      relations: { profilePicture: true },
-    });
-    const player2 = await this.userRepository.findOne({
-      where: { id: player2Id },
-      relations: { profilePicture: true },
-    });
-
+  /**
+   * Creates a new Game and saves it to the DB. Starting Turn is set randomly.
+   * The created game is returned.
+   * @param player1
+   * @param player2
+   */
+  async createGame(player1: User, player2: User) {
     if (!player1 || !player2) {
       throw new NotFoundException('One or both players not found');
     }
@@ -56,6 +53,11 @@ export class GamesService {
     return await this.gameRepository.save(game);
   }
 
+  /**
+   * Process game on a surrender. Adjusts winningState, isFinished, elo and duration.
+   * @param game
+   * @param playerId - player who has given up
+   */
   async giveUp(game: Game, playerId: number): Promise<Game> {
     if (game.player1.id === playerId) {
       game.winningState = 'p2';
@@ -64,11 +66,26 @@ export class GamesService {
       game.winningState = 'p1';
       game.isFinished = true;
     }
-    game = await this.updateElo(game);
-    game.duration = Date.now() - game.createdAt.getTime();
+    await this.handleGameOver(game);
     return await this.gameRepository.save(game);
   }
 
+  /**
+   * Adjusts elo and duration of a game, that is finished.
+   * @param game - finished game
+   */
+  async handleGameOver(game: Game) {
+    if (!game.isFinished) return;
+    await this.updateElo(game);
+    game.duration = Date.now() - game.createdAt.getTime();
+  }
+
+  /**
+   * Handles the logic to make a move and checks if there is a winner
+   * @param game
+   * @param playerId - id of the player who made the move
+   * @param position - position of the board, begins at 0
+   */
   async makeAMove(
     game: Game,
     playerId: number,
@@ -95,11 +112,131 @@ export class GamesService {
     }
 
     if (this.checkWinner(game)) {
-      game = await this.updateElo(game);
-      game.duration = Date.now() - game.createdAt.getTime();
+      await this.handleGameOver(game);
     }
 
     return await this.gameRepository.save(game);
+  }
+
+  /**
+   * Checks if a given user is currently playing a game
+   * @param player
+   */
+  async isPlayerInGame(player: User) {
+    return await this.gameRepository.exists({
+      where: [
+        { player1: { id: player.id }, isFinished: false },
+        { player2: { id: player.id }, isFinished: false },
+      ],
+      relations: { player1: true, player2: true },
+    });
+  }
+
+  /**
+   * Gets the game, that is currently played by the user
+   * @param player
+   */
+  async getActiveGame(player: User) {
+    return await this.gameRepository.findOne({
+      where: [
+        { player1: { id: player.id }, isFinished: false },
+        { player2: { id: player.id }, isFinished: false },
+      ],
+      relations: [
+        'player1',
+        'player2',
+        'player1.profilePicture',
+        'player2.profilePicture',
+      ],
+    });
+  }
+
+  /**
+   * Converts a game entity to a dto and adds the playerIdentity of a given user,
+   * as well as the chat log of the game
+   * @param game
+   * @param user
+   */
+  async gameToFullDto(game: Game, user: User) {
+    const chat = await this.getGameChat(game);
+    const playerIdentity: 0 | 1 | 2 = this.getPlayerIdentity(game, user);
+    return { ...GameDto.from(game), playerIdentity, chat };
+  }
+
+  /**
+   * Gets all game a given user has finished
+   * @param player
+   */
+  async getFinishedGamesByPlayer(player: User) {
+    return await this.gameRepository.find({
+      where: [
+        { player1: { id: player.id }, isFinished: true },
+        { player2: { id: player.id }, isFinished: true },
+      ],
+      relations: [
+        'player1',
+        'player2',
+        'player1.profilePicture',
+        'player2.profilePicture',
+      ],
+    });
+  }
+
+  /**
+   * Gets the player identity of a give user
+   * 1 for player1; 2 for player2; 0 for spectator
+   * @param game
+   * @param user
+   */
+  getPlayerIdentity(game: Game, user: User) {
+    const isPlayer1 = game.player1.id == user.id;
+    const isPlayer2 = game.player2.id == user.id;
+    return isPlayer1 ? 1 : isPlayer2 ? 2 : 0;
+  }
+
+  /**
+   * Gets all currently played games
+   */
+  async getActiveGames(): Promise<GameDto[]> {
+    const games = await this.gameRepository.find({
+      where: { isFinished: false },
+      relations: [
+        'player1',
+        'player2',
+        'player1.profilePicture',
+        'player2.profilePicture',
+      ],
+    });
+    return games.map((game) => GameDto.from(game));
+  }
+
+  /**
+   * Checks if a given user has won the game
+   * @param game
+   * @param user
+   */
+  isWinner(game: Game, user: User) {
+    const userAsPlayer1IsWinning =
+      game.player1.id === user.id && game.winningState === 'p1';
+    const userAsPlayer2IsWinning =
+      game.player2.id === user.id && game.winningState === 'p2';
+
+    return userAsPlayer1IsWinning || userAsPlayer2IsWinning;
+  }
+
+  /**
+   * Returns first user matching the given username
+   * @param username
+   */
+  async findOne(username: string) {
+    return await this.userRepository.findOne({
+      where: { username: username ?? '' },
+      relations: { profilePicture: true },
+    });
+  }
+
+  private async getGameChat(game: Game) {
+    return this.chatService.getMessagesByGame(game);
   }
 
   private checkWinner(game: Game) {
@@ -123,85 +260,7 @@ export class GamesService {
     return false;
   }
 
-  async isPlayerInGame(player: User) {
-    return await this.gameRepository.exists({
-      where: [
-        { player1: { id: player.id }, isFinished: false },
-        { player2: { id: player.id }, isFinished: false },
-      ],
-      relations: { player1: true, player2: true },
-    });
-  }
-
-  async getActiveGame(player: User) {
-    return await this.gameRepository.findOne({
-      where: [
-        { player1: { id: player.id }, isFinished: false },
-        { player2: { id: player.id }, isFinished: false },
-      ],
-      relations: [
-        'player1',
-        'player2',
-        'player1.profilePicture',
-        'player2.profilePicture',
-      ],
-    });
-  }
-
-  async gameToFullDto(game: Game, user: User) {
-    const chat = await this.getGameChat(game);
-    const playerIdentity: 0 | 1 | 2 = this.getPlayerIdentity(game, user);
-    return { ...GameDto.from(game), playerIdentity, chat };
-  }
-
-  async getFinishedGamesByPlayer(player: User) {
-    return await this.gameRepository.find({
-      where: [
-        { player1: { id: player.id }, isFinished: true },
-        { player2: { id: player.id }, isFinished: true },
-      ],
-      relations: [
-        'player1',
-        'player2',
-        'player1.profilePicture',
-        'player2.profilePicture',
-      ],
-    });
-  }
-
-  async getGameChat(game: Game) {
-    return this.chatService.getMessagesByGame(game);
-  }
-
-  getPlayerIdentity(game: Game, user: User) {
-    const isPlayer1 = game.player1.id == user.id;
-    const isPlayer2 = game.player2.id == user.id;
-    return isPlayer1 ? 1 : isPlayer2 ? 2 : 0;
-  }
-
-  async getActiveGames(): Promise<GameDto[]> {
-    const games = await this.gameRepository.find({
-      where: { isFinished: false },
-      relations: [
-        'player1',
-        'player2',
-        'player1.profilePicture',
-        'player2.profilePicture',
-      ],
-    });
-    return games.map((game) => GameDto.from(game));
-  }
-
-  isWinner(game: Game, user: User) {
-    const userAsPlayer1IsWinning =
-      game.player1.id === user.id && game.winningState === 'p1';
-    const userAsPlayer2IsWinning =
-      game.player2.id === user.id && game.winningState === 'p2';
-
-    return userAsPlayer1IsWinning || userAsPlayer2IsWinning;
-  }
-
-  async updateElo(game: Game): Promise<Game> {
+  private async updateElo(game: Game) {
     switch (game.winningState) {
       case 'p1':
         game.player1EloGain = this.eloService.calculate(
@@ -245,13 +304,5 @@ export class GamesService {
 
     await this.userRepository.save(game.player1);
     await this.userRepository.save(game.player2);
-    return game;
-  }
-
-  async findOne(username: string) {
-    return await this.userRepository.findOne({
-      where: { username: username ?? '' },
-      relations: { profilePicture: true },
-    });
   }
 }

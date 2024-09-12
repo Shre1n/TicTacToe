@@ -24,6 +24,9 @@ export class DemoDataService {
     this.profilePictureRepository = dataSource.getRepository(ProfilePicture);
   }
 
+  /**
+   * Generates demo data
+   */
   async generateData() {
     const ava1 = this.profilePictureRepository.create({
       content: readFileSync(join(this.basePath, 'Conan.png')),
@@ -124,6 +127,9 @@ export class DemoDataService {
     await this.gameRepository.save([game1, game2, game3, game4, game5]);
   }
 
+  /**
+   * Checks if db with admin user exists
+   */
   async dataExists() {
     return await this.userRepository.existsBy({ username: 'admin' });
   }
