@@ -17,7 +17,10 @@ export class AntiAdminGuard implements CanActivate {
       map((response: UserDto) => {
         if (response && !response.isAdmin)
           return true;
-        this.router.navigate(['']);
+        if (response && response.isAdmin)
+          this.router.navigate(['/forbidden']);
+        else
+          this.router.navigate(['']);
         return false;
       }),
       catchError((_) => {
