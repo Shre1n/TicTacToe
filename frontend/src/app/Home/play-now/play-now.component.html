@@ -3,7 +3,9 @@
     <!-- Gamepad Icon and Back Button (Left) -->
     <div class="d-flex justify-content-center">
       <app-status-indikator></app-status-indikator>
-      <button class="btn btn-primary " (click)="navToAdminDashboard()">Admin Dashboard</button>
+      @if (userService.isAdmin()){
+        <button class="btn btn-primary " (click)="navToAdminDashboard()">Admin Dashboard</button>
+      }
     </div>
 
     <!-- User Info, Profile Picture, and Logout Button (Right) -->
