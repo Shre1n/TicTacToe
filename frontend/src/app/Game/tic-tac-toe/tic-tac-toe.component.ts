@@ -35,12 +35,6 @@ export class TicTacToeComponent implements OnInit{
     return cell === 1 ? 'fa-solid fa-x' : cell === 2 ? 'fa-solid fa-o' : '';
   }
 
-  giveUp(){
-    const confirmed = confirm('Are you sure you want to give up the game?');
-    if (confirmed) {
-      this.tictactoeService.giveUp();
-    }
-  }
 
   showModal = false;
 
