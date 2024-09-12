@@ -34,14 +34,18 @@
                   <p class="mb-0 text-center"><strong>{{ game.player.username }}</strong></p>
 
                   <!-- Elo -->
-                  <small class="text-muted text-center">(Elo: {{ game.player.elo }})</small>
+                  <small class="text-muted text-center">(Elo: {{ game.player.elo }})
+                    @if(game.eloGain !== 0){
+                      <span [ngStyle]="{ 'color': game.eloGain > 0 ? 'green' : 'red' }">{{ Math.floor(game.eloGain) > 0 ? '+' : '' }}{{Math.floor(game.eloGain) }}</span>
+                    }
+                  </small>
+                  <p class="mb-0" >
+                  <strong></strong>
                 </div>
 
                 <!-- Elo Gain in der Mitte -->
-                <div class="d-flex flex-column align-items-center justify-content-center mx-3">
-                  <p class="mb-0" [ngStyle]="{ 'color': game.eloGain > 0 ? 'green' : 'red' }">
-                    <strong>{{ game.eloGain > 0 ? '+' : '' }}{{ game.eloGain }}</strong>
-                  </p>
+                <div class="d-flex flex-column align-content-end justify-content-center mx-3">
+
                 </div>
 
                 <!-- Opponent Info -->
