@@ -11,4 +11,5 @@ export interface GameDto {
   isFinished: boolean;
   chat: ChatDTO[];
   playerIdentity: 0 | 1| 2;
+  createdAt: Date
 }

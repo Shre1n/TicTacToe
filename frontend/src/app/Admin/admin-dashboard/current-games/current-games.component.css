@@ -11,10 +11,28 @@
   padding: 1rem;
 }
 
-.list-group-item {
-  padding: 0.75rem 1.25rem;
-}
-
 .list-group-item-action {
   cursor: pointer;
 }
+
+.list-group-item {
+  transition: all 0.3s ease;
+}
+
+.list-group-item.expanded {
+  height: auto; /* Automatische Höhe, um den Inhalt aufzunehmen */
+  padding-bottom: 20px; /* Zusätzlicher Platz für Buttons */
+  border: 1px solid #007bff; /* Umrandung bei Auswahl */
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.button-container button {
+  width: 100%;
+}
+
