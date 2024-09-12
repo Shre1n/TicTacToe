@@ -17,6 +17,8 @@ import {Router} from "@angular/router";
 })
 export class TicTacToeComponent implements OnInit{
 
+  showModal = false;
+
   constructor(
     public tictactoeService: TictactoeService,
     private router: Router,
@@ -34,9 +36,6 @@ export class TicTacToeComponent implements OnInit{
   getIcon(cell: number) : string {
     return cell === 1 ? 'fa-solid fa-x' : cell === 2 ? 'fa-solid fa-o' : '';
   }
-
-
-  showModal = false;
 
   // Open the modal
   openGiveUpModal() {
