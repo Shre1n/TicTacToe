@@ -217,9 +217,9 @@ export class GamesService {
    */
   isWinner(game: Game, user: User) {
     const userAsPlayer1IsWinning =
-      game.player1 === user && game.winningState === 'p1';
+      game.player1.id === user.id && game.winningState === 'p1';
     const userAsPlayer2IsWinning =
-      game.player2 === user && game.winningState === 'p2';
+      game.player2.id === user.id && game.winningState === 'p2';
 
     return userAsPlayer1IsWinning || userAsPlayer2IsWinning;
   }

@@ -1,0 +1,70 @@
+@if (this.adminService.error.length === 0) {
+    <div class="container-fluid">
+        <h1 class="mt-4 mb-3"> Stats from {{ this.adminService.selectedUser }}</h1>
+        <div class="justify-content-start align-items-start">
+
+            <div class="card">
+                @if (this.adminService.userGames.length === 0) {
+                    <p class="text-center m-3 p-2">No Games Played yet!</p>
+                }
+                @if (this.adminService.userGames.length > 0) {
+                    <div class="row p-3">
+                        @for (game of this.adminService.userGames; track game) {
+                            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                                <div class="card">
+                                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                                        <!-- Tic-Tac-Toe Board -->
+                                        <app-ttt-board [board]="game.board"></app-ttt-board>
+
+                                        <!-- Game Info -->
+                                        <div class="game-info d-flex justify-content-between mt-3">
+                                            <!-- Player 1 Info -->
+                                            <div class="text-start me-3">
+                                                @if (game.playerIdentity === 1) {
+                                                    <i class="icon-x"></i>
+                                                } @else {
+                                                    <i class="icon-o"></i>
+                                                }
+                                                <p class="mb-0"><strong>{{ game.player.username }}</strong></p>
+                                                <small class="text-muted">(Elo: {{ game.player.elo }})</small>
+                                            </div>
+
+                                            <!-- Player 2 Info -->
+                                            <div class="text-end ms-3">
+
+                                                @if (game.playerIdentity === 2) {
+                                                    <i class="icon-x"></i>
+                                                } @else {
+                                                    <i class="icon-o"></i>
+                                                }
+                                                <p class="mb-0"><strong>{{ game.opponent.username }}</strong></p>
+                                                <small class="text-muted">(Elo: {{ game.opponent.elo }})</small>
+                                            </div>
+                                        </div>
+
+                                        <!-- Winner Information -->
+                                        <!-- todo: Styling -->
+                                        @if (game.outcome === GameResult.Self) {
+                                            <p class="text-center mt-3">
+                                                <strong>Winner:</strong> {{ game.player.username }}
+                                            </p>
+                                        } @else if (game.outcome === GameResult.Opponent) {
+                                            <p class="text-center mt-3">
+                                                <strong>Winner:</strong> {{ game.opponent.username }}</p>
+                                        } @else {
+                                            <p class="text-center mt-3"><strong>Draw!</strong></p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+} @else {
+    <div class="container-fluid">
+        <h1 class="mt-4 ms-4">{{ this.adminService.error }}</h1>
+    </div>
+}

@@ -1,0 +1,27 @@
+<div class="container-fluid mt-4">
+  <h2 class="mb-4">User List</h2>
+  <table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+    <tr>
+      <th scope="col">Username</th>
+      <th scope="col">Elo</th>
+      <th scope="col">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (user of adminService.users; track user) {
+        <tr>
+          @if (user.username !== "admin") {
+            <td>{{ user.username }}</td>
+            <td>{{ user.elo }}</td>
+            <td>
+              <div class="row"></div>
+              <button class="btn btn-primary btn-sm" (click)="inspectUser(user.username)">Inspect</button>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+

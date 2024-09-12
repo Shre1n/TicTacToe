@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { map, mergeMap, of } from 'rxjs';
 import { UserService } from '../../../User/user.service';
 import { ToastService } from '../../../Notifications/toast-menu/services/toast.service';
+import { UserState } from '../../../User/interfaces/userDto';
 
 @Injectable({
   providedIn: 'root'
@@ -24,9 +25,13 @@ export class TictactoeService {
     private userService: UserService,
     private toastService: ToastService,
   ) {
+    userService.userDataLoaded.subscribe(() => {
+      if(userService.user?.state === UserState.Playing)
+        this.loadFromApi();
+    });
+
     this.socketService.onMoveMade().subscribe((update: GameUpdateDto) => {
       if (!this.game) return;
-
       this.game.turn = update.turn;
       this.game.board = update.board;
       if (update.isFinished) {
