@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component} from '@angular/core';
 import { Router } from '@angular/router';
 import { LogoutService } from '../../Auth/logout/services/logout.service';
 import { UserService } from '../../User/user.service';
@@ -8,7 +8,6 @@ import {NgClass} from "@angular/common";
 import {StatusIndikatorComponent} from "../../User/status-indikator/status-indikator.component";
 import {ToastMenuComponent} from "../../Notifications/toast-menu/toast-menu.component";
 import {ToastContainerComponent} from "../../Notifications/toast-menu/toast-container/toast-container.component";
-import {ToastService} from "../../Notifications/toast-menu/services/toast.service";
 import {ToastMessageSavingComponent} from "../../Notifications/toast-message-saving/toast-message-saving.component";
 
 @Component({
@@ -31,9 +30,7 @@ export class PlayNowComponent{
     private router: Router,
     private logOut: LogoutService,
     private socketService: SocketService,
-    public userService: UserService,
-    private toaster: ToastService,
-    ) {}
+    public userService: UserService) {}
 
 
 
@@ -48,7 +45,7 @@ export class PlayNowComponent{
 
 
   navMatchMaking(){
-    if (this.userService.getUserState() === UserState.Ready) {
+    if (this.userService.getUserState() === UserState.Ready && !this.userService.isAdmin()) {
       this.socketService.enterQueue();
       this.userService.setWaiting();
     }
