@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import { ApiEndpoints } from '../../../../api-endpoints';
 import {ProfileDto} from "../../interfaces/profile.dto";
 import {UserStatsDto} from "../../interfaces/user-stats.dto";
