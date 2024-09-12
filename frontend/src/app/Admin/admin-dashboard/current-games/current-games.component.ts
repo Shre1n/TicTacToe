@@ -46,7 +46,7 @@ export class CurrentGamesComponent {
   }
 
   spectateGame(game: GameDto){
-    this.tictactoeservice.initGameBoard(game, true);
+    this.adminService.loadGame(game.player1.username);
     this.socketService.enterSpectate(game.player1.username);
     this.adminService.getProfilePicture(game.player1.profilePictureId).subscribe((data)=> {
       if (this.tictactoeservice.game?.player1){
