@@ -8,22 +8,30 @@ import { ApiEndpoints } from '../../../api-endpoints';
 import { Router } from '@angular/router';
 import { map, mergeMap, of } from 'rxjs';
 import { UserService } from '../../../User/user.service';
+import { ToastService } from '../../../Notifications/toast-menu/services/toast.service';
+import { UserState } from '../../../User/interfaces/userDto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TictactoeService {
   public game?: GameDto;
+  public isSpectating = false;
 
   constructor(
     private http: HttpClient,
     private router: Router,
     private socketService: SocketService,
     private userService: UserService,
+    private toastService: ToastService,
   ) {
+    userService.userDataLoaded.subscribe(() => {
+      if(userService.user?.state === UserState.Playing)
+        this.loadFromApi();
+    });
+
     this.socketService.onMoveMade().subscribe((update: GameUpdateDto) => {
       if (!this.game) return;
-
       this.game.turn = update.turn;
       this.game.board = update.board;
       if (update.isFinished) {
@@ -38,9 +46,15 @@ export class TictactoeService {
       if (!this.game) return;
 
       this.game.turn = 0;
-      alert('The other player has given up!');
-      this.userService.setReady();
-      this.router.navigate(['']).then();
+      if (!this.isSpectating) {
+        this.toastService.show('success', 'You won the game', 'The other player has given up!', 6, true)
+        this.router.navigate(['']).then();
+        this.userService.setReady();
+      } else {
+        this.toastService.show('success', 'The Game ended!', 'A player has given up!', 6, true)
+        this.router.navigate(['/admin']);
+      }
+      this.game = undefined
     });
   }
 
@@ -62,8 +76,9 @@ export class TictactoeService {
       });
   }
 
-  initGameBoard(game: GameDto){
+  initGameBoard(game: GameDto, isSpectating: boolean = false) {
     this.game = game;
+    this.isSpectating = isSpectating;
   }
 
   profilePicturePipe(player: number) {
@@ -95,26 +110,35 @@ export class TictactoeService {
   }
 
   giveUp() {
-    if (!this.game || this.game.isFinished) return;
+    if (!this.game) return;
 
     this.game.turn = 0;
     this.socketService.giveUp();
-    alert('You have given up!');
+    this.toastService.show('error', 'You lost the game', 'You have given up!', 6, false)
     this.router.navigate(['']).then();
     this.userService.setReady();
+    this.game = undefined
   }
 
   showGameOverAlert() {
-    if (!this.game || this.game.isFinished) return;
-
-    if (this.game.winner === "draw")
-      alert('is draw!');
-    else if (this.game.winner === "p1") {
-      alert('Congratulations, you won!');
+    if (!this.game) return;
+    if (this.isSpectating) {
+      if (this.game.winner === 'draw')
+        this.toastService.show('success', 'The game ended!', 'The game ended in a draw!', 6, true)
+      else
+        this.toastService.show('success', 'The game ended!', `${this.game.winner === 'p1' ? this.game.player1.username : this.game.player2.username} has won the game!`, 6, true)
+      this.router.navigate(['/admin']);
     } else {
-      alert('You lost. Better luck next time!');
+      if (this.game.winner === "draw")
+        this.toastService.show('warning', 'Draw!', 'Your game ended in a draw!', 6, true)
+      else if ((this.game.winner === "p1" && this.game.playerIdentity === 1) || (this.game.winner === "p2" && this.game.playerIdentity === 2)) {
+        this.toastService.show('success', 'You won the game!', 'Congratulations, you won!', 6, true)
+      } else {
+        this.toastService.show('error', 'Game Over!', `You lost the game!`, 6, true)
+      }
+      this.router.navigate(['']).then();
     }
-    this.router.navigate(['']).then();
+      this.game = undefined
   }
 
   getPlayer() {

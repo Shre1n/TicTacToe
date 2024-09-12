@@ -101,4 +101,8 @@ export class AdminService {
         });
     }
   }
+
+  getProfilePicture(id: number) {
+    return this.http.get(`${ApiEndpoints.AVATAR}/${id}`, {responseType: 'arraybuffer'});
+  }
 }

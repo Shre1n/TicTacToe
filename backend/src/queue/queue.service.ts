@@ -25,6 +25,17 @@ export class QueueService {
   }
 
   /**
+   * Returns the Time a given user is waiting for a match
+   * @param user
+   */
+  getWaitingTime(user: User) {
+    return this.queue
+      .filter((q) => q.player.id === user.id)
+      .map((q) => Date.now() - q.entryTime.getTime())
+      .pop();
+  }
+
+  /**
    * Checks if player is currently in queue
    * @param player - user that is checked
    */
@@ -48,9 +59,6 @@ export class QueueService {
 
     // Only 1 matching candidate
     if (candidates.length == 1) {
-      this.queue = this.queue.filter(
-        (x) => x.player.id !== candidates[0].player.id,
-      );
       return candidates[0];
     }
 
