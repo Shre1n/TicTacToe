@@ -1,31 +1,28 @@
-import { Component } from '@angular/core';
+import {AfterContentChecked, Component, EventEmitter, Input, Output} from '@angular/core';
 import {AdminService} from "../admin-dashboard/services/admin.service";
+import {NgClass} from "@angular/common";
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [],
+  imports: [
+    NgClass
+  ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css'
 })
-export class UserListComponent {
+export class UserListComponent{
 
-  expandedUser: string | null = null;
+  @Output() onInspect:EventEmitter<string> = new EventEmitter();
 
   constructor(public adminService: AdminService) {
   }
 
-  toggleExpand(username: string) {
-    if (this.expandedUser === username) {
-      this.expandedUser = null;
-    } else {
-      this.expandedUser = username;
-    }
-  }
 
-  inspectUser(username: string, event: MouseEvent) {
-    event.stopPropagation();
-    console.log(`Inspecting user: ${username}`);
+
+
+  inspectUser(username: string) {
+    this.onInspect.emit(username);
   }
 
 }

@@ -13,6 +13,7 @@ import { GameResult } from '../../Game/interfaces/matchDto';
 import { TictactoeService } from '../../Game/tic-tac-toe/services/tictactoe.service';
 import { SocketService } from '../../Socket/socket.service';
 import {UserListComponent} from "../user-list/user-list.component";
+import {PlayerStatsComponent} from "./player-stats/player-stats.component";
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -26,6 +27,7 @@ import {UserListComponent} from "../user-list/user-list.component";
     TttBoardComponent,
     WaitingPlayersComponent,
     UserListComponent,
+    PlayerStatsComponent,
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
@@ -40,7 +42,6 @@ export class AdminDashboardComponent implements OnInit {
   searchText: string = '';
   usernameHints: string[] = [];
   selectedGame: GameDto | null = null;
-  userToInspect: string = "";
   viewUsers: boolean = false;
 
 
@@ -65,19 +66,25 @@ export class AdminDashboardComponent implements OnInit {
     this.logOut.logout();
   }
 
+  setSearchText($event: string){
+    this.searchText = $event;
+    this.viewUsers = false;
+    this.onSearch();
+  }
+
   toggleSidebars(side: string) {
-    const leftSidebar = document.getElementById(`${side}-sidebar-wrapper`);
+    const sidebar = document.getElementById(`${side}-sidebar-wrapper`);
     const wrapper = document.getElementById('wrapper');
 
-    if (leftSidebar && wrapper) {
+    if (sidebar && wrapper) {
       if (wrapper.classList.contains(`toggled-${side}`)) {
         setTimeout(() => {
 
-          leftSidebar.style.display = 'none';
+          sidebar.style.display = 'none';
           wrapper.classList.remove(`toggled-${side}`);
         }, 250);
       } else {
-        leftSidebar.style.display = 'block';
+        sidebar.style.display = 'block';
         setTimeout(() => {
           wrapper.classList.add(`toggled-${side}`);
         }, 10);
@@ -105,30 +112,26 @@ export class AdminDashboardComponent implements OnInit {
 
   getSearchTextFromChild($event: string){
     this.searchText = $event;
-    this.displayUserToInspect($event);
+    // this.displayUserToInspect($event);
     this.adminService.searchUsers(this.searchText);
   }
 
-  displayUserToInspect(text: string) {
-    this.userToInspect = "Stats from " + text;
-  }
 
   onSearch() {
     this.adminService.searchUsers(this.searchText);
-    this.displayUserToInspect(this.searchText);
+    if (this.viewUsers)
+      this.viewUsers = false;
     this.usernameHints = [];
   }
 
   onKeyDown(event: KeyboardEvent) {
     if (event.key === "Enter") {
-      this.displayUserToInspect(this.searchText);
       this.onSearch();
     }
   }
 
   selectUser(username: string) {
     this.searchText = username;
-    this.displayUserToInspect(this.searchText);
     this.showElement("searchResults","hidden");
 
   }

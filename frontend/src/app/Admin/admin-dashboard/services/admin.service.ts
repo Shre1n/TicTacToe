@@ -27,6 +27,8 @@ export class AdminService {
 
   error: string = "";
 
+  selectedUser?: string;
+
 
   constructor(
     private http: HttpClient,
@@ -89,7 +91,12 @@ export class AdminService {
   }
 
   searchUsers(query: string): void {
+    this.userGames = [];
+    this.selectedUser = undefined;
+    this.userStats = undefined;
+
     if (query.length > 0) {
+      this.selectedUser = query;
       this.http.get<ProfileDto>(`${ApiEndpoints.USER}/${query}`).subscribe({
         next: (response: ProfileDto) => {
           this.userGames = response.matchHistory;

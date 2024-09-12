@@ -6,8 +6,16 @@
           (click)="selectGame(game, $event)"
           [ngClass]="{'expanded': selectedGame === game}">
 
-        {{ game.player1.username }} vs {{ game.player2.username }}
-
+        <div class="row">
+          <div class="col-12 text-start mb-1 text-body-secondary">
+            {{game.createdAt | date: "dd. MMM hh:mm" }} Uhr
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 text-end">
+           {{ game.player1.username }} vs {{ game.player2.username }}
+          </div>
+        </div>
         <!-- Buttons anzeigen, wenn das Spiel ausgewählt ist -->
         @if (selectedGame === game){
         <div class="button-container mt-2">

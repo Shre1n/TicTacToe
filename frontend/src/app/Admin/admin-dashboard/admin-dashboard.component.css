@@ -21,7 +21,6 @@
   flex-grow: 1; /* Lässt den Hauptinhalt sich ausdehnen */
   padding: 20px;
   overflow-y: auto;
-  width: calc(100% - 15rem); /* Platz für die ausgefahrene Sidebar links */
   box-sizing: border-box;
 }
 
@@ -45,7 +44,6 @@
 }
 
 #wrapper.toggled-right #right-sidebar-wrapper {
-  display: block;
   transform: translateX(0);
 }
 

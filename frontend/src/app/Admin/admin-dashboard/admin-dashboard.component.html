@@ -52,77 +52,18 @@
       <button class="btn btn-primary" id="menu-toggle-right" (click)="toggleSidebars('right')">Waiting Players</button>
     </nav>
 
-    @if (viewUsers){
-      <app-user-list></app-user-list>
+    @if (viewUsers) {
+      <app-user-list (onInspect)="setSearchText($event)"></app-user-list>
+    } @else if(this.adminService.selectedUser) {
+      <app-player-stats></app-player-stats>
     }
 
-    @if (this.adminService.error.length === 0 && !viewUsers) {
-      <div class="container-fluid">
-        <h1 class="mt-4 ms-4">{{ userToInspect }}</h1>
-        <div class="justify-content-start align-items-start">
-          @if (this.adminService.userGames.length > 0) {
-            <div class="card">
-              @for (game of this.adminService.userGames; track game) {
-                <div class="card">
-                  <div class="card-body d-flex flex-column align-items-center justify-content-center">
-                    <!-- Tic-Tac-Toe Board -->
-                    <app-ttt-board [board]="game.board"></app-ttt-board>
+    <!-- /#page-content-wrapper -->
 
-                    <!-- Game Info -->
-                    <div class="game-info d-flex justify-content-between mt-3">
-                      <!-- Player 1 Info -->
-                      <div class="text-start me-3">
-                        @if (game.playerIdentity === 1) {
-                          <i class="icon-x"></i>
-                        } @else {
-                          <i class="icon-o"></i>
-                        }
-                        <p class="mb-0"><strong>{{ game.player.username }}</strong></p>
-                        <small class="text-muted">(Elo: {{ game.player.elo }})</small>
-                      </div>
-
-                      <!-- Player 2 Info -->
-                      <div class="text-end ms-3">
-
-                        @if (game.playerIdentity === 2) {
-                          <i class="icon-x"></i>
-                        } @else {
-                          <i class="icon-o"></i>
-                        }
-                        <p class="mb-0"><strong>{{ game.opponent.username }}</strong></p>
-                        <small class="text-muted">(Elo: {{ game.opponent.elo }})</small>
-                      </div>
-                    </div>
-
-                    <!-- Winner Information -->
-                    <!-- todo: Styling -->
-                    @if (game.outcome === GameResult.Self) {
-                      <p class="text-center mt-3"><strong>Winner:</strong> {{ game.player.username }}</p>
-                    } @else if (game.outcome === GameResult.Opponent) {
-                      <p class="text-center mt-3"><strong>Winner:</strong> {{ game.opponent.username }}</p>
-                    } @else {
-                      <p class="text-center mt-3"><strong>Draw!</strong></p>
-                    }
-                  </div>
-                </div>
-              }
-            </div>
-          }
-        </div>
-      </div>
-    } @else {
-      <div class="container-fluid">
-        <h1 class="mt-4 ms-4">{{ this.adminService.error }}</h1>
-      </div>
-    }
   </div>
-  <!-- /#page-content-wrapper -->
-
-
   <!-- Right Sidebar for Matchmaking Queue -->
   <div class="border-left" id="right-sidebar-wrapper">
     <app-waiting-players></app-waiting-players>
   </div>
   <!-- /#right-sidebar-wrapper -->
-
 </div>

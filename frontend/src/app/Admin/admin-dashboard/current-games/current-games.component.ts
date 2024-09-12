@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {AdminService} from "../services/admin.service";
 import { GameDto } from '../../../Game/interfaces/gamesDto';
-import {NgClass} from "@angular/common";
+import {DatePipe, NgClass} from "@angular/common";
 import {TictactoeService} from "../../../Game/tic-tac-toe/services/tictactoe.service";
 import {SocketService} from "../../../Socket/socket.service";
 import {Router} from "@angular/router";
@@ -10,7 +10,8 @@ import {Router} from "@angular/router";
   selector: 'app-current-games',
   standalone: true,
   imports: [
-    NgClass
+    NgClass,
+    DatePipe
   ],
   templateUrl: './current-games.component.html',
   styleUrl: './current-games.component.css'

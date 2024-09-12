@@ -3,10 +3,29 @@
   <ul class="list-group">
     @for (player of this.adminService.matchMakingQueue; track player.username) {
       <li class="list-group-item">
-        {{ player.username }}
-        {{ player.elo }}
-        {{ player.entryTime }}
+        <div class="row">
+          <div class="col-12 text-end mb-1 text-body-secondary">
+            {{ player.entryTime | date: "dd. MMM hh:mm"}} Uhr
+          </div>
+          <div class="row">
+            <div class="col-6 text-end">
+              Username:
+            </div>
+            <div class="col-6">
+              {{ player.username }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 text-end">
+              Elo:
+            </div>
+            <div class="col-6">
+              {{ Math.floor(player.elo) }}
+            </div>
+          </div>
+        </div>
       </li>
     }
   </ul>
 </div>
+
