@@ -14,16 +14,10 @@
     </div>
 
     <hr class="border-light m-0">
-    <div class="card-body">
-      <div class="form-group">
-        <label class="form-label">Your Name: </label>
-        <input type="text" class="form-control mb-1" value='{{this.userService.user?.username}}'>
-      </div>
-    </div>
     <div id="account-info">
       <div class="card-body pb-2">
         <div class="form-group">
-          <label class="form-label"> Your Elo-Points: {{ this.userService.user?.elo }}</label>
+          <label class="form-label"> Your Elo-Points: <strong> {{ this.userService.user?.elo }}</strong> </label>
         </div>
       </div>
     </div>

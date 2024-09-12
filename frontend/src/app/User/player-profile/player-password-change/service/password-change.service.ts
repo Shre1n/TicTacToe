@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import { ApiEndpoints } from '../../../../api-endpoints';
 
 @Injectable({
@@ -13,25 +13,22 @@ export class PasswordChangeService {
 
   changePassword(oldPassword: string, newPassword: string) {
 
-    this.http.put<HttpResponse<any>>(ApiEndpoints.ME, {oldPassword: oldPassword, newPassword: newPassword}, {observe: 'response'}).subscribe({
-      next: (response: HttpResponse<any>) => {
-        switch (response?.status) {
-          case 200:
-            alert("Passwortänderung erfolgreich!");
-            break;
+    this.http.put(ApiEndpoints.ME, {oldPassword: oldPassword, newPassword: newPassword}).subscribe({
+      next: () => {
+        alert("Password change successful!");
+      },
+      error: (err: HttpErrorResponse) => {
+        switch (err.status) {
           case 400:
-            alert('Invalide Eingaben!');
+            alert('Invalid entries!');
             break;
           case 403:
-            alert("Die Angaben ware nicht richtig!")
+            alert("The information was incorrect!")
             break;
           default:
-            alert('Ungewöhnlicher Error!');
+            alert('Unusual error!');
             break;
         }
-      },
-      error: () => {
-        alert("Fehler beim ändern des Passwortes.")
       }
     });
   }

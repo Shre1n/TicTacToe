@@ -4,6 +4,8 @@ import { ApiEndpoints } from '../../../../api-endpoints';
 import {ProfileDto} from "../../interfaces/profile.dto";
 import {UserStatsDto} from "../../interfaces/user-stats.dto";
 import {MatchDto} from "../../../../Game/interfaces/matchDto";
+import {UserDto} from "../../../interfaces/userDto";
+import {UserService} from "../../../user.service";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,8 @@ export class PlayerContentService {
   public stats?: UserStatsDto
   public matchhistory: MatchDto[] = []
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,private userService: UserService,
+  ) {
   }
 
   onUpload(file: File | null) {
@@ -22,25 +25,21 @@ export class PlayerContentService {
       formData.append('avatar', file);
       formData.append('title', 'my nice avatar');
 
-      this.http.post<HttpResponse<any>>(ApiEndpoints.USERAVATAR, formData, {observe: 'response'}).subscribe({
-        next: (response: HttpResponse<any>) => {
-          switch (response.status) {
-            case 201:
-              alert('Erfolgreich dein Bild hochgeladen!');
-              break;
-            case 422:
-              alert('Nicht unterstützter Dateityp!');
-              break;
-            default:
-              alert('Unbekannter Fehler!');
-          }
+      this.http.post<UserDto>(ApiEndpoints.USERAVATAR, formData).pipe(this.userService.profilePicturePipe()).subscribe({
+        next: (response: UserDto) => {
+          this.userService.setUserData(response)
+          alert('Your image uploaded successfully!');
         },
-        error: () => {
-          alert('Fehler bei der Hochladung des Bildes!');
+        error: (err: HttpErrorResponse) => {
+          if (err.status === 422) {
+            alert('Unsupported file type!');
+          }else {
+            alert('Error uploading the image!');
+          }
         }
       });
     } else {
-      alert('Bitte wähle eine Datei aus!');
+      alert('Please select a file!');
     }
   }
 
