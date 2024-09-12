@@ -12,14 +12,11 @@
 
               <!-- Game Info -->
               <div class="d-flex justify-content-center align-items-center">
-                <p>Your overall Timeplay: <strong>
-                  {{ Math.floor(game.duration / 60000).toString().padStart(2, '0') }}:
-                  {{ Math.floor((game.duration % 60000) / 1000).toString().padStart(2, '0') }} minutes
+                <p>Game duration: <strong>
+                  {{ Math.floor(game.duration / 60000).toString().padStart(2, '0') }}:{{ Math.floor((game.duration % 60000) / 1000).toString().padStart(2, '0') }} minutes
                 </strong></p>
               </div>
-              <div class="d-flex justify-content-center align-items-center">
-                <p>The Elo-points gained: <strong>{{ Math.floor(game.eloGain) }}</strong></p>
-              </div>
+
               <div class="game-info d-flex justify-content-between">
                 <!-- Player Info -->
                 <div class="d-flex flex-column align-items-center">
