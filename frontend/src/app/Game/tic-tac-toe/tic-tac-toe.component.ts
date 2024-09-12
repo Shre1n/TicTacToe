@@ -17,12 +17,13 @@ import {Router} from "@angular/router";
 })
 export class TicTacToeComponent implements OnInit{
 
+  showModal = false;
+
   constructor(
     public tictactoeService: TictactoeService,
     private router: Router,
     ) {
   }
-
 
   ngOnInit() {
     this.tictactoeService.loadFromApi();
@@ -36,8 +37,20 @@ export class TicTacToeComponent implements OnInit{
     return cell === 1 ? 'fa-solid fa-x' : cell === 2 ? 'fa-solid fa-o' : '';
   }
 
-  giveUp(){
+  // Open the modal
+  openGiveUpModal() {
+    this.showModal = true;
+  }
+
+  // Close the modal
+  closeGiveUpModal() {
+    this.showModal = false;
+  }
+
+  // Confirm give up
+  confirmGiveUp() {
     this.tictactoeService.giveUp();
+    this.closeGiveUpModal();
   }
 
   back(){
