@@ -23,7 +23,6 @@ export class TicTacToeComponent implements OnInit{
     ) {
   }
 
-
   ngOnInit() {
     this.tictactoeService.loadFromApi();
   }
@@ -37,7 +36,28 @@ export class TicTacToeComponent implements OnInit{
   }
 
   giveUp(){
+    const confirmed = confirm('Are you sure you want to give up the game?');
+    if (confirmed) {
+      this.tictactoeService.giveUp();
+    }
+  }
+
+  showModal = false;
+
+  // Open the modal
+  openGiveUpModal() {
+    this.showModal = true;
+  }
+
+  // Close the modal
+  closeGiveUpModal() {
+    this.showModal = false;
+  }
+
+  // Confirm give up
+  confirmGiveUp() {
     this.tictactoeService.giveUp();
+    this.closeGiveUpModal();
   }
 
   back(){

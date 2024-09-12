@@ -10,7 +10,26 @@
     </span>
 
     <!-- Give Up Button (Center) -->
-    <button class="btn btn-danger-led" (click)="giveUp()">Give Up</button>
+    <button class="btn btn-danger-led" (click)="openGiveUpModal()">Give Up</button>
+
+    <!-- Modal for Confirmation -->
+    <div class="modal" tabindex="-1" role="dialog" [ngClass]="{'show': showModal}">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirm Give Up</h5>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to give up? You will lose Elo-Points</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" (click)="confirmGiveUp()">Yes, give up</button>
+            <button type="button" class="btn btn-secondary" (click)="closeGiveUpModal()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
 
     <!-- Opponent Info (Right) -->
