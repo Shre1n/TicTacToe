@@ -117,8 +117,8 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.queueService.removePlayer(preGame.player2);
 
       const game = await this.gameService.createGame(
-        preGame.player1.id,
-        preGame.player2.id,
+        preGame.player1,
+        preGame.player2,
       );
 
       this.server
