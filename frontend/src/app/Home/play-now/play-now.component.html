@@ -2,7 +2,8 @@
   <div class="container-fluid d-flex justify-content-between">
     <!-- Gamepad Icon and Back Button (Left) -->
     <div class="d-flex justify-content-center">
-    <app-status-indikator></app-status-indikator>
+      <app-status-indikator></app-status-indikator>
+      <button class="btn btn-primary " (click)="navToAdminDashboard()">Admin Dashboard</button>
     </div>
 
     <!-- User Info, Profile Picture, and Logout Button (Right) -->
@@ -32,7 +33,7 @@
         Compete against other players in an exciting TicTacToe match!
         Use our matchmaking system to find an opponent and start playing straight away.
     </p>
-    <button class="btn led-button mt-4" (click)="navMatchMaking()">Play Now</button>
+    <button class="btn led-button mt-4" (click)="navMatchMaking()" [disabled]="userService.isAdmin()">Play Now</button>
   </div>
 </section>
 <app-toast-message-saving></app-toast-message-saving>
