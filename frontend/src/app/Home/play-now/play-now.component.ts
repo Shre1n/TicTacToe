@@ -45,7 +45,7 @@ export class PlayNowComponent{
 
 
   navMatchMaking(){
-    if (this.userService.getUserState() === UserState.Ready && !this.userService.isAdmin()) {
+    if (this.userService.getUserState() === UserState.Ready) {
       this.socketService.enterQueue();
       this.userService.setWaiting();
     }

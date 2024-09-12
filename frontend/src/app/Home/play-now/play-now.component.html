@@ -32,7 +32,7 @@
         Compete against other players in an exciting TicTacToe match!
         Use our matchmaking system to find an opponent and start playing straight away.
     </p>
-    <button class="btn led-button mt-4" (click)="navMatchMaking()">Play Now</button>
+    <button class="btn led-button mt-4" (click)="navMatchMaking()" [disabled]="userService.isAdmin()">Play Now</button>
   </div>
 </section>
 <app-toast-message-saving></app-toast-message-saving>
