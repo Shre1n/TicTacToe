@@ -35,7 +35,6 @@ export class UserService {
         if (error.status === 401) {
           this.userLoadedSubject.next(true);
         }
-        this.toastService.show('error', "HTTP Error", "Error while loading userdata!");
       },
     });
   }
