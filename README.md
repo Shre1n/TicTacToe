@@ -49,3 +49,42 @@ Der SessionIO-Adapter erweitert die Standardausführung des Socket.IO-Adapters u
 
 #### Events
 In `events.ts` werden alle vom Server gesendeten und empfangenen Events festgelegt.
+
+
+## Frontend
+
+#### Login
+
+![img.png](assets/img.png)
+
+#### Play Now View
+
+![img_1.png](assets/img_1.png)
+
+#### Play Now View ohne Toast
+
+![img_3.png](assets/img_3.png)
+
+#### Matchmaking Seite
+
+![img_4.png](assets/img_4.png)
+
+#### TicTacToe Seite
+
+![img_5.png](assets/img_5.png)
+
+![img_6.png](assets/img_6.png)
+
+#### Player Profile
+![img.png](assets/img_7.png)
+
+#### Player Change Passwort
+![img_1.png](assets/img_8.png)
+
+
+#### Player Games
+![img_2.png](assets/img_9.png)
+
+
+#### Admin Dashboard
+![img_3.png](assets/img_10.png)
