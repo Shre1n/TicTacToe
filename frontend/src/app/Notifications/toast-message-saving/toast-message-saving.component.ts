@@ -44,7 +44,7 @@ export class ToastMessageSavingComponent implements AfterViewChecked{
     this.isToastSavingOpen = !this.isToastSavingOpen;
 
     if (this.isToastSavingOpen)
-      this.toastService.storedToasts.forEach(toast => toast.read = true);
+      this.toastService.storedToasts.forEach(toast => toast.read = false);
       this.unreadCount = 0;
   }
 
