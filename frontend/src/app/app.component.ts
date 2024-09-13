@@ -29,6 +29,7 @@ export class AppComponent implements OnInit {
         return
       }
       this.userService.setPlaying()
+      this.tictactoeService.loadFromApi();
       this.toastService.show('success', 'Game started!', `${opponent.username} is your opponent!` , 6, true );
     })
     this.socketService.onMoveMade().subscribe((game: GameUpdateDto) => {

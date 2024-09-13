@@ -3,11 +3,12 @@ import {LoginService} from "./services/login.service";
 import {FormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
 import { UserService } from '../../User/user.service';
-import { UserDto } from '../../User/interfaces/userDto';
+import { UserDto, UserState } from '../../User/interfaces/userDto';
 import { SocketService } from '../../Socket/socket.service';
 import {ToastService} from "../../Notifications/toast-menu/services/toast.service";
 import {ToastContainerComponent} from "../../Notifications/toast-menu/toast-container/toast-container.component";
 import {NgClass} from "@angular/common";
+import {TictactoeService} from '../../Game/tic-tac-toe/services/tictactoe.service';
 
 @Component({
   selector: 'app-login',
@@ -42,7 +43,8 @@ export class LoginComponent{
     private router: Router,
     private socketService: SocketService,
     private userService: UserService,
-    private toast:ToastService
+    private toast:ToastService,
+    private tictactoeService: TictactoeService
     ) {
   }
 
@@ -61,6 +63,11 @@ export class LoginComponent{
         }
         this.socketService.connect();
         this.toast.show('success', 'Success', "You logged in Successfully.");
+
+        if (response.state === UserState.Playing) {
+          this.tictactoeService.loadFromApi();
+          this.toast.show('warning', 'Ongoing Game!', 'You are currently playing a Game!', 8, true);
+        }
       },
       error: error => {
         this.isSubmitted = false;
