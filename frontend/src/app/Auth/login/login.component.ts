@@ -7,13 +7,15 @@ import { UserDto } from '../../User/interfaces/userDto';
 import { SocketService } from '../../Socket/socket.service';
 import {ToastService} from "../../Notifications/toast-menu/services/toast.service";
 import {ToastContainerComponent} from "../../Notifications/toast-menu/toast-container/toast-container.component";
+import {NgClass} from "@angular/common";
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
     FormsModule,
-    ToastContainerComponent
+    ToastContainerComponent,
+    NgClass
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -22,6 +24,10 @@ export class LoginComponent{
 
   username: string = '';
   password: string = '';
+
+  passwordFieldType: string = 'password';
+
+  isSubmitted: boolean = false;
 
   errors = new Map<string, string>();
 
@@ -40,34 +46,48 @@ export class LoginComponent{
     ) {
   }
 
+  togglePasswordVisibility() {
+    this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
+  }
+
+
+  checkAccess(){
+    this.loginService.login(this.username, this.password).pipe(this.userService.profilePicturePipe()).subscribe({
+      next: (response: UserDto) => {
+        this.isSubmitted = false;
+        this.userService.setUserData(response);
+        if (response.isAdmin) {
+          this.router.navigate(['/admin']);
+        }
+        this.socketService.connect();
+        this.toast.show('success', 'Success', "You logged in Successfully.");
+      },
+      error: error => {
+        this.isSubmitted = false;
+        if (error.status === 403) {
+          this.errors.set('_error', 'Username or Password is Invalid.');
+          this.toast.show('warning', 'Fehler', 'Username or Password is Invalid.', 10);
+        }
+      }
+    });
+  }
+
   onSubmit() {
+    if (this.isSubmitted)
+      return;
+    this.isSubmitted = true;
     this.errors.clear();
 
-    if (this.username.length == 0) {
-      this.errors.set('_username', 'Bitte gebe einen Nutzernamen ein.');
+    if (this.username.trim().length == 0) {
+      this.errors.set('_username', 'The Username should not be Empty.');
     }
-    if (this.password.length == 0) {
-      this.errors.set('_password', 'Bitte gebe ein Passwort ein.');
+    if (this.password.trim().length == 0) {
+      this.errors.set('_password', 'The Password should not be Empty.');
     }
 
 
     if (this.errors.size === 0) {
-      this.loginService.login(this.username, this.password).pipe(this.userService.profilePicturePipe()).subscribe({
-        next: (response: UserDto) => {
-          this.userService.setUserData(response)
-          if (response.isAdmin) {
-            this.router.navigate(['/admin']);
-          }
-          this.socketService.connect();
-          this.toast.show("success", "Erfolreich", "Sie haben sich erfolgreich Eingeloggt!",10, true);
-        },
-        error: error => {
-          if (error.status === 403) {
-            this.errors.set('_error', 'Der Nutzername oder das Passwort stimmt nicht.');
-            this.toast.show('warning', 'Fehler', 'Ungültiger Benutzername oder Passwort.', 10);
-          }
-        }
-      });
+      this.checkAccess();
     }
   }
 
