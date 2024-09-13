@@ -153,7 +153,7 @@ export class UsersController {
     description:
       'Gets the queue waiting time of the user. Returns 404 if user is not in queue',
   })
-  @ApiOkResponse({ description: 'Successful operation', type: 'number' })
+  @ApiOkResponse({ description: 'Successful operation', type: Number })
   @ApiNotFoundResponse({ description: 'The user is not waiting in the queue' })
   async getWaitingTime(@Session() session: SessionData): Promise<number> {
     const waitingTime = this.usersService.getWaitingTime(session.user);

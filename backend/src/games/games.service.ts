@@ -77,7 +77,11 @@ export class GamesService {
   async handleGameOver(game: Game) {
     if (!game.isFinished) return;
     await this.updateElo(game);
-    game.duration = Date.now() - game.createdAt.getTime();
+    const gameCreatedAt =
+      game.createdAt instanceof Date
+        ? game.createdAt
+        : new Date(game.createdAt);
+    game.duration = Date.now() - gameCreatedAt.getTime();
   }
 
   /**

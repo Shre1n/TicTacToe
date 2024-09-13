@@ -20,7 +20,7 @@
       <img src="{{ this.userService.user?.profilePictureUrl ?? './assets/steve.jpeg'}}" alt="Your Profile" class="profile-img your-profile-img" #yourProfile>
   </div>
   <div class="middle" #middle>
-    <div class="timer">{{ formattedTime }}</div>
+    <div class="timer">{{ timeElapsed | date: 'mm:ss' }}</div>
     <div class="vs-text">VS</div>
     <button class="cancel-button" (click)="cancelMatchmaking()">Abbrechen</button>
   </div>
