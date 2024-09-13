@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserDto, UserState } from './interfaces/userDto';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, map, mergeMap, Observable, of } from 'rxjs';
+import {BehaviorSubject, map, mergeMap, Observable, of, Timestamp} from 'rxjs';
 import { SocketService } from '../Socket/socket.service';
 import { ApiEndpoints } from '../api-endpoints';
 import { ToastService } from '../Notifications/toast-menu/services/toast.service';
@@ -15,6 +15,8 @@ export class UserService {
   private userLoadedSubject = new BehaviorSubject<boolean>(false);
   userDataLoaded: Observable<boolean> = this.userLoadedSubject.asObservable();
 
+  queueWaitingTime?: Date;
+
   constructor(private http: HttpClient, private socketService: SocketService, private toastService: ToastService) { }
 
   profilePicturePipe() {
@@ -22,6 +24,17 @@ export class UserService {
       .pipe(map(pic => {
         return {...user, profilePictureUrl: URL.createObjectURL(new Blob([pic]))}
       })) : of(user));
+  }
+
+  setElapsedTimeInQueue(){
+    this.http.get<Date>(ApiEndpoints.USERWAITINGTIME).subscribe({
+      next: (elapsedTime: Date) => {
+        this.queueWaitingTime = elapsedTime;
+      }, error: (err: HttpErrorResponse) => {
+        this.toastService.show('error', "Error", "Something went wrong.");
+      }
+    });
+    return this.queueWaitingTime;
   }
 
   loadUserData() {
@@ -73,9 +86,5 @@ export class UserService {
 
   setUserData(data: UserDto) {
     this.user = data;
-  }
-
-  getWaitingTime() {
-    return this.http.get<number>(ApiEndpoints.USERWAITINGTIME);
   }
 }

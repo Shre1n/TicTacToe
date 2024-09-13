@@ -1,6 +1,6 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnChanges, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Router} from "@angular/router";
-import {NgOptimizedImage} from "@angular/common";
+import {DatePipe, NgOptimizedImage} from "@angular/common";
 import { UserService } from '../../User/user.service';
 import { SocketService } from '../../Socket/socket.service';
 import {StatusIndikatorComponent} from "../../User/status-indikator/status-indikator.component";
@@ -12,13 +12,14 @@ import { ToastService } from '../../Notifications/toast-menu/services/toast.serv
   standalone: true,
   imports: [
     NgOptimizedImage,
-    StatusIndikatorComponent
+    StatusIndikatorComponent,
+    DatePipe
   ],
   templateUrl: './match-making.component.html',
   styleUrl: './match-making.component.css'
 })
-export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
-  timeElapsed: number = 0;
+export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit{
+  timeElapsed: Date | undefined;
   interval: any;
   found: boolean = false;
   opponent?: UserDto;
@@ -39,11 +40,12 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-    this.startTimer();
-    this.userService.getWaitingTime().subscribe(time => {
-      this.timeElapsed = time / 1000;
-    });
+    this.timeElapsed = this.userService.setElapsedTimeInQueue();
+    setInterval(() => {
+      this.timeElapsed = this.userService.setElapsedTimeInQueue();
+    },1000);
   }
+
 
   ngAfterViewInit() {
     this.socketService.onGameStarted().pipe(this.userService.profilePicturePipe()).subscribe((opponent: UserDto) => {
@@ -63,11 +65,6 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  startTimer() {
-    this.interval = setInterval(() => {
-      this.timeElapsed++;
-    }, 1000);
-  }
 
 
   unfoldSides() {
@@ -79,17 +76,11 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
     this.middle.nativeElement.classList.add('hide-middle');
   }
 
-
-  get formattedTime(): string {
-    const minutes = Math.floor(this.timeElapsed / 60).toString().padStart(2, '0');
-    const seconds = Math.floor(this.timeElapsed % 60).toString().padStart(2, '0');
-    return `${minutes}:${seconds}`;
-  }
-
   ngOnDestroy() {
     if (this.interval) {
       clearInterval(this.interval);
     }
+
   }
 
   cancelMatchmaking() {

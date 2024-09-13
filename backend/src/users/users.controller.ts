@@ -96,8 +96,9 @@ export class UsersController {
   @ApiOkResponse({ description: 'Successful operation', type: UserDto })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   async getUserInfo(@Session() session: SessionData): Promise<UserDto> {
-    const user: UserDto =
-      await this.usersService.getCurrentUserInformation(session);
+    const user: UserDto = await this.usersService.getCurrentUserInformation(
+      session.user,
+    );
     user.isAdmin = session.user.isAdmin;
     return user;
   }
@@ -153,7 +154,7 @@ export class UsersController {
     description:
       'Gets the queue waiting time of the user. Returns 404 if user is not in queue',
   })
-  @ApiOkResponse({ description: 'Successful operation', type: 'number' })
+  @ApiOkResponse({ description: 'Successful operation', type: Number })
   @ApiNotFoundResponse({ description: 'The user is not waiting in the queue' })
   async getWaitingTime(@Session() session: SessionData): Promise<number> {
     const waitingTime = this.usersService.getWaitingTime(session.user);
@@ -193,7 +194,7 @@ export class UsersController {
       session.user,
       newProfilePicture,
     );
-    return await this.usersService.getCurrentUserInformation(session);
+    return await this.usersService.getCurrentUserInformation(session.user);
   }
 
   @Get('avatar/:id')
