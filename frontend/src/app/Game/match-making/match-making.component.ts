@@ -48,6 +48,8 @@ export class MatchMakingComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     this.socketService.onGameStarted().pipe(this.userService.profilePicturePipe()).subscribe((opponent: UserDto) => {
       this.opponent = opponent;
+      if (this.router.url !== '/game')
+        return;
       setTimeout(() => {
         this.found = true;
         setTimeout(() => {
