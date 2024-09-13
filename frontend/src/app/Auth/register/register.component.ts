@@ -4,12 +4,15 @@ import {FormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
 import { UserDto } from '../../User/interfaces/userDto';
 import { UserService } from '../../User/user.service';
+import {ToastService} from "../../Notifications/toast-menu/services/toast.service";
+import {NgClass} from "@angular/common";
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [
-    FormsModule
+    FormsModule,
+    NgClass
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
@@ -20,6 +23,9 @@ export class RegisterComponent {
   password: string = '';
   password_confirmation: string = '';
 
+  passwordFieldType: string = 'password';
+  passwordConfirmFieldType: string = 'password';
+
   errors = new Map<string, string>();
 
   @ViewChild('_username')
@@ -29,13 +35,24 @@ export class RegisterComponent {
   @ViewChild('_password_confirm')
   private _password_confirm!: any;
 
-  constructor(private registerService: RegisterService, private userService: UserService, private router: Router) {
+  constructor(private registerService: RegisterService,
+              private userService: UserService,
+              private router: Router,
+              private toastService: ToastService) {
+  }
+
+  togglePasswordVisibility() {
+    this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
+  }
+
+  togglePasswordConfirmVisibility() {
+    this.passwordConfirmFieldType = this.passwordConfirmFieldType === 'password' ? 'text' : 'password';
   }
 
   onSubmit() {
     this.errors.clear();
 
-    if (this.username.trim() === ''){
+    if (this.username.trim().length === 0){
       this.errors.set('_username', 'Bitte gib einen Nutzernamen ein.');
       return;
     }
@@ -56,12 +73,11 @@ export class RegisterComponent {
           next: (response: UserDto) => {
             this.userService.setUserData(response);
             this.router.navigate([''])
+            this.toastService.show("success", "Success", "You Registered Successfully!",6,true);
           },
           error: error => {
-            if (error.status === 400 && error.error.message === 'Username already exists') {
-              this.errors.set('_username', 'Der Benutzername existiert bereits.');
-            } else {
-              alert('Fehler bei der Registrierung.');
+            if (error.status === 400) {
+              this.toastService.show('error',"Username","That Username is already taken.",6,false);
             }
           }
         });
