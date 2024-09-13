@@ -9,6 +9,7 @@ import {
 import {NgClass, NgStyle} from "@angular/common";
 import {Toast} from "./interfaces/toaster.interface";
 import {ToastService} from "./services/toast.service";
+import {delay} from "rxjs";
 
 @Component({
   selector: 'app-toast-menu',
@@ -71,7 +72,7 @@ export class ToastMenuComponent implements AfterViewInit{
     if (this.toastElement) {
       if ((window as any).bootstrap && (window as any).bootstrap.Toast) {
           this.bootstrapToast = new (window as any).bootstrap.Toast(this.toastElement.nativeElement, {
-            delay: this.toaster._subject.value?.delay || 6,
+            delay: this.toaster._subject.value?.delay,
           });
           this.showToast();
       } else {
