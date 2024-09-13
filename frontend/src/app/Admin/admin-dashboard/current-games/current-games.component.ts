@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import {AdminService} from "../services/admin.service";
 import { GameDto } from '../../../Game/interfaces/gamesDto';
 import {DatePipe, NgClass} from "@angular/common";
@@ -46,7 +46,7 @@ export class CurrentGamesComponent {
   }
 
   spectateGame(game: GameDto){
-    this.tictactoeservice.initGameBoard(game, true);
+    this.adminService.loadGame(game.player1.username);
     this.socketService.enterSpectate(game.player1.username);
     this.adminService.getProfilePicture(game.player1.profilePictureId).subscribe((data)=> {
       if (this.tictactoeservice.game?.player1){
