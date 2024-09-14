@@ -73,7 +73,7 @@ export class LoginComponent{
         this.isSubmitted = false;
         if (error.status === 403) {
           this.errors.set('_error', 'Username or Password is Invalid.');
-          this.toast.show('warning', 'Fehler', 'Username or Password is Invalid.', 10);
+          this.toast.show('warning', 'Info', 'Username or Password is Invalid.', 10);
         }
       }
     });
