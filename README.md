@@ -97,7 +97,7 @@ Matched 2 Spieler miteinander und leitet sie weiter zur TicTacToeComponent.
 #### StatusIndicatorComponent
 Zeigt den Status des Spielers an. Beim nicht spielen wird sie verdeckt. Befindet sich der User in der Queue leuchtet das Icon gelb auf, ist der User am Zug leuchtet es grün, ist der Gegner an der Reihe leuchtet es rot. Befindet sich auf der Navbar.
 
-#### NavbarComponent
+#### Navbar
 Befindet sich auf der Home-, Profil- und Gameseite, ist für die Navigation auf andere Seiten zuständig und zeigt Userinformationen an.
 
 ### TicTacToe Seite
