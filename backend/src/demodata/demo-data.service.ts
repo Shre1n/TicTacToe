@@ -74,6 +74,8 @@ export class DemoDataService {
       createdAt: new Date(1725190725609),
       duration: 300000,
       turn: 2,
+      player1EloGain: 13,
+      player2EloGain: -13,
     });
 
     const game2 = this.gameRepository.create({
@@ -86,6 +88,8 @@ export class DemoDataService {
       createdAt: new Date(1725190728609),
       duration: 150000,
       turn: 2,
+      player1EloGain: 13,
+      player2EloGain: -13,
     });
 
     const game3 = this.gameRepository.create({
@@ -98,6 +102,8 @@ export class DemoDataService {
       createdAt: new Date(1725190735609),
       duration: 350000,
       turn: 2,
+      player1EloGain: 6,
+      player2EloGain: 6,
     });
 
     const game4 = this.gameRepository.create({
@@ -110,6 +116,8 @@ export class DemoDataService {
       createdAt: new Date(1725190625609),
       duration: 200000,
       turn: 2,
+      player1EloGain: 13,
+      player2EloGain: -13,
     });
 
     const game5 = this.gameRepository.create({
@@ -122,6 +130,8 @@ export class DemoDataService {
       createdAt: new Date(1725190425609),
       duration: 300000,
       turn: 1,
+      player1EloGain: -16,
+      player2EloGain: 16,
     });
 
     await this.gameRepository.save([game1, game2, game3, game4, game5]);
