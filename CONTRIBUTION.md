@@ -5,24 +5,41 @@
 
 
 ### Backend
-Navigiere zuerst in den Backend-Ordner:
+Navigieren Sie zuerst in den Backend-Ordner:
 
 ````bash
 cd backend
 ````
 
+Installieren Sie alle nötigen Abhängigkeiten:
+
+```bash
+npm install
+```
+
 Anschließend starten Sie das Backend:
+
 ````bash
 npm run start:dev
 ````
 
 
+
+
 ### Frontend
-Navigiere zuerst in den Backend-Ordner:
+Navigieren Sie zuerst in den Frontend-Ordner:
 
 ````bash
 cd frontend
 ````
+
+Installieren Sie alle nötigen Abhängigkeiten:
+
+```bash
+npm install
+```
+
+Starten Sie die Anwendung mit:
 
 ````bash
 npm run watch
