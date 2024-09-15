@@ -48,16 +48,6 @@ export class CurrentGamesComponent {
   spectateGame(game: GameDto){
     this.adminService.loadGame(game.player1.username);
     this.socketService.enterSpectate(game.player1.username);
-    this.adminService.getProfilePicture(game.player1.profilePictureId).subscribe((data)=> {
-      if (this.tictactoeservice.game?.player1){
-        this.tictactoeservice.game.player1.profilePictureUrl = URL.createObjectURL(new Blob([data]))
-      }
-    } )
-    this.adminService.getProfilePicture(game.player2.profilePictureId).subscribe((data)=> {
-      if (this.tictactoeservice.game?.player2){
-        this.tictactoeservice.game.player2.profilePictureUrl = URL.createObjectURL(new Blob([data]))
-      }
-    } )
     this.router.navigate(['/spectate']);
   }
 }
