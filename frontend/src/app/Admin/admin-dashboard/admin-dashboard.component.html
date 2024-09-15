@@ -30,7 +30,6 @@
             (focus)="onFocusInEvent()"
             (focusout)="onFocusOutEvent($event)"
           >
-          <!-- TODO: Select with arrow keys -->
           @if (usernameHints.length != 0) {
             <ul class="list-group position-absolute search-results" id="searchResults"
                 (mousedown)="onResultsMouseDown($event)">
