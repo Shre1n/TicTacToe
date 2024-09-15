@@ -79,7 +79,18 @@ export class AdminService {
 
   loadGame(player: string) {
     this.http.get<GameDto[]>(ApiEndpoints.GAME).subscribe((games: GameDto[]) => {
-      this.tictactoeService.initGameBoard(games.filter(game => game.player1.username === player || game.player2.username === player).pop(), true);
+      const game = games.filter(game => game.player1.username === player || game.player2.username === player).pop();
+      if (!game) return;
+      this.tictactoeService.initGameBoard(game, true);
+
+      this.getProfilePicture(game.player1.profilePictureId).subscribe((data)=> {
+        if (this.tictactoeService.game)
+          this.tictactoeService.game.player1.profilePictureUrl = URL.createObjectURL(new Blob([data]))
+      });
+      this.getProfilePicture(game.player2.profilePictureId).subscribe((data)=> {
+        if (this.tictactoeService.game)
+          this.tictactoeService.game.player2.profilePictureUrl = URL.createObjectURL(new Blob([data]))
+      });
     });
   }
 
