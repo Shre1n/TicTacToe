@@ -6,6 +6,7 @@ import { UserDto } from '../../User/interfaces/userDto';
 import { UserService } from '../../User/user.service';
 import {ToastService} from "../../Notifications/toast-menu/services/toast.service";
 import {NgClass} from "@angular/common";
+import {SocketService} from "../../Socket/socket.service";
 
 @Component({
   selector: 'app-register',
@@ -38,7 +39,8 @@ export class RegisterComponent {
   constructor(private registerService: RegisterService,
               private userService: UserService,
               private router: Router,
-              private toastService: ToastService) {
+              private toastService: ToastService,
+              private socketService: SocketService) {
   }
 
   togglePasswordVisibility() {
@@ -72,6 +74,7 @@ export class RegisterComponent {
         .subscribe({
           next: (response: UserDto) => {
             this.userService.setUserData(response);
+            this.socketService.connect();
             this.router.navigate([''])
             this.toastService.show("success", "Success", "You Registered Successfully!",6,true);
           },
